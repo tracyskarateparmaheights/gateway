@@ -2,39 +2,55 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Authorized Access Only</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tracy's Karate - Student Portal</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .login-container { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); text-align: center; width: 320px; }
-        h2 { color: #1a73e8; margin-bottom: 20px; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #dadce0; border-radius: 6px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background-color: #1a73e8; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        button:hover { background-color: #1557b0; }
-        #error { color: #d93025; font-size: 14px; margin-top: 10px; display: none; }
+        body { font-family: 'Arial', sans-serif; background-color: #1a1a1a; color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .container { background: #2b2b2b; padding: 40px; border-radius: 10px; border-top: 5px solid #d93025; box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 90%; max-width: 500px; }
+        h1 { color: #d93025; text-transform: uppercase; letter-spacing: 2px; }
+        input { width: 100%; padding: 12px; margin: 20px 0; border: 1px solid #444; border-radius: 5px; background: #333; color: white; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #d93025; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px; }
+        button:hover { background: #b2221b; }
+        
+        /* Hidden Section */
+        #videoContent { display: none; text-align: left; }
+        .video-link { display: block; background: #333; color: #fff; padding: 15px; margin: 10px 0; text-decoration: none; border-left: 4px solid #d93025; border-radius: 4px; transition: 0.3s; }
+        .video-link:hover { background: #444; padding-left: 20px; }
+        .logout-btn { background: #444; margin-top: 20px; font-size: 12px; }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <h2>Portal Login</h2>
-        <input type="password" id="pass" placeholder="Enter Password">
-        <button onclick="check()">Login</button>
-        <p id="error">Incorrect Password</p>
+
+    <div class="container" id="loginBox">
+        <h1>Student Portal</h1>
+        <p>Enter the Dojo password to access training videos.</p>
+        <input type="password" id="passInput" placeholder="Password">
+        <button onclick="checkAccess()">Enter Dojo</button>
+        <p id="error" style="color: #d93025; display: none; margin-top: 15px;">Incorrect Password</p>
+    </div>
+
+    <div class="container" id="videoContent">
+        <h1>Training Videos</h1>
+        <p>Select a lesson below:</p>
+        
+        <a href="https://www.youtube.com/playlist?list=PLudsFr1QJtbK1MkX-oILTeyyq7BBxRO0G" target="_blank" class="video-link">🥋 Yellow Belt</a>
+        <a href="https://www.youtube.com/playlist?list=PLudsFr1QJtbLRwhQpJrm-kJgYaLJ7aZQ32" target="_blank" class="video-link">🥋 Orange Belt</a>
+        
+        <button class="logout-btn" onclick="location.reload()">Log Out</button>
     </div>
 
     <script>
-        function check() {
-            const password = document.getElementById("pass").value;
-            // EDIT THESE TWO LINES
-            const correctPassword = "6509PearlRoad"; 
-            const hiddenPageUrl = "https://sites.google.com/view/rydh5ryam9h-xvc7ftwj4nzsj8l2v/rydh5ryam9h-xvc7ftwj4nzsj8l2v";
-
-            if (password === correctPassword) {
-                window.location.href = hiddenPageUrl;
+        function checkAccess() {
+            const pass = document.getElementById("passInput").value;
+            // CHANGE YOUR PASSWORD HERE
+            if (pass === "ParmaKarate2026") { 
+                document.getElementById("loginBox").style.display = "none";
+                document.getElementById("videoContent").style.display = "block";
             } else {
                 document.getElementById("error").style.display = "block";
             }
         }
     </script>
-</body>
 
+</body>
 </html>
