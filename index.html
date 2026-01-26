@@ -3,49 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Tracy's Karate - Material Online Portal</title>
+    <title>Tracy's Karate - Student Portal</title>
     <style>
         :root { --gold: #ffcc00; --bg: #1a1a1a; --card: #2b2b2b; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: var(--bg); color: white; margin: 0; padding: 20px 10px; display: flex; justify-content: center; }
-        .container { background: var(--card); padding: 30px 20px; border-radius: 12px; border-top: 6px solid var(--gold); box-shadow: 0 15px 35px rgba(0,0,0,0.6); text-align: center; width: 100%; max-width: 500px; position: relative; }
+        
+        /* Centering Logic for Mobile */
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            background-color: var(--bg); 
+            color: white; 
+            margin: 0; 
+            padding: 20px 10px; 
+            display: flex; 
+            flex-direction: column;
+            align-items: center; /* Horizontal Center */
+            justify-content: center; /* Vertical Center */
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .container { 
+            background: var(--card); 
+            padding: 30px 20px; 
+            border-radius: 12px; 
+            border-top: 6px solid var(--gold); 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6); 
+            text-align: center; 
+            width: 100%; 
+            max-width: 450px; 
+            position: relative;
+            transition: all 0.3s ease;
+        }
         
         .logo { width: 75px; height: auto; margin-bottom: 10px; }
         h1 { color: var(--gold); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; font-size: 20px; }
         
         /* PERSISTENT SEARCH BAR */
-        .search-container { position: sticky; top: 0; background: var(--card); z-index: 100; padding-bottom: 15px; margin-bottom: 10px; }
-        .search-box { width: 100%; padding: 12px 15px; border-radius: 8px; border: 1px solid #444; background: #333; color: white; font-size: 16px; box-sizing: border-box; outline: none; transition: 0.3s; }
-        .search-box:focus { border-color: var(--gold); box-shadow: 0 0 8px rgba(255, 204, 0, 0.3); }
+        .search-container { position: sticky; top: 0; background: var(--card); z-index: 100; padding-bottom: 10px; }
+        .search-box { width: 100%; padding: 14px; border-radius: 8px; border: 1px solid #444; background: #333; color: white; font-size: 16px; box-sizing: border-box; outline: none; }
+        .search-box:focus { border-color: var(--gold); }
 
         /* MASKED PLAYER */
-        #playerContainer { display: none; margin-bottom: 25px; }
+        #playerContainer { display: none; margin-bottom: 25px; scroll-margin-top: 20px; }
         .video-box { position: relative; width: 100%; padding-bottom: 56.25%; background: #000; overflow: hidden; border: 2px solid var(--gold); border-radius: 8px; }
         #player { position: absolute; top: -65px; left: 0; width: 100%; height: calc(100% + 130px); }
 
         /* SCRUB BAR */
-        .progress-container { margin: 15px 0 10px 0; padding: 0 5px; }
-        #progressBar { width: 100%; height: 8px; cursor: pointer; accent-color: var(--gold); background: #444; border-radius: 5px; outline: none; }
+        .progress-container { margin: 15px 0 10px 0; }
+        #progressBar { width: 100%; height: 10px; cursor: pointer; accent-color: var(--gold); }
         .time-labels { display: flex; justify-content: space-between; font-size: 11px; color: #888; margin-top: 5px; }
 
         /* CONTROLS */
         .custom-controls { display: flex; justify-content: space-between; gap: 8px; }
         .control-btn { background: #444; color: var(--gold); padding: 12px 5px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold; flex: 1; border: 1px solid #555; text-transform: uppercase; }
 
-        /* LISTS & BUTTONS */
+        /* BUTTONS & BELTS */
         .tech-btn { background: #222; color: #eee; padding: 15px; margin: 8px 0; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; border: 1px solid #444; border-left: 5px solid var(--gold); display: block; }
-        .belt-header { background: #3d3d3d; padding: 15px; margin-top: 15px; border-radius: 4px; font-weight: bold; color: var(--gold); cursor: pointer; display: flex; justify-content: space-between; align-items: center; border: 1px solid #444; }
+        .belt-header { background: #3d3d3d; padding: 15px; margin-top: 15px; border-radius: 4px; font-weight: bold; color: var(--gold); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
         
-        #portalView { display: none; }
+        /* BACK & LOGOUT BUTTONS */
+        .action-row { display: flex; justify-content: space-between; margin-top: 20px; }
+        .nav-btn { background: transparent; color: #888; border: 1px solid #444; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+        .nav-btn:hover { color: var(--gold); border-color: var(--gold); }
+
+        #portalView { display: none; width: 100%; }
         input[type="email"], input[type="password"] { width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #444; border-radius: 6px; background: #333; color: white; box-sizing: border-box; font-size: 16px; }
         #loginBtn { width: 100%; padding: 15px; background: var(--gold); color: #1a1a1a; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 16px; }
-        .logout-link { background: transparent; color: #666; border: none; margin-top: 25px; text-decoration: underline; cursor: pointer; font-size: 12px; }
     </style>
 </head>
 <body>
 
     <div class="container" id="loginBox">
         <img src="BLACK-TK.png" alt="Logo" class="logo">
-        <h1>Material Access</h1>
+        <h1>Dojo Access</h1>
         <input type="email" id="emailInput" placeholder="Email" inputmode="email">
         <input type="password" id="passInput" placeholder="Password">
         <button id="loginBtn">Sign In</button>
@@ -56,7 +86,7 @@
         <h1 id="welcomeTitle">Welcome</h1>
 
         <div class="search-container">
-            <input type="text" id="globalSearch" class="search-box" placeholder="Search techniques (e.g. Sword)..." onkeyup="filterAll()">
+            <input type="text" id="globalSearch" class="search-box" placeholder="Search techniques..." onkeyup="filterAll()">
         </div>
 
         <div id="playerContainer">
@@ -76,7 +106,7 @@
         <div id="masterList">
             <div class="rank-group" id="group-yellow">
                 <div class="belt-header" onclick="toggleGroup('list-yellow')">🟡 Yellow Belt <span class="arrow">▼</span></div>
-                <div id="list-yellow" style="display:none; padding-top: 5px;">
+                <div id="list-yellow" style="display:none;">
                     <div class="tech-btn" onclick="loadVideo('19Ktd4FfDGg')">Yellow History</div>
                     <div class="tech-btn" onclick="loadVideo('JIFwfcykAY8')">Japanese Sword</div>
                     <div class="tech-btn" onclick="loadVideo('RoSuLCLOKuU')">Chinese Sword</div>
@@ -90,16 +120,16 @@
                     <div class="tech-btn" onclick="loadVideo('E44w7Eh73xs')">Breaking the Sword</div>
                 </div>
             </div>
-
             <div class="rank-group" id="group-orange">
                 <div class="belt-header" onclick="toggleGroup('list-orange')">🟠 Orange Belt <span class="arrow">▼</span></div>
-                <div id="list-orange" style="display:none; padding-top: 5px;">
-                    <p style="font-size: 12px; color: #888; padding: 15px;">Orange belt curriculum coming soon.</p>
-                </div>
+                <div id="list-orange" style="display:none; padding: 15px; color: #888; font-size: 12px;">Orange belt videos coming soon.</div>
             </div>
         </div>
 
-        <button class="logout-link" onclick="location.reload()">Log Out</button>
+        <div class="action-row">
+            <button class="nav-btn" onclick="goBack()">⬅ Reset View</button>
+            <button class="nav-btn" onclick="location.reload()">Log Out</button>
+        </div>
     </div>
 
     <script src="https://www.youtube.com/iframe_api"></script>
@@ -125,53 +155,58 @@
         let isPlaying = false;
         let progressTimer;
 
-        // Login on Enter Key
+        // Auto-Center Scroll Logic
+        function centerPlayer() {
+            const container = document.getElementById('playerContainer');
+            container.style.display = 'block';
+            container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // Enter Key Listener
         [document.getElementById('emailInput'), document.getElementById('passInput')].forEach(input => {
             input.addEventListener('keypress', (e) => { if(e.key === 'Enter') doLogin(); });
         });
 
         async function doLogin() {
-            const email = document.getElementById('emailInput').value;
-            const pass = document.getElementById('passInput').value;
             try {
-                const cred = await signInWithEmailAndPassword(auth, email, pass);
+                const cred = await signInWithEmailAndPassword(auth, emailInput.value, passInput.value);
                 const snap = await getDoc(doc(db, "users", cred.user.uid));
                 if (snap.exists()) {
                     document.getElementById('loginBox').style.display = 'none';
                     document.getElementById('portalView').style.display = 'block';
                     document.getElementById('welcomeTitle').innerText = "WELCOME, " + snap.data().name.toUpperCase();
                 }
-            } catch (e) { alert("Invalid Credentials"); }
+            } catch (e) { alert("Login failed."); }
         }
         document.getElementById('loginBtn').addEventListener('click', doLogin);
 
-        // UNIFIED SEARCH & FILTER
+        // BACK BUTTON LOGIC
+        window.goBack = () => {
+            document.getElementById('globalSearch').value = "";
+            filterAll(); // Reset lists
+            closePlayer();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
         window.filterAll = () => {
             const query = document.getElementById('globalSearch').value.toLowerCase();
-            const groups = document.querySelectorAll('.rank-group');
-            
-            groups.forEach(group => {
+            document.querySelectorAll('.rank-group').forEach(group => {
                 const buttons = group.querySelectorAll('.tech-btn');
-                let matchesInThisGroup = 0;
-                
+                let matches = 0;
                 buttons.forEach(btn => {
-                    const match = btn.innerText.toLowerCase().includes(query);
-                    btn.style.display = match ? "block" : "none";
-                    if(match) matchesInThisGroup++;
+                    const found = btn.innerText.toLowerCase().includes(query);
+                    btn.style.display = found ? "block" : "none";
+                    if(found) matches++;
                 });
-
-                const listDiv = group.querySelector('div[id^="list-"]');
+                const list = group.querySelector('div[id^="list-"]');
                 const arrow = group.querySelector('.arrow');
-
                 if (query.length > 0) {
-                    // Show the group if it has matches, and auto-expand
-                    group.style.display = matchesInThisGroup > 0 ? "block" : "none";
-                    listDiv.style.display = matchesInThisGroup > 0 ? "block" : "none";
+                    group.style.display = matches > 0 ? "block" : "none";
+                    list.style.display = matches > 0 ? "block" : "none";
                     if(arrow) arrow.innerText = "▲";
                 } else {
-                    // Reset to collapsed view when search is cleared
                     group.style.display = "block";
-                    listDiv.style.display = "none";
+                    list.style.display = "none";
                     if(arrow) arrow.innerText = "▼";
                 }
             });
@@ -180,70 +215,45 @@
         window.toggleGroup = (id) => {
             const el = document.getElementById(id);
             const arrow = el.parentElement.querySelector('.arrow');
-            const isOpening = el.style.display === "none";
-            el.style.display = isOpening ? "block" : "none";
-            if(arrow) arrow.innerText = isOpening ? "▲" : "▼";
+            const open = el.style.display === "none";
+            el.style.display = open ? "block" : "none";
+            if(arrow) arrow.innerText = open ? "▲" : "▼";
         };
 
-        // YOUTUBE & SCRUBBING
         window.loadVideo = (id) => {
             if (window.player) {
                 window.player.loadVideoById(id);
             } else {
                 window.player = new YT.Player('player', {
                     videoId: id,
-                    playerVars: { 'autoplay': 1, 'controls': 0, 'modestbranding': 1, 'rel': 0, 'disablekb': 1, 'playsinline': 1 },
-                    events: { 'onStateChange': onPlayerStateChange }
+                    playerVars: { 'autoplay': 1, 'controls': 0, 'modestbranding': 1, 'rel': 0, 'playsinline': 1 },
+                    events: { 'onStateChange': (e) => { isPlaying = (e.data == 1); if(isPlaying) startBarUpdate(); } }
                 });
             }
-            document.getElementById('playerContainer').style.display = 'block';
-            window.scrollTo({top: 0, behavior: 'smooth'});
+            centerPlayer();
         };
 
-        function onPlayerStateChange(event) {
-            if (event.data == YT.PlayerState.PLAYING) {
-                isPlaying = true;
-                document.getElementById('playPauseBtn').innerText = "⏸ Pause";
-                startBarUpdate();
-            } else {
-                isPlaying = false;
-                document.getElementById('playPauseBtn').innerText = "▶ Play";
-                clearInterval(progressTimer);
-            }
-        }
-
-        function formatTime(s) {
-            let m = Math.floor(s / 60);
-            let sec = Math.floor(s % 60);
-            return m + ":" + (sec < 10 ? "0" + sec : sec);
-        }
-
         function startBarUpdate() {
+            clearInterval(progressTimer);
             progressTimer = setInterval(() => {
                 if (window.player && isPlaying) {
                     let curr = window.player.getCurrentTime();
                     let dur = window.player.getDuration();
                     document.getElementById('progressBar').value = (curr / dur) * 100;
-                    document.getElementById('currentTime').innerText = formatTime(curr);
-                    document.getElementById('totalDuration').innerText = formatTime(dur);
+                    document.getElementById('currentTime').innerText = Math.floor(curr/60) + ":" + String(Math.floor(curr%60)).padStart(2,'0');
+                    document.getElementById('totalDuration').innerText = Math.floor(dur/60) + ":" + String(Math.floor(dur%60)).padStart(2,'0');
                 }
             }, 500);
         }
 
         document.getElementById('progressBar').addEventListener('input', (e) => {
-            if (window.player) {
-                let seekTo = (e.target.value / 100) * window.player.getDuration();
-                window.player.seekTo(seekTo);
-            }
+            if (window.player) window.player.seekTo((e.target.value / 100) * window.player.getDuration());
         });
 
         window.togglePlay = () => { if (isPlaying) window.player.pauseVideo(); else window.player.playVideo(); };
         window.rewind = () => window.player.seekTo(window.player.getCurrentTime() - 10);
         window.fastForward = () => window.player.seekTo(window.player.getCurrentTime() + 10);
-        window.closePlayer = () => {
-            if (window.player) window.player.stopVideo();
-            document.getElementById('playerContainer').style.display = 'none';
-        };
+        window.closePlayer = () => { if (window.player) window.player.stopVideo(); document.getElementById('playerContainer').style.display = 'none'; };
     </script>
 </body>
 </html>
