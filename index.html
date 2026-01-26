@@ -23,10 +23,12 @@
         
         #error { color: #ff4d4d; font-size: 14px; margin-top: 15px; display: none; }
         
+        /* Video Section */
         #videoContent { display: none; text-align: left; }
         .video-link { display: none; background: #333; color: #fff; padding: 18px; margin: 12px 0; text-decoration: none; border-left: 5px solid #ffcc00; border-radius: 4px; transition: 0.3s; font-weight: 600; cursor: pointer; }
         .video-link:hover { background: #444; padding-left: 25px; color: #ffcc00; }
         
+        /* Player Styling */
         #playerContainer { display: none; margin-bottom: 20px; }
         .close-player { background: #444; color: #ffcc00; font-size: 11px; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-bottom: 10px; display: inline-block; font-weight: bold; border: 1px solid #555; }
         .video-frame { width: 100%; height: 250px; border-radius: 8px; border: 2px solid #ffcc00; background: #000; }
@@ -64,10 +66,10 @@
 
         <div onclick="loadVideo('PLudsFr1QJtbLfLddHmojVO4fen7GlvEVQ')" id="rank-basics" class="video-link" style="border-left-color: #ffffff;">⚫ Basics & Fundamentals</div>
         <div onclick="loadVideo('PLudsFr1QJtbK1MkX-oILTeyyq7BBxRO0G')" id="rank-yellow" class="video-link" style="border-left-color: #ffff00;">🟡 Yellow Belt Material</div>
-        <div onclick="loadVideo('ADD_ORANGE_ID_HERE')" id="rank-orange" class="video-link" style="border-left-color: #ff8c00;">🟠 Orange Belt Material</div>
-        <div onclick="loadVideo('ADD_PURPLE_ID_HERE')" id="rank-purple" class="video-link" style="border-left-color: #800080;">🟣 Purple Belt Material</div>
-        <div onclick="loadVideo('ADD_BLUE_ID_HERE')" id="rank-blue" class="video-link" style="border-left-color: #0000ff;">🔵 Blue Belt Material</div>
-        <div onclick="loadVideo('ADD_INSTRUCTOR_ID_HERE')" id="rank-instructor" class="video-link" style="border-left-color: #ff0000;">🔴 Instructor Resources</div>
+        <div onclick="loadVideo('YOUR_ORANGE_ID')" id="rank-orange" class="video-link" style="border-left-color: #ff8c00;">🟠 Orange Belt Material</div>
+        <div onclick="loadVideo('YOUR_PURPLE_ID')" id="rank-purple" class="video-link" style="border-left-color: #800080;">🟣 Purple Belt Material</div>
+        <div onclick="loadVideo('YOUR_BLUE_ID')" id="rank-blue" class="video-link" style="border-left-color: #0000ff;">🔵 Blue Belt Material</div>
+        <div onclick="loadVideo('YOUR_INSTRUCTOR_ID')" id="rank-instructor" class="video-link" style="border-left-color: #ff0000;">🔴 Instructor Resources</div>
 
         <button class="logout-btn" onclick="location.reload()">Log Out</button>
     </div>
@@ -104,7 +106,7 @@
                 if (userDoc.exists()) {
                     showPortal(userDoc.data());
                 } else {
-                    alert("No rank data found in database. Contact Sensei.");
+                    alert("No rank assigned in database. Contact Sensei.");
                 }
             } catch (e) {
                 errorMsg.style.display = 'block';
@@ -116,6 +118,7 @@
             document.getElementById('videoContent').style.display = 'block';
             document.getElementById('welcomeTitle').innerText = "Welcome, " + (userData.name || "Student");
 
+            // Logic to show links
             document.getElementById('rank-basics').style.display = 'block';
             const userRank = userData.rank ? userData.rank.toLowerCase() : '';
 
@@ -127,6 +130,7 @@
             }
         }
 
+        // Global functions for video player
         window.loadVideo = function(playlistId) {
             const player = document.getElementById('videoPlayer');
             const container = document.getElementById('playerContainer');
