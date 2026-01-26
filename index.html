@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Tracy's Karate - Full Curriculum</title>
+    <title>Tracy's Karate - Full Portal</title>
     <style>
         :root { --gold: #ffcc00; --bg: #1a1a1a; --card: #2b2b2b; --input-bg: #1e1e1e; }
         
@@ -53,6 +53,8 @@
         }
 
         #portalView { display: none; width: 100%; }
+        
+        #progressBar { width: 100%; margin-top: 15px; accent-color: var(--gold); cursor: pointer; }
     </style>
 </head>
 <body>
@@ -75,7 +77,7 @@
 
         <div id="playerContainer">
             <div class="video-box"><div id="player"></div></div>
-            <input type="range" id="progressBar" style="width:100%; margin-top:15px; accent-color: var(--gold);" value="0" min="0" max="100" step="0.1">
+            <input type="range" id="progressBar" value="0" min="0" max="100" step="0.1" oninput="scrub(this.value)">
             <div style="display:flex; gap:5px; margin-top:10px;">
                 <button class="nav-btn" onclick="rewind()" style="flex:1;">⏪ -10s</button>
                 <button class="nav-btn" id="playPauseBtn" onclick="togglePlay()" style="flex:1; background:var(--gold); color:#000;">⏸ Pause</button>
@@ -88,7 +90,7 @@
             <div class="rank-group" id="group-white" data-level="0">
                 <div class="belt-header" onclick="toggleGroup('list-white')">⚪ White Belt <span>▼</span></div>
                 <div id="list-white" style="display:none; padding-top: 5px;">
-                    <div class="tech-btn" onclick="loadVideo('ID_HERE')">Orientation & Basics</div>
+                    <div class="tech-btn" onclick="loadVideo('ID_HERE')">Basics and Etiquette</div>
                 </div>
             </div>
 
@@ -112,7 +114,7 @@
             <div class="rank-group" id="group-orange" data-level="2">
                 <div class="belt-header" onclick="toggleGroup('list-orange')">🟠 Orange Belt <span>▼</span></div>
                 <div id="list-orange" style="display:none; padding-top: 5px;">
-                    <div class="tech-btn" onclick="loadVideo('ID_HERE')">Orange Tech Example</div>
+                    <div class="tech-btn" onclick="loadVideo('ID_HERE')">Orange Technique 1</div>
                 </div>
             </div>
 
@@ -131,13 +133,23 @@
                 <div id="list-green" style="display:none; padding-top: 5px;"></div>
             </div>
 
-            <div class="rank-group" id="group-brown" data-level="6">
-                <div class="belt-header" onclick="toggleGroup('list-brown')">🟤 Brown Belt (3rd-1st) <span>▼</span></div>
-                <div id="list-brown" style="display:none; padding-top: 5px;"></div>
+            <div class="rank-group" id="group-brown3" data-level="6">
+                <div class="belt-header" onclick="toggleGroup('list-brown3')">🟤 Brown Belt (3rd) <span>▼</span></div>
+                <div id="list-brown3" style="display:none; padding-top: 5px;"></div>
+            </div>
+
+            <div class="rank-group" id="group-brown2" data-level="7">
+                <div class="belt-header" onclick="toggleGroup('list-brown2')">🟤 Brown Belt (2nd) <span>▼</span></div>
+                <div id="list-brown2" style="display:none; padding-top: 5px;"></div>
+            </div>
+
+            <div class="rank-group" id="group-brown1" data-level="8">
+                <div class="belt-header" onclick="toggleGroup('list-brown1')">🟤 Brown Belt (1st) <span>▼</span></div>
+                <div id="list-brown1" style="display:none; padding-top: 5px;"></div>
             </div>
 
             <div class="rank-group" id="group-black" data-level="9">
-                <div class="belt-header" onclick="toggleGroup('list-black')">⚫ Black Belt (1st-6th) <span>▼</span></div>
+                <div class="belt-header" onclick="toggleGroup('list-black')">⚫ Black Belt Material <span>▼</span></div>
                 <div id="list-black" style="display:none; padding-top: 5px;"></div>
             </div>
 
@@ -172,6 +184,11 @@
         let isPlaying = false;
         let progressTimer;
 
+        // Enter Key Handlers
+        [emailInput, passInput].forEach(field => {
+            field.addEventListener('keypress', (e) => { if (e.key === 'Enter') doLogin(); });
+        });
+
         async function doLogin() {
             try {
                 const cred = await signInWithEmailAndPassword(auth, emailInput.value, passInput.value);
@@ -182,7 +199,7 @@
                     document.getElementById('loginBox').style.display = 'none';
                     document.getElementById('portalView').style.display = 'block';
                 }
-            } catch (e) { alert("Login failed."); }
+            } catch (e) { alert("Login failed. Check your credentials."); }
         }
         document.getElementById('loginBtn').addEventListener('click', doLogin);
 
@@ -193,7 +210,6 @@
             });
         }
 
-        // Global functions for HTML access
         window.toggleGroup = (id) => {
             const el = document.getElementById(id);
             el.style.display = (el.style.display === "none") ? "block" : "none";
@@ -224,6 +240,13 @@
                 }
             }, 500);
         }
+
+        window.scrub = (value) => {
+            if (window.player && window.player.getDuration) {
+                const newTime = (value / 100) * window.player.getDuration();
+                window.player.seekTo(newTime, true);
+            }
+        };
 
         window.togglePlay = () => isPlaying ? window.player.pauseVideo() : window.player.playVideo();
         window.rewind = () => window.player.seekTo(window.player.getCurrentTime() - 10);
