@@ -5,42 +5,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Tracy's Karate - Student Portal</title>
     <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #1a1a1a; color: white; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; margin: 0; padding: 20px 10px; box-sizing: border-box; }
-        .container { background: #2b2b2b; padding: 30px 20px; border-radius: 12px; border-top: 6px solid #ffcc00; box-shadow: 0 15px 35px rgba(0,0,0,0.6); text-align: center; width: 100%; max-width: 500px; position: relative; }
+        :root { --gold: #ffcc00; --bg: #1a1a1a; --card: #2b2b2b; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: var(--bg); color: white; margin: 0; padding: 20px 10px; display: flex; justify-content: center; }
+        .container { background: var(--card); padding: 30px 20px; border-radius: 12px; border-top: 6px solid var(--gold); box-shadow: 0 15px 35px rgba(0,0,0,0.6); text-align: center; width: 100%; max-width: 500px; position: relative; }
         
-        .logo-container { margin-bottom: 10px; }
-        .logo { width: 75px; height: auto; border-radius: 5px; }
-        h1 { color: #ffcc00; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; font-size: 20px; }
+        .logo { width: 75px; height: auto; margin-bottom: 10px; }
+        h1 { color: var(--gold); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; font-size: 20px; }
+        
+        /* THE MASKED PLAYER WINDOW */
+        #playerContainer { display: none; margin-bottom: 25px; text-align: center; }
+        .video-box { 
+            position: relative; 
+            width: 100%; 
+            padding-bottom: 56.25%; 
+            background: #000; 
+            overflow: hidden; 
+            border: 2px solid var(--gold); 
+            border-radius: 8px;
+        }
+        
+        /* Shifting the YouTube frame to hide UI elements */
+        #player {
+            position: absolute;
+            top: -65px; 
+            left: 0;
+            width: 100%;
+            height: calc(100% + 130px);
+        }
+
+        /* SCRUB BAR STYLING */
+        .progress-container { margin: 15px 0 10px 0; padding: 0 5px; }
+        #progressBar { 
+            width: 100%; 
+            height: 8px; 
+            cursor: pointer; 
+            accent-color: var(--gold); 
+            background: #444;
+            border-radius: 5px;
+            outline: none;
+        }
+        .time-labels { display: flex; justify-content: space-between; font-size: 11px; color: #888; margin-top: 5px; }
+
+        /* CUSTOM CONTROLS */
+        .custom-controls { display: flex; justify-content: space-between; gap: 8px; }
+        .control-btn { background: #444; color: var(--gold); padding: 12px 5px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold; flex: 1; border: 1px solid #555; text-transform: uppercase; -webkit-tap-highlight-color: transparent; }
+        .control-btn:active { background: #555; }
+
+        /* BUTTONS & LISTS */
+        .tech-btn { background: #222; color: #eee; padding: 15px; margin: 8px 0; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; border: 1px solid #444; border-left: 5px solid var(--gold); }
+        .back-btn { background: transparent; color: var(--gold); border: 1px solid var(--gold); padding: 8px 15px; border-radius: 4px; cursor: pointer; margin-bottom: 15px; display: inline-block; font-size: 12px; }
         
         #beltMenuView, .rank-detail-view { display: none; }
-        
-        .controls-row { display: flex; justify-content: center; gap: 10px; margin-bottom: 12px; }
-        .control-btn { background: #444; color: #ffcc00; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold; text-transform: uppercase; border: 1px solid #555; transition: 0.2s; }
-
-        .belt-item { background: #333; color: #fff; padding: 20px; margin: 12px 0; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: space-between; border-left: 8px solid transparent; }
-        .tech-btn { background: #222; color: #eee; padding: 15px; margin: 8px 0; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; border: 1px solid #444; }
-
-        /* MULTI-SHIELD PLAYER: Blocks Logo/Share but allows Scrubbing */
-        #playerContainer { display: none; margin-bottom: 25px; position: relative; width: 100%; }
-        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; border: 2px solid #ffcc00; background: #000; }
-        
-        /* The "Corner Shields" */
-        .shield { position: absolute; z-index: 50; background: rgba(0,0,0,0.01); pointer-events: auto; }
-        .shield-top-right { top: 0; right: 0; width: 180px; height: 60px; } /* Blocks Share/Watch Later */
-        .shield-bottom-right { bottom: 0; right: 0; width: 100px; height: 50px; } /* Blocks YouTube Logo */
-        .shield-top-left { top: 0; left: 0; width: 250px; height: 60px; } /* Blocks Title Link */
-
-        iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
-        
-        input { width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #444; border-radius: 6px; background: #333; color: white; box-sizing: border-box; font-size: 16px; }
-        button#loginBtn { width: 100%; padding: 15px; background: #ffcc00; color: #1a1a1a; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
-        .logout-btn { background: transparent; color: #888; margin-top: 30px; border: none; cursor: pointer; text-decoration: underline; font-size: 13px; }
+        input[type="email"], input[type="password"] { width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #444; border-radius: 6px; background: #333; color: white; box-sizing: border-box; font-size: 16px; }
+        #loginBtn { width: 100%; padding: 15px; background: var(--gold); color: #1a1a1a; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 16px; }
     </style>
 </head>
 <body>
 
     <div class="container" id="loginBox">
-        <div class="logo-container"><img src="BLACK-TK.png" alt="Logo" class="logo"></div>
+        <img src="BLACK-TK.png" alt="Logo" class="logo">
         <h1>Dojo Access</h1>
         <input type="email" id="emailInput" placeholder="Email" inputmode="email">
         <input type="password" id="passInput" placeholder="Password">
@@ -48,46 +71,52 @@
     </div>
 
     <div class="container" id="videoContent" style="display:none;">
-        <div class="logo-container"><img src="BLACK-TK.png" alt="Logo" class="logo"></div>
+        <img src="BLACK-TK.png" alt="Logo" class="logo">
         <h1 id="welcomeTitle">Welcome</h1>
 
         <div id="playerContainer">
-            <div class="controls-row">
-                <div class="control-btn" onclick="closeVideo()">✖ Close Video</div>
-                <div class="control-btn" id="soundBtn" onclick="toggleSound()">🔊 Sound: ON</div>
+            <div class="video-box">
+                <div id="player"></div>
             </div>
-            <div class="video-wrapper">
-                <div class="shield shield-top-right"></div>
-                <div class="shield shield-bottom-right"></div>
-                <div class="shield shield-top-left"></div>
-                
-                <iframe id="videoPlayer" src="" frameborder="0" allow="autoplay" allowfullscreen></iframe>
+            
+            <div class="progress-container">
+                <input type="range" id="progressBar" value="0" min="0" max="100" step="0.1">
+                <div class="time-labels">
+                    <span id="currentTime">0:00</span>
+                    <span id="totalDuration">0:00</span>
+                </div>
+            </div>
+
+            <div class="custom-controls">
+                <div class="control-btn" onclick="rewind()">⏪ -10s</div>
+                <div class="control-btn" onclick="togglePlay()" id="playPauseBtn">⏸ Pause</div>
+                <div class="control-btn" onclick="fastForward()">+10s ⏩</div>
+                <div class="control-btn" onclick="closePlayer()" style="background:#600; color:white; border:none;">✖</div>
             </div>
         </div>
 
         <div id="beltMenuView">
-            <div class="belt-item" style="border-left-color: #ffcc00;" onclick="showRankDetail('yellow')">🟡 Yellow Belt <span>▶</span></div>
-            <div class="belt-item" style="border-left-color: #ff8c00;" onclick="showRankDetail('orange')">🟠 Orange Belt <span>▶</span></div>
+            <p style="color:#888;">Select your rank to begin:</p>
+            <div class="tech-btn" onclick="showRankDetail('yellow')">🟡 Yellow Belt Material</div>
         </div>
 
         <div id="rank-yellow-detail" class="rank-detail-view">
-            <div class="control-btn" style="margin-bottom: 15px;" onclick="goBackToBelts()">⬅ Back</div>
-            <h3>Yellow Belt Material</h3>
-            <div class="tech-btn" onclick="playVid('19Ktd4FfDGg')">Yellow History</div>
-            <div class="tech-btn" onclick="playVid('JIFwfcykAY8')">Japanese Sword</div>
-            <div class="tech-btn" onclick="playVid('RoSuLCLOKuU')">Chinese Sword</div>
-            <div class="tech-btn" onclick="playVid('NjXYf4QOZnU')">Delayed Sword</div>
-            <div class="tech-btn" onclick="playVid('SaCwJIsQWE8')">Knee of Vengence</div>
-            <div class="tech-btn" onclick="playVid('xNzobYNSQ4Y')">Fang of the Cobra</div>
-            <div class="tech-btn" onclick="playVid('ZJNmDVtXnBY')">Twisted Talon</div>
-            <div class="tech-btn" onclick="playVid('u0ceVbYXUXQ')">Returning Dragon</div>
-            <div class="tech-btn" onclick="playVid('yvrhFEiuHKc')">Kenpo Shield</div>
-            <div class="tech-btn" onclick="playVid('i-vyUr_6xZU')">Evasion</div>
-            <div class="tech-btn" onclick="playVid('E44w7Eh73xs')">Breaking the Sword</div>
+            <div class="back-btn" onclick="goBackToBelts()">⬅ Back to Belts</div>
+            <div class="tech-btn" onclick="loadVideo('19Ktd4FfDGg')">Yellow History</div>
+            <div class="tech-btn" onclick="loadVideo('JIFwfcykAY8')">Japanese Sword</div>
+            <div class="tech-btn" onclick="loadVideo('RoSuLCLOKuU')">Chinese Sword</div>
+            <div class="tech-btn" onclick="loadVideo('NjXYf4QOZnU')">Delayed Sword</div>
+            <div class="tech-btn" onclick="loadVideo('SaCwJIsQWE8')">Knee of Vengence</div>
+            <div class="tech-btn" onclick="loadVideo('xNzobYNSQ4Y')">Fang of the Cobra</div>
+            <div class="tech-btn" onclick="loadVideo('ZJNmDVtXnBY')">Twisted Talon</div>
+            <div class="tech-btn" onclick="loadVideo('u0ceVbYXUXQ')">Returning Dragon</div>
+            <div class="tech-btn" onclick="loadVideo('yvrhFEiuHKc')">Kenpo Shield</div>
+            <div class="tech-btn" onclick="loadVideo('i-vyUr_6xZU')">Evasion</div>
+            <div class="tech-btn" onclick="loadVideo('E44w7Eh73xs')">Breaking the Sword</div>
         </div>
-
-        <button class="logout-btn" onclick="location.reload()">Log Out</button>
     </div>
+
+    <script src="https://www.youtube.com/iframe_api"></script>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -107,60 +136,102 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        let userRank = "";
-        let currentId = "";
-        let soundOn = true;
+        // GLOBALS
+        window.player = null;
+        let isPlaying = false;
+        let progressTimer;
+        const progressBar = document.getElementById('progressBar');
+        const currentTimeText = document.getElementById('currentTime');
+        const durationText = document.getElementById('totalDuration');
 
+        // LOGIN LOGIC
         async function doLogin() {
             try {
                 const cred = await signInWithEmailAndPassword(auth, emailInput.value, passInput.value);
                 const snap = await getDoc(doc(db, "users", cred.user.uid));
                 if (snap.exists()) {
-                    userRank = snap.data().rank.toLowerCase();
                     document.getElementById('loginBox').style.display = 'none';
                     document.getElementById('videoContent').style.display = 'block';
                     document.getElementById('beltMenuView').style.display = 'block';
                     document.getElementById('welcomeTitle').innerText = "WELCOME, " + snap.data().name.toUpperCase();
                 }
-            } catch (e) { alert("Login Failed"); }
+            } catch (e) { alert("Access Denied"); }
         }
-
         document.getElementById('loginBtn').addEventListener('click', doLogin);
-        document.getElementById('passInput').addEventListener('keypress', (e) => { if(e.key === 'Enter') doLogin(); });
 
-        window.showRankDetail = function(rank) {
-            if (userRank !== 'instructor' && userRank !== rank) { alert("Section Locked."); return; }
+        // NAVIGATION
+        window.showRankDetail = (rank) => {
             document.getElementById('beltMenuView').style.display = 'none';
             document.getElementById('rank-' + rank + '-detail').style.display = 'block';
         };
-
-        window.goBackToBelts = function() {
+        window.goBackToBelts = () => {
             document.querySelectorAll('.rank-detail-view').forEach(v => v.style.display = 'none');
             document.getElementById('beltMenuView').style.display = 'block';
-            closeVideo();
+            closePlayer();
         };
 
-        window.playVid = function(id) {
-            currentId = id;
-            const player = document.getElementById('videoPlayer');
-            // We use controls=1 so the student can scrub (scroll)
-            player.src = `https://www.youtube.com/embed/${id}?autoplay=1&modestbranding=1&rel=0&iv_load_policy=3&mute=${soundOn ? 0 : 1}`;
-            document.getElementById('playerContainer').style.display = 'block';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
-
-        window.toggleSound = function() {
-            soundOn = !soundOn;
-            document.getElementById('soundBtn').innerText = soundOn ? "🔊 Sound: ON" : "🔇 Sound: OFF";
-            if(currentId) {
-                // To change sound mid-stream without the YouTube API, we must refresh the source
-                const player = document.getElementById('videoPlayer');
-                player.src = `https://www.youtube.com/embed/${currentId}?autoplay=1&modestbranding=1&rel=0&iv_load_policy=3&mute=${soundOn ? 0 : 1}`;
+        // PLAYER LOGIC
+        window.loadVideo = (id) => {
+            if (window.player) {
+                window.player.loadVideoById(id);
+            } else {
+                window.player = new YT.Player('player', {
+                    videoId: id,
+                    playerVars: { 'autoplay': 1, 'controls': 0, 'modestbranding': 1, 'rel': 0, 'disablekb': 1, 'playsinline': 1 },
+                    events: { 'onStateChange': onPlayerStateChange }
+                });
             }
+            document.getElementById('playerContainer').style.display = 'block';
+            window.scrollTo({top: 0, behavior: 'smooth'});
         };
 
-        window.closeVideo = function() {
-            document.getElementById('videoPlayer').src = "";
+        function onPlayerStateChange(event) {
+            if (event.data == YT.PlayerState.PLAYING) {
+                isPlaying = true;
+                document.getElementById('playPauseBtn').innerText = "⏸ Pause";
+                startBarUpdate();
+            } else {
+                isPlaying = false;
+                document.getElementById('playPauseBtn').innerText = "▶ Play";
+                clearInterval(progressTimer);
+            }
+        }
+
+        // SCRUBBING LOGIC
+        function formatTime(s) {
+            let m = Math.floor(s / 60);
+            let sec = Math.floor(s % 60);
+            return m + ":" + (sec < 10 ? "0" + sec : sec);
+        }
+
+        function startBarUpdate() {
+            progressTimer = setInterval(() => {
+                if (window.player && isPlaying) {
+                    let curr = window.player.getCurrentTime();
+                    let dur = window.player.getDuration();
+                    progressBar.value = (curr / dur) * 100;
+                    currentTimeText.innerText = formatTime(curr);
+                    durationText.innerText = formatTime(dur);
+                }
+            }, 500);
+        }
+
+        progressBar.addEventListener('input', () => {
+            if (window.player) {
+                let seekTo = (progressBar.value / 100) * window.player.getDuration();
+                window.player.seekTo(seekTo);
+            }
+        });
+
+        window.togglePlay = () => {
+            if (isPlaying) window.player.pauseVideo();
+            else window.player.playVideo();
+        };
+
+        window.rewind = () => window.player.seekTo(window.player.getCurrentTime() - 10);
+        window.fastForward = () => window.player.seekTo(window.player.getCurrentTime() + 10);
+        window.closePlayer = () => {
+            if (window.player) window.player.stopVideo();
             document.getElementById('playerContainer').style.display = 'none';
         };
     </script>
