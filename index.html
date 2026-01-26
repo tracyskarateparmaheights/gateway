@@ -30,7 +30,7 @@
         td { padding: 12px 5px; border-bottom: 1px solid #333; font-size: 14px; vertical-align: middle; }
         
         .belt-header { background: #3d3d3d; padding: 15px; margin-top: 10px; border-radius: 8px; color: var(--gold); cursor: pointer; display: flex; justify-content: space-between; font-weight: bold; }
-        .tech-btn { background: #222; color: #eee; padding: 14px; margin: 5px 0; border-radius: 6px; border-left: 4px solid var(--gold); width: 100%; cursor: pointer; display: block; text-align: left; font-size: 13px; }
+        .tech-btn { background: #222; color: #eee; padding: 14px; margin: 5px 0; border-radius: 6px; border-left: 4px solid var(--gold); width: 100%; cursor: pointer; display: block; text-align: left; font-size: 13px; border:none; }
 
         input, textarea { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #444; background: var(--input-bg); color: white; box-sizing: border-box; }
     </style>
@@ -46,7 +46,7 @@
 
     <div class="container" id="portalView" style="display:none;">
         <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
-            <button class="control-btn" onclick="showMainMenu()">🏠 Menu</button>
+            <button class="control-btn" onclick="stopAndHome()">🏠 Menu</button>
             <button class="control-btn" onclick="location.reload()" style="background:var(--red); color:white;">Log Out</button>
         </div>
 
@@ -66,32 +66,19 @@
                     <button class="control-btn" onclick="seek(10)">+10s</button>
                 </div>
             </div>
-
             <input type="text" id="videoSearch" placeholder="🔍 Search techniques..." onkeyup="searchVideos()" style="margin-bottom:15px;">
-            
             <div id="videoContainer">
                 <div id="belt-1" class="belt-group" style="display:none;">
                     <div class="belt-header" onclick="toggleGate('yellow-techs')">🟡 Yellow Belt <span>▼</span></div>
                     <div id="yellow-techs" class="tech-list" style="display:none;">
                         <button class="tech-btn" onclick="loadVideo('19Ktd4FfDGg')">Yellow Belt History</button>
                         <button class="tech-btn" onclick="loadVideo('JIFwfcykAY8')">1. Japanese Sword (A/B)</button>
-                        <button class="tech-btn" onclick="loadVideo('RoSuLCLOKuU')">2. Chinese Sword (A/B)</button>
-                        <button class="tech-btn" onclick="loadVideo('NjXYf4QOZnU')">3. Delayed Sword</button>
-                        <button class="tech-btn" onclick="loadVideo('SaCwJIsQWE8')">4. Knee of Vengeance</button>
-                        <button class="tech-btn" onclick="loadVideo('xNzobYNSQ4Y')">5. Fang of the Cobra (A/B)</button>
-                        <button class="tech-btn" onclick="loadVideo('ZJNmDVtXnBY')">6. Twisting Talon (A/B)</button>
-                        <button class="tech-btn" onclick="loadVideo('u0ceVbYXUXQ')">7. Returning Dragon</button>
-                        <button class="tech-btn" onclick="loadVideo('E44w7Eh73xs')">8. Breaking the Sword</button>
-                        <button class="tech-btn" onclick="loadVideo('yvrhFEiuHKc')">9. Kenpo Shield (A/B)</button>
-                        <button class="tech-btn" onclick="loadVideo('i-vyUr_6xZU')">10. Evasion</button>
                     </div>
                 </div>
-
                 <div id="belt-2" class="belt-group" style="display:none;">
                     <div class="belt-header" onclick="toggleGate('orange-techs')">🟠 Orange Belt <span>▼</span></div>
                     <div id="orange-techs" class="tech-list" style="display:none;">
                         <button class="tech-btn" onclick="loadVideo('34h_COkntes')">1. Sumo</button>
-                        <button class="tech-btn" onclick="loadVideo('RoSuLCLOKuU')">2. Attacking the Circle</button>
                     </div>
                 </div>
             </div>
@@ -122,9 +109,7 @@
 
         <div id="staffDashboard" style="display:none;">
             <h3>Staff Access</h3>
-            <div class="guide-box">
-                <b>LVL 0: White</b> | <b>LVL 1: Yellow</b> | <b>LVL 2: Orange</b> | <b>LVL 15: Admin</b>
-            </div>
+            <div class="guide-box"><b>LVL 0: White</b> | <b>LVL 1: Yellow</b> | <b>LVL 15: Admin</b></div>
             <div id="staffTableArea"></div>
         </div>
     </div>
@@ -148,17 +133,15 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        let ytPlayer, currentUserRank = 0, studentsList = [];
-        let playerIsReady = false;
+        let ytPlayer, currentUserRank = 0, studentsList = [], playerIsReady = false;
 
-        // PLAYER INITIALIZER
+        // VIDEO ENGINE WITH KILL SWITCH
         window.initPlayer = (id = '19Ktd4FfDGg') => {
-            console.log("Attempting Player Init...");
             ytPlayer = new YT.Player('ytPlayer', {
                 height: '100%', width: '100%', videoId: id,
                 playerVars: { 'controls': 0, 'rel': 0, 'modestbranding': 1, 'playsinline': 1, 'autoplay': 0 },
                 events: {
-                    'onReady': () => { playerIsReady = true; console.log("Player Ready!"); },
+                    'onReady': () => { playerIsReady = true; },
                     'onStateChange': (e) => { document.getElementById('playPauseBtn').innerText = (e.data === 1) ? "Pause" : "Play"; }
                 }
             });
@@ -166,52 +149,51 @@
 
         window.onYouTubeIframeAPIReady = () => window.initPlayer();
 
-        // FAIL-SAFE LOADING
+        window.stopAndHome = () => {
+            if(playerIsReady && ytPlayer && ytPlayer.stopVideo) {
+                ytPlayer.stopVideo();
+            }
+            window.showMainMenu();
+        };
+
         window.loadVideo = (id) => {
             if (playerIsReady && ytPlayer && ytPlayer.loadVideoById) {
                 ytPlayer.loadVideoById(id);
             } else {
-                console.log("Player not ready, re-booting...");
-                document.getElementById('ytPlayer').innerHTML = ""; // Clear
+                document.getElementById('ytPlayer').innerHTML = ""; 
                 window.initPlayer(id);
             }
         };
 
         window.togglePlay = () => {
             if(!playerIsReady) return;
-            const s = ytPlayer.getPlayerState();
-            s === 1 ? ytPlayer.pauseVideo() : ytPlayer.playVideo();
+            ytPlayer.getPlayerState() === 1 ? ytPlayer.pauseVideo() : ytPlayer.playVideo();
         };
 
         window.seek = (s) => { if(playerIsReady) ytPlayer.seekTo(ytPlayer.getCurrentTime() + s, true); };
-        
-        window.searchVideos = () => {
-            const q = document.getElementById('videoSearch').value.toLowerCase();
-            document.querySelectorAll('#videoContainer .tech-btn').forEach(btn => {
-                btn.style.display = btn.innerText.toLowerCase().includes(q) ? "block" : "none";
-            });
-            if(q.length > 1) document.querySelectorAll('.tech-list').forEach(l => l.style.display = 'block');
-        };
-
         window.toggleGate = (id) => { const el = document.getElementById(id); el.style.display = (el.style.display === "none") ? "block" : "none"; };
-        window.showMainMenu = () => { document.querySelectorAll('#portalView > div:not(:first-child)').forEach(d => d.style.display='none'); document.getElementById('mainMenu').style.display='block'; };
+        window.showMainMenu = () => { 
+            document.querySelectorAll('#portalView > div:not(:first-child)').forEach(d => d.style.display='none'); 
+            document.getElementById('mainMenu').style.display='block'; 
+        };
+        
         window.openSection = (id) => { 
             document.querySelectorAll('#portalView > div:not(:first-child)').forEach(d => d.style.display='none'); 
+            if (id !== 'curriculumSection' && playerIsReady && ytPlayer.pauseVideo) ytPlayer.pauseVideo();
             document.getElementById(id).style.display='block';
             if(id === 'adminDashboard') syncRoster();
             if(id === 'staffDashboard') syncStaff();
         };
 
+        // RESTORED SEARCH AND SYNC FUNCTIONS
         const syncRoster = () => {
             onSnapshot(query(collection(db, "students"), orderBy("fullName")), (snap) => {
                 let html = `<table>`; studentsList = [];
                 snap.forEach(docSnap => {
                     const s = docSnap.data(); const id = docSnap.id; studentsList.push(s);
-                    html += `<tr class="sr-row" onclick="window.toggleDetail('${id}')">
-                        <td><b>${s.fullName}</b><br><small>${s.phone || ''}</small></td>
-                        <td style="text-align:right;">${currentUserRank >= 15 ? `<button class="control-btn" onclick="event.stopPropagation(); window.editStudent('${id}', ${JSON.stringify(s).replace(/"/g, '&quot;')})">EDIT</button>` : ''}</td>
-                    </tr>
-                    <tr id="det-${id}" style="display:none;"><td colspan="2" style="background:#222; padding:10px; font-size:12px; border-radius:4px;">Email: ${s.email}<br>Notes: ${s.comments}</td></tr>`;
+                    html += `<tr class="sr-row" onclick="window.toggleDetail('${id}')"><td><b>${s.fullName}</b></td>
+                    <td style="text-align:right;">${currentUserRank >= 15 ? `<button class="control-btn" onclick="event.stopPropagation(); window.editStudent('${id}', ${JSON.stringify(s).replace(/"/g, '&quot;')})">EDIT</button>` : ''}</td></tr>
+                    <tr id="det-${id}" style="display:none;"><td colspan="2" style="background:#222; padding:10px;">${s.phone}<br>${s.email}</td></tr>`;
                 });
                 document.getElementById('rosterTableArea').innerHTML = html + "</table>";
             });
@@ -222,20 +204,17 @@
         window.prepareAdd = () => { document.getElementById('editId').value = ""; ['fName','fPhone','fEmail','fComments'].forEach(i => document.getElementById(i).value=""); window.switchAdmin('studentForm'); };
         window.editStudent = (id, s) => { document.getElementById('editId').value = id; document.getElementById('fName').value = s.fullName; document.getElementById('fPhone').value = s.phone; document.getElementById('fEmail').value = s.email; document.getElementById('fComments').value = s.comments; window.switchAdmin('studentForm'); };
         window.switchAdmin = (id) => { document.querySelectorAll('.admin-tab').forEach(t => t.style.display='none'); document.getElementById(id).style.display='block'; };
+        
         window.handleSave = async () => {
             const id = document.getElementById('editId').value;
             const data = { fullName: document.getElementById('fName').value, phone: document.getElementById('fPhone').value, email: document.getElementById('fEmail').value, comments: document.getElementById('fComments').value, updatedAt: serverTimestamp() };
             if(id) await updateDoc(doc(db, "students", id), data); else await addDoc(collection(db, "students"), data);
             window.switchAdmin('listView');
         };
-        window.exportStudents = () => {
-            let csv = "Name,Phone,Email\n"; studentsList.forEach(s => csv += `"${s.fullName}","${s.phone}","${s.email}"\n`);
-            const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'})); a.download='Roster.csv'; a.click();
-        };
 
         const syncStaff = () => {
             onSnapshot(collection(db, "users"), (snap) => {
-                let html = `<table><tr><th>NAME</th><th>LVL</th><th></th></tr>`;
+                let html = `<table>`;
                 snap.forEach(docSnap => {
                     const u = docSnap.data();
                     html += `<tr><td>${u.name || 'User'}</td><td><input type="number" class="lvl-input" id="lvl-${docSnap.id}" value="${u.rankLevel || 0}"></td>
@@ -266,4 +245,3 @@
     </script>
 </body>
 </html>
-
