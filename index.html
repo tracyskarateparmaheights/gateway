@@ -7,6 +7,7 @@
     <style>
         :root { --gold: #ffcc00; --bg: #1a1a1a; --card: #2b2b2b; --input-bg: #1e1e1e; --green: #2ecc71; --red: #e74c3c; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg); color: white; margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; box-sizing: border-box; }
+        .logo { width: 120px; height: auto; margin-bottom: 10px; border-radius: 50%; border: 2px solid var(--gold); }
         .container { background: var(--card); padding: 30px 20px; border-radius: 12px; border-top: 5px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 100%; max-width: 450px; margin-top: 20px; }
         h1, h2, h3 { color: var(--gold); text-transform: uppercase; letter-spacing: 1.5px; margin: 10px 0; }
         input, select, textarea { width: 100%; padding: 16px; margin-bottom: 12px; border-radius: 8px; border: 1px solid #444; background: var(--input-bg); color: white; font-size: 16px; box-sizing: border-box; outline: none; }
@@ -23,13 +24,14 @@
         .status-paid { background: var(--green); color: #000; }
         .status-due { background: var(--red); color: #fff; }
         .belt-header { background: #3d3d3d; padding: 16px; margin-top: 10px; border-radius: 8px; font-weight: 600; color: var(--gold); cursor: pointer; display: flex; justify-content: space-between; }
-        .tech-btn { background: #222; color: #eee; padding: 14px; margin: 6px 0; border-radius: 6px; text-align: left; font-size: 13px; border-left: 4px solid var(--gold); width: 100%; }
+        .tech-btn { background: #222; color: #eee; padding: 14px; margin: 6px 0; border-radius: 6px; text-align: left; font-size: 13px; border-left: 4px solid var(--gold); width: 100%; cursor: pointer; }
         #player { width: 100%; height: 220px; background: #000; border-radius: 8px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
     <div class="container" id="loginBox">
+        <img src="https://images.squarespace-cdn.com/content/v1/59400263f7e0ab07e5e19191/1497368685116-IWW5W539G3B68I1WJS38/image-asset.png" alt="Logo" class="logo">
         <h1>Dojo Portal</h1>
         <input type="email" id="emailInput" placeholder="Email">
         <input type="password" id="passInput" placeholder="Password">
@@ -37,8 +39,9 @@
     </div>
 
     <div class="container" id="portalView" style="display:none;">
-        <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+        <div style="display:flex; justify-content:space-between; align-items: center; margin-bottom:20px;">
             <button class="nav-btn" id="homeBtn" onclick="showMainMenu()" style="display:none;">🏠 Menu</button>
+            <img src="https://images.squarespace-cdn.com/content/v1/59400263f7e0ab07e5e19191/1497368685116-IWW5W539G3B68I1WJS38/image-asset.png" alt="Logo" style="height: 40px; width: auto;">
             <button class="nav-btn" onclick="location.reload()" style="background:#822;">Log Out</button>
         </div>
 
@@ -99,18 +102,12 @@
 
             <div class="belt-header" onclick="toggleGate('list-orange', 2)">🟠 Orange Belt <span>▼</span></div>
             <div id="list-orange" style="display:none; padding:10px;"><p style="color:#666;">Orange curriculum coming soon...</p></div>
-            
             <div class="belt-header" onclick="toggleGate('list-purple', 3)">🟣 Purple Belt <span>▼</span></div>
             <div id="list-purple" style="display:none; padding:10px;"><p style="color:#666;">Purple curriculum coming soon...</p></div>
-
             <div class="belt-header" onclick="toggleGate('list-blue', 4)">🔵 Blue Belt <span>▼</span></div>
             <div id="list-blue" style="display:none; padding:10px;"><p style="color:#666;">Blue curriculum coming soon...</p></div>
-
-            <div class="belt-header" onclick="toggleGate('list-green', 5)">🟢 Green Belt <span>▼</span></div>
-            <div id="list-green" style="display:none; padding:10px;"><p style="color:#666;">Green curriculum coming soon...</p></div>
-
             <div class="belt-header" onclick="toggleGate('list-black', 15)">⚫ Black Belt <span>▼</span></div>
-            <div id="list-black" style="display:none; padding:10px;"><p style="color:#666;">Black Belt Master files...</p></div>
+            <div id="list-black" style="display:none; padding:10px;"><p style="color:#666;">Master Curriculum...</p></div>
         </div>
     </div>
 
@@ -118,7 +115,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, collection, addDoc, getDocs, deleteDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, collection, addDoc, getDocs, deleteDoc, updateDoc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyC35Ubf6GxyDi3JEiKWaYgVFkYGknMZrcw",
@@ -135,8 +132,10 @@
         let userRank = 0;
 
         document.getElementById('loginBtn').addEventListener('click', async () => {
+            const email = document.getElementById('emailInput').value.trim();
+            const pass = document.getElementById('passInput').value;
             try {
-                const cred = await signInWithEmailAndPassword(auth, document.getElementById('emailInput').value, document.getElementById('passInput').value);
+                const cred = await signInWithEmailAndPassword(auth, email, pass);
                 const snap = await getDoc(doc(db, "users", cred.user.uid));
                 if (snap.exists()) {
                     userRank = snap.data().rankLevel || 0;
@@ -147,7 +146,7 @@
                     document.getElementById('curMenuBtn').style.display = userRank >= 1 ? 'block' : 'none';
                     document.getElementById('adminControls').style.display = userRank >= 15 ? 'flex' : 'none';
                 }
-            } catch (err) { alert("Login failed"); }
+            } catch (err) { alert("Login failed."); }
         });
 
         window.openSection = (id) => {
@@ -166,39 +165,52 @@
 
         window.loadStaff = async () => {
             const area = document.getElementById('staffTableArea');
-            const snap = await getDocs(collection(db, "users"));
-            let html = `<table><tr><th>Staff</th><th>Lvl</th><th>Save</th></tr>`;
-            snap.forEach(docSnap => {
-                const u = docSnap.data();
-                html += `<tr><td>${u.fullName || u.email}</td>
-                <td><input type="number" id="lvl-${docSnap.id}" value="${u.rankLevel}" style="width:40px;"></td>
-                <td><button onclick="updateRank('${docSnap.id}')" style="background:var(--gold); padding:5px; border-radius:4px;">✔</button></td></tr>`;
-            });
-            area.innerHTML = html + "</table>";
+            area.innerHTML = "Loading Users...";
+            try {
+                const snap = await getDocs(collection(db, "users"));
+                let html = `<table><tr><th>User</th><th>Lvl</th><th>✔</th></tr>`;
+                snap.forEach(docSnap => {
+                    const u = docSnap.data();
+                    const name = u.fullName || u.email || "Unknown";
+                    html += `<tr><td>${name}</td>
+                    <td><input type="number" id="lvl-${docSnap.id}" value="${u.rankLevel || 0}" style="width:40px;"></td>
+                    <td><button onclick="updateRank('${docSnap.id}')" style="background:var(--gold); padding:5px; border-radius:4px;">Save</button></td></tr>`;
+                });
+                area.innerHTML = html + "</table>";
+            } catch (e) { area.innerHTML = "Error loading users."; }
         };
 
         window.updateRank = async (uid) => {
-            await updateDoc(doc(db, "users", uid), { rankLevel: parseInt(document.getElementById(`lvl-${uid}`).value) });
-            alert("Permissions Updated");
+            const val = parseInt(document.getElementById(`lvl-${uid}`).value);
+            await updateDoc(doc(db, "users", uid), { rankLevel: val });
+            alert("Rank Updated");
         };
 
         window.loadRoster = async () => {
             const area = document.getElementById('rosterTableArea');
-            const snap = await getDocs(collection(db, "students"));
+            const snap = await getDocs(query(collection(db, "students"), orderBy("fullName")));
             let html = `<table><tr><th>Name</th><th>Belt</th><th>Status</th></tr>`;
             snap.forEach(docSnap => {
                 const s = docSnap.data(), id = docSnap.id;
                 const statusClass = s.tuitionStatus ? 'status-paid' : 'status-due';
-                const safeName = (s.fullName || "").replace(/'/g, "\\'");
-                const safeNotes = (s.notes || "").replace(/'/g, "\\'").replace(/\n/g, " ");
+                const sName = (s.fullName || "").replace(/'/g, "\\'");
+                const sNotes = (s.notes || "").replace(/'/g, "\\'").replace(/\n/g, " ");
 
-                html += `<tr class="sr-main"><td><b>${s.fullName}</b></td><td>${s.beltRank}</td>
-                    <td><button onclick="${userRank >= 15 ? `toggleQuickStatus('${id}', ${s.tuitionStatus})` : ''}" class="status-badge ${statusClass}">${s.tuitionStatus?'Paid':'Due'}</button></td></tr>
-                <tr class="sr-detail"><td colspan="2"><b>Ph:</b> ${s.phone}<br><b>Notes:</b> ${s.notes || '--'}</td>
+                html += `
+                <tr class="sr-main">
+                    <td><b>${s.fullName}</b></td>
+                    <td>${s.beltRank}</td>
+                    <td><button onclick="${userRank >= 15 ? `toggleQuickStatus('${id}', ${s.tuitionStatus})` : ''}" class="status-badge ${statusClass}">${s.tuitionStatus?'Paid':'Due'}</button></td>
+                </tr>
+                <tr class="sr-detail">
+                    <td colspan="2"><b>Ph:</b> ${s.phone}<br><b>Guardian:</b> ${s.guardian}<br><b>Notes:</b> ${s.notes || '--'}</td>
                     <td style="text-align:right;">
-                        ${userRank >= 15 ? `<button onclick="editStudent('${id}','${safeName}','${s.phone}','${s.guardian}','${s.beltRank}',${s.tuitionStatus},'${safeNotes}')" style="background:#444; color:var(--gold); padding:5px; width:100%; border-radius:4px; margin-bottom:4px;">Edit</button>
-                        <button onclick="delEnt('${id}')" style="background:#400; color:#fff; padding:5px; width:100%; border-radius:4px;">Del</button>` : '<i>Read-Only</i>'}
-                    </td></tr>`;
+                        ${userRank >= 15 ? `
+                            <button onclick="editStudent('${id}','${sName}','${s.phone}','${s.guardian}','${s.beltRank}',${s.tuitionStatus},'${sNotes}')" style="background:#444; color:var(--gold); padding:5px; width:100%; border-radius:4px; margin-bottom:4px;">Edit</button>
+                            <button onclick="delEnt('${id}')" style="background:#400; color:#fff; padding:5px; width:100%; border-radius:4px;">Del</button>
+                        ` : '<i>Read-Only</i>'}
+                    </td>
+                </tr>`;
             });
             area.innerHTML = html + "</table>";
         };
@@ -226,6 +238,7 @@
 
         window.switchAdminTab = (id) => { document.querySelectorAll('.admin-tab').forEach(t => t.style.display = 'none'); document.getElementById(id).style.display = 'block'; };
         window.prepareAdd = () => { document.getElementById('editStudentId').value = ""; ['sName', 'sPhone', 'sGuardian', 'sBelt', 'sNotes'].forEach(id => document.getElementById(id).value = ""); switchAdminTab('studentForm'); };
+        
         window.editStudent = (id, n, p, g, b, s, nt) => { 
             document.getElementById('editStudentId').value = id; 
             document.getElementById('sName').value = n; 
@@ -236,14 +249,17 @@
             document.getElementById('sNotes').value = nt; 
             switchAdminTab('studentForm'); 
         };
+
         window.handleSave = async () => {
             const id = document.getElementById('editStudentId').value;
             const data = { fullName: document.getElementById('sName').value, phone: document.getElementById('sPhone').value, guardian: document.getElementById('sGuardian').value, beltRank: document.getElementById('sBelt').value, tuitionStatus: document.getElementById('sTuition').value === 'true', notes: document.getElementById('sNotes').value, lastTestDate: serverTimestamp() };
             if(id) await updateDoc(doc(db, "students", id), data); else await addDoc(collection(db, "students"), data);
             loadRoster(); switchAdminTab('listView');
         };
+        
         window.toggleQuickStatus = async (id, cur) => { await updateDoc(doc(db, "students", id), { tuitionStatus: !cur }); loadRoster(); };
-        window.delEnt = async (id) => { if(confirm("Delete Record?")) { await deleteDoc(doc(db, "students", id)); loadRoster(); } };
+        window.delEnt = async (id) => { if(confirm("Delete?")) { await deleteDoc(doc(db, "students", id)); loadRoster(); } };
+        
         window.exportRoster = async () => {
             const snap = await getDocs(collection(db, "students"));
             let csv = "Name,Belt,Phone,Status\n";
