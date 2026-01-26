@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Tracy's Karate - Portal</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <style>
         :root { --gold: #ffcc00; --bg: #1a1a1a; --card: #2b2b2b; --input-bg: #1e1e1e; }
         
@@ -137,8 +138,8 @@
             authDomain: "tracy-s-karate-portal.firebaseapp.com",
             projectId: "tracy-s-karate-portal",
             storageBucket: "tracy-s-karate-portal.appspot.com",
-            messagingSenderId: "236877703560",
-            appId: "1:236877703560:web:9a01e386b0e97dc229b23d"
+            messagingSenderId: "338865615783",
+            appId: "1:338865615783:web:75865261864177d46536da"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -158,13 +159,25 @@
             try {
                 const cred = await signInWithEmailAndPassword(auth, emailInput.value, passInput.value);
                 const snap = await getDoc(doc(db, "users", cred.user.uid));
+                
                 if (snap.exists()) {
                     currentUserLevel = snap.data().rankLevel || 0;
                     applyRankRights();
                     document.getElementById('loginBox').style.display = 'none';
                     document.getElementById('portalView').style.display = 'block';
+                } else {
+                    // Specific Database Match Error
+                    alert("Access Denied: No record found for UID " + cred.user.uid);
                 }
-            } catch (e) { alert("Access Denied. Ensure your account is authorized."); }
+            } catch (e) { 
+                console.error("Firebase Error:", e.code);
+                // Specifically catches the 403 Forbidden
+                if (e.code === 'auth/network-request-failed') {
+                    alert("Security Error: API Key restricted. Check Google Cloud settings.");
+                } else {
+                    alert("Login Failed: " + e.message);
+                }
+            }
         }
         document.getElementById('loginBtn').addEventListener('click', doLogin);
 
