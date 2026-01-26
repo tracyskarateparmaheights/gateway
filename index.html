@@ -24,13 +24,16 @@
         #seekBar { width: 100%; height: 6px; appearance: none; background: #555; border-radius: 5px; cursor: pointer; outline: none; }
         #seekBar::-webkit-slider-thumb { appearance: none; width: 16px; height: 16px; background: var(--gold); border-radius: 50%; border: 2px solid #000; }
 
+        /* PERMISSION GUIDE BOX */
+        .guide-box { background: #111; padding: 15px; border-radius: 8px; border: 1px solid #444; text-align: left; margin-bottom: 20px; font-size: 13px; line-height: 1.4; }
+        .guide-box b { color: var(--gold); display: block; margin-top: 5px; }
+
         /* TABLES & ROSTER */
         .admin-tab { display: none; text-align: left; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th { color: var(--gold); font-size: 11px; text-transform: uppercase; border-bottom: 1px solid #444; padding-bottom: 8px; text-align: left; }
-        td { padding: 12px 5px; border-bottom: 1px solid #333; font-size: 14px; text-align: left; vertical-align: middle; }
+        td { padding: 12px 5px; border-bottom: 1px solid #333; font-size: 14px; vertical-align: middle; }
         
-        /* FIX: STAFF LVL INPUT BOX */
         .lvl-input { width: 65px !important; padding: 10px !important; background: #111; color: var(--gold); border: 1px solid #555; text-align: center; font-weight: bold; margin-bottom: 0 !important; }
 
         .roster-detail { font-size: 12px; color: #bbb; padding: 10px; background: #222; border-radius: 4px; margin: 5px 0; }
@@ -44,7 +47,7 @@
 
     <div class="container" id="loginBox">
         <img src="https://raw.githubusercontent.com/tracyskarateparmaheights/gateway/main/BLACK-TK.png" class="logo-img">
-        <div class="login-title">Tracy's Karate - Master Portal</div>
+        <div class="login-title">Tracy's Karate Portal</div>
         <input type="email" id="emailInput" placeholder="Email">
         <input type="password" id="passInput" placeholder="Password">
         <button id="loginBtn" class="control-btn" style="width:100%; padding:18px;">Sign In</button>
@@ -68,7 +71,7 @@
                 <input type="range" id="seekBar" value="0" step="0.1">
                 <div class="control-row">
                     <button class="control-btn" onclick="seek(-10)">-10s</button>
-                    <button class="control-btn" id="playPauseBtn" disabled onclick="togglePlay()">Loading...</button>
+                    <button class="control-btn" id="playPauseBtn" onclick="togglePlay()">Play</button>
                     <button class="control-btn" onclick="seek(10)">+10s</button>
                 </div>
             </div>
@@ -89,9 +92,12 @@
         </div>
 
         <div id="adminDashboard" style="display:none;">
-            <div style="display:flex; justify-content: space-between; align-items: center;">
-                <h3>Student Roster</h3>
-                <button class="control-btn" onclick="prepareAdd()">+ New</button>
+            <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom:10px;">
+                <h3 style="margin:0;">Student Roster</h3>
+                <div>
+                    <button class="control-btn" style="background:#2ecc71;" onclick="exportRecords()">💾 Export</button>
+                    <button class="control-btn" onclick="prepareAdd()">+ New</button>
+                </div>
             </div>
             <div id="studentForm" class="admin-tab">
                 <input type="hidden" id="editId">
@@ -113,7 +119,12 @@
         </div>
 
         <div id="staffDashboard" style="display:none;">
-            <h3>Staff Permissions</h3>
+            <h3>Staff Access</h3>
+            <div class="guide-box">
+                <b>LVL 0: Student</b> - Access to Video Library only.
+                <b>LVL 10: Instructor</b> - Access to Student Roster (View/Edit).
+                <b>LVL 15: Admin</b> - Access to Staff Permissions (This page).
+            </div>
             <div id="staffTableArea"></div>
         </div>
     </div>
@@ -136,56 +147,64 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        let player, progressTimer, studentsData = {}, isReady = false;
+        let player, progressTimer, studentsData = [];
 
-        // VIDEO ENGINE - WITH AUTO-FAILSAFE
+        // ROBUST VIDEO ENGINE FIX
         window.onYouTubeIframeAPIReady = () => {
             player = new YT.Player('ytPlayer', {
                 videoId: '19Ktd4FfDGg',
-                playerVars: { 'controls': 0, 'disablekb': 1, 'enablejsapi': 1, 'rel': 0, 'playsinline': 1 },
+                playerVars: { 
+                    'controls': 0, 
+                    'disablekb': 1, 
+                    'enablejsapi': 1, 
+                    'origin': window.location.origin, 
+                    'widget_referrer': window.location.href 
+                },
                 events: { 
-                    'onReady': () => { activatePlayer(); },
                     'onStateChange': (e) => {
-                        const btn = document.getElementById('playPauseBtn');
-                        if (e.data === 1) { 
-                            btn.innerText = "Pause"; 
-                            progressTimer = setInterval(() => { document.getElementById('seekBar').value = (player.getCurrentTime()/player.getDuration())*100; }, 500);
-                        } else { 
-                            btn.innerText = "Play"; 
-                            clearInterval(progressTimer); 
-                        }
+                        if (e.data === 1) progressTimer = setInterval(() => { document.getElementById('seekBar').value = (player.getCurrentTime()/player.getDuration())*100; }, 500);
+                        else clearInterval(progressTimer);
                     }
                 }
             });
-            // Failsafe: Force enable button after 3 seconds if onReady doesn't fire
-            setTimeout(() => { if(!isReady) activatePlayer(); }, 3000);
         };
 
-        function activatePlayer() {
-            isReady = true;
-            const btn = document.getElementById('playPauseBtn');
-            btn.disabled = false;
-            btn.innerText = "Play";
-        }
-
-        window.togglePlay = () => player.getPlayerState() === 1 ? player.pauseVideo() : player.playVideo();
+        window.togglePlay = () => { try { player.getPlayerState() === 1 ? player.pauseVideo() : player.playVideo(); } catch(e) { alert("Please click a technique below first to load the video."); }};
         window.seek = (s) => player.seekTo(player.getCurrentTime() + s, true);
         window.changeVid = (id) => player.loadVideoById(id);
         document.getElementById('seekBar').oninput = function() { player.seekTo(player.getDuration() * (this.value / 100), true); };
+
+        // CSV EXPORT LOGIC
+        window.exportRecords = () => {
+            if (studentsData.length === 0) return alert("No records to export");
+            let csv = "Name,Guardian,Phone,Email,Address,CityZip,Source,Comments\n";
+            studentsData.forEach(s => {
+                csv += `"${s.fullName || ''}","${s.parentName || ''}","${s.phone || ''}","${s.email || ''}","${s.address || ''}","${s.cityZip || ''}","${s.source || ''}","${s.comments || ''}"\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('hidden', '');
+            a.setAttribute('href', url);
+            a.setAttribute('download', 'tracy_karate_students.csv');
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        };
 
         // ROSTER LOGIC
         window.syncRoster = () => {
             onSnapshot(query(collection(db, "students"), orderBy("fullName")), (snap) => {
                 let html = `<table><tr><th>Student</th><th>Contact</th><th></th></tr>`;
-                studentsData = {};
+                studentsData = [];
                 snap.forEach(docSnap => {
                     const s = docSnap.data();
+                    studentsData.push(s);
                     const id = docSnap.id;
-                    studentsData[id] = s;
                     html += `<tr class="sr-row" onclick="toggleDetail('${id}')">
                         <td><b>${s.fullName || '---'}</b></td>
                         <td>${s.phone || ''}</td>
-                        <td><button class="control-btn" style="padding:5px;" onclick="event.stopPropagation(); editStudent('${id}')">EDIT</button></td>
+                        <td><button class="control-btn" style="padding:5px;" onclick="event.stopPropagation(); editStudent('${id}', ${JSON.stringify(s).replace(/"/g, '&quot;')})">EDIT</button></td>
                     </tr>
                     <tr id="det-${id}" style="display:none;"><td colspan="3"><div class="roster-detail">
                         <b>Guardian:</b> ${s.parentName || 'N/A'}<br><b>Email:</b> ${s.email || 'N/A'}<br>
@@ -198,8 +217,7 @@
 
         window.toggleDetail = (id) => { const el = document.getElementById(`det-${id}`); el.style.display = el.style.display === "none" ? "table-row" : "none"; };
 
-        window.editStudent = (id) => {
-            const s = studentsData[id];
+        window.editStudent = (id, s) => {
             document.getElementById('editId').value = id;
             document.getElementById('fName').value = s.fullName || "";
             document.getElementById('fParent').value = s.parentName || "";
@@ -242,7 +260,6 @@
             document.querySelectorAll('.sr-row').forEach(r => r.style.display = r.innerText.toLowerCase().includes(q) ? "" : "none");
         };
 
-        // STAFF LOGIC (FIXED INPUT SIZING)
         window.syncStaff = () => {
             onSnapshot(collection(db, "users"), (snap) => {
                 let html = `<table><tr><th>NAME</th><th style="text-align:center">LVL</th><th></th></tr>`;
@@ -254,12 +271,12 @@
                 document.getElementById('staffTableArea').innerHTML = html + "</table>";
             });
         };
+
         window.updateRank = async (id) => {
             await updateDoc(doc(db, "users", id), { rankLevel: parseInt(document.getElementById(`lvl-${id}`).value) });
             alert("Updated");
         };
 
-        // LOGIN/NAV
         document.getElementById('loginBtn').onclick = async () => {
             try {
                 const cred = await signInWithEmailAndPassword(auth, document.getElementById('emailInput').value, document.getElementById('passInput').value);
