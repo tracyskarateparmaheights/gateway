@@ -8,58 +8,89 @@
         :root { --gold: #ffcc00; --bg: #1a1a1a; --card: #2b2b2b; --input-bg: #1e1e1e; --green: #2ecc71; --red: #e74c3c; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg); color: white; margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; box-sizing: border-box; }
         
-        /* Layout Containers */
-        .container { background: var(--card); padding: 30px 20px; border-radius: 12px; border-top: 5px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 100%; max-width: 450px; margin-top: 20px; position: relative; }
-        .logo-img { width: 180px; height: auto; border-radius: 8px; margin-bottom: 20px; filter: drop-shadow(0 0 10px rgba(0,0,0,0.7)); }
-        h1, h3 { color: var(--gold); text-transform: uppercase; letter-spacing: 1.5px; margin: 10px 0; }
+        .container { background: var(--card); padding: 30px 20px; border-radius: 12px; border-top: 5px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 100%; max-width: 450px; margin-top: 20px; }
+        .logo-img { width: 180px; height: auto; margin-bottom: 20px; }
         
-        /* Form Elements */
-        input, select, textarea { width: 100%; padding: 16px; margin-bottom: 12px; border-radius: 8px; border: 1px solid #444; background: var(--input-bg); color: white; font-size: 16px; box-sizing: border-box; outline: none; }
+        /* VIDEO AREA & CUSTOM CONTROLS */
+        .video-wrapper { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 8px; overflow: hidden; margin-bottom: 10px; border: 1px solid #444; }
+        #ytPlayer { width: 100%; height: 100%; pointer-events: none; } 
         
-        /* Staff Level Input Fix */
-        .lvl-input { width: 65px !important; padding: 10px !important; text-align: center; margin-bottom: 0; }
+        .custom-controls { background: #333; padding: 12px; border-radius: 8px; margin-bottom: 15px; }
+        .control-row { display: flex; justify-content: center; gap: 12px; align-items: center; margin-top: 8px; }
+        .control-btn { background: var(--gold); color: #000; border: none; padding: 10px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; }
         
-        /* Buttons */
-        button { cursor: pointer; transition: 0.2s; border: none; font-weight: bold; }
-        #loginBtn { width: 100%; padding: 18px; background-color: var(--gold); color: #000; border-radius: 8px; font-size: 17px; }
-        .nav-btn { background: #444; color: #fff; padding: 10px 15px; border-radius: 6px; font-size: 12px; }
-        .menu-card { padding: 30px; background: #333; color: var(--gold); border: 2px solid var(--gold); border-radius: 12px; font-size: 18px; width: 100%; margin-bottom: 15px; display: none; }
+        #seekBar { width: 100%; height: 6px; appearance: none; background: #555; border-radius: 5px; cursor: pointer; outline: none; }
+        #seekBar::-webkit-slider-thumb { appearance: none; width: 16px; height: 16px; background: var(--gold); border-radius: 50%; border: 2px solid #000; }
+
+        /* STAFF UI FIXES */
+        .lvl-input { width: 75px !important; text-align: center; padding: 10px !important; margin: 0; background: #111; color: var(--gold); border: 1px solid #444; border-radius: 4px; }
+        table { width: 100%; border-collapse: collapse; }
+        td { padding: 12px 5px; border-bottom: 1px solid #333; font-size: 14px; text-align: left; }
         
-        /* Video Player Section */
-        #videoPlayerFrame { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 8px; margin-bottom: 15px; border: 1px solid #444; }
-        .curriculum-scroll { max-height: 380px; overflow-y: auto; padding-right: 5px; text-align: left; }
-        .curriculum-scroll::-webkit-scrollbar { width: 6px; }
+        /* CURRICULUM SCROLLING */
+        .curriculum-scroll { max-height: 400px; overflow-y: auto; text-align: left; padding-right: 5px; }
+        .curriculum-scroll::-webkit-scrollbar { width: 5px; }
         .curriculum-scroll::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
         
-        .belt-header { background: #3d3d3d; padding: 16px; margin-top: 10px; border-radius: 8px; color: var(--gold); cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
-        .tech-btn { background: #222; color: #eee; padding: 14px; margin: 6px 0; border-radius: 6px; text-align: left; font-size: 13px; border-left: 4px solid var(--gold); width: 100%; cursor: pointer; display: block; }
-        
-        /* Table Styling */
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        td { padding: 12px 8px; border-bottom: 1px solid #222; font-size: 14px; }
-        th { color: var(--gold); font-size: 11px; text-transform: uppercase; padding-bottom: 10px; border-bottom: 1px solid #444; }
+        .belt-header { background: #3d3d3d; padding: 15px; margin-top: 10px; border-radius: 8px; color: var(--gold); cursor: pointer; display: flex; justify-content: space-between; font-weight: bold; font-size: 14px; }
+        .tech-btn { background: #222; color: #eee; padding: 14px; margin: 5px 0; border-radius: 6px; border-left: 4px solid var(--gold); width: 100%; cursor: pointer; display: block; text-align: left; font-size: 13px; }
+        .tech-btn:active { background: #444; }
+
+        input[type="text"], input[type="email"], input[type="password"] { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #444; background: var(--input-bg); color: white; box-sizing: border-box; }
     </style>
 </head>
 <body>
 
     <div class="container" id="loginBox">
         <img src="https://raw.githubusercontent.com/tracyskarateparmaheights/gateway/main/BLACK-TK.png" class="logo-img">
-        <h1>Dojo Portal</h1>
         <input type="email" id="emailInput" placeholder="Email">
         <input type="password" id="passInput" placeholder="Password">
-        <button id="loginBtn">Sign In</button>
+        <button id="loginBtn" style="width:100%; padding:18px; background:var(--gold); border:none; border-radius:8px; font-weight:bold; cursor:pointer;">Sign In</button>
     </div>
 
     <div class="container" id="portalView" style="display:none;">
-        <div style="display:flex; justify-content:space-between; align-items: center; margin-bottom:20px;">
-            <button class="nav-btn" onclick="showMainMenu()">🏠 Menu</button>
-            <button class="nav-btn" onclick="location.reload()" style="background:#822;">Log Out</button>
+        <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+            <button class="control-btn" onclick="showMainMenu()">🏠 Menu</button>
+            <button class="control-btn" onclick="location.reload()" style="background:var(--red); color:white;">Log Out</button>
         </div>
 
-        <div id="mainMenu">
-            <button id="staffMenuBtn" class="menu-card" onclick="openSection('staffDashboard')">🛡️ Staff Access</button>
-            <button id="dbMenuBtn" class="menu-card" onclick="openSection('adminDashboard')">👥 Student Roster</button>
-            <button id="curMenuBtn" class="menu-card" onclick="openSection('curriculumSection')">🥋 Video Library</button>
+        <div id="curriculumSection" style="display:none;">
+            <div class="video-wrapper">
+                <div id="ytPlayer"></div>
+            </div>
+
+            <div class="custom-controls">
+                <input type="range" id="seekBar" value="0" step="0.1">
+                <div class="control-row">
+                    <button class="control-btn" onclick="seek(-10)">-10s</button>
+                    <button class="control-btn" id="playPauseBtn" onclick="togglePlay()">Play</button>
+                    <button class="control-btn" onclick="seek(10)">+10s</button>
+                </div>
+            </div>
+
+            <input type="text" id="vidSearch" placeholder="🔍 Search Curriculum..." onkeyup="searchVideos()">
+            
+            <div class="curriculum-scroll">
+                <div class="belt-header" onclick="toggleGate('list-yellow')">🟡 Yellow Belt <span>▼</span></div>
+                <div id="list-yellow" class="belt-content" style="display:none;">
+                    <button class="tech-btn" onclick="changeVid('19Ktd4FfDGg')">Yellow History</button>
+                    <button class="tech-btn" onclick="changeVid('JIFwfcykAY8')">Japanese Sword</button>
+                    <button class="tech-btn" onclick="changeVid('RoSuLCLOKuU')">Chinese Sword</button>
+                    <button class="tech-btn" onclick="changeVid('NjXYf4QOZnU')">Delayed Sword</button>
+                    <button class="tech-btn" onclick="changeVid('SaCwJIsQWE8')">Knee of Vengence</button>
+                    <button class="tech-btn" onclick="changeVid('xNzobYNSQ4Y')">Fang of the Cobra</button>
+                    <button class="tech-btn" onclick="changeVid('ZJNmDVtXnBY')">Twisted Talon</button>
+                    <button class="tech-btn" onclick="changeVid('u0ceVbYXUXQ')">Returning Dragon</button>
+                    <button class="tech-btn" onclick="changeVid('yvrhFEiuHKc')">Kenpo Shield</button>
+                    <button class="tech-btn" onclick="changeVid('i-vyUr_6xZU')">Evasion</button>
+                    <button class="tech-btn" onclick="changeVid('E44w7Eh73xs')">Breaking the Sword</button>
+                </div>
+
+                <div class="belt-header" onclick="toggleGate('list-orange')">🟠 Orange Belt <span>▼</span></div>
+                <div id="list-orange" class="belt-content" style="display:none;">
+                    <button class="tech-btn" onclick="changeVid('VIDEO_ID_HERE')">TBA</button>
+                </div>
+            </div>
         </div>
 
         <div id="staffDashboard" style="display:none;">
@@ -67,41 +98,20 @@
             <div id="staffTableArea"></div>
         </div>
 
-        <div id="curriculumSection" style="display:none;">
-            <h3>Video Library</h3>
-            <iframe id="videoPlayerFrame" src="https://www.youtube.com/embed/19Ktd4FfDGg?rel=0&enablejsapi=1" frameborder="0" allowfullscreen></iframe>
-            
-            <input type="text" id="vidSearch" placeholder="🔍 Search Techniques..." onkeyup="searchVideos()">
-
-            <div class="curriculum-scroll">
-                <div class="belt-header" onclick="toggleGate('list-yellow', 1)">🟡 Yellow Belt <span>▼</span></div>
-                <div id="list-yellow" class="belt-content" style="display:none; padding:5px;">
-                    <button class="tech-btn" onclick="playVid('19Ktd4FfDGg')">Yellow History</button>
-                    <button class="tech-btn" onclick="playVid('JIFwfcykAY8')">Japanese Sword</button>
-                    <button class="tech-btn" onclick="playVid('RoSuLCLOKuU')">Chinese Sword</button>
-                    <button class="tech-btn" onclick="playVid('NjXYf4QOZnU')">Delayed Sword</button>
-                    <button class="tech-btn" onclick="playVid('SaCwJIsQWE8')">Knee of Vengence</button>
-                    <button class="tech-btn" onclick="playVid('xNzobYNSQ4Y')">Fang of the Cobra</button>
-                    <button class="tech-btn" onclick="playVid('ZJNmDVtXnBY')">Twisted Talon</button>
-                    <button class="tech-btn" onclick="playVid('u0ceVbYXUXQ')">Returning Dragon</button>
-                    <button class="tech-btn" onclick="playVid('yvrhFEiuHKc')">Kenpo Shield</button>
-                    <button class="tech-btn" onclick="playVid('i-vyUr_6xZU')">Evasion</button>
-                    <button class="tech-btn" onclick="playVid('E44w7Eh73xs')">Breaking the Sword</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="adminDashboard" style="display:none;">
-            <div id="rosterTableArea"></div>
+        <div id="mainMenu">
+            <button class="tech-btn" style="padding:25px; font-size:18px; text-align:center;" onclick="openSection('curriculumSection')">🥋 Video Library</button>
+            <button class="tech-btn" style="padding:25px; font-size:18px; text-align:center; display:none;" id="staffBtn" onclick="openSection('staffDashboard')">🛡️ Staff Access</button>
         </div>
     </div>
 
+    <script src="https://www.youtube.com/iframe_api"></script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, collection, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        const firebaseConfig = {
+        // CONFIG (Ensure this matches your actual Firebase Project)
+        const firebaseConfig = { 
             apiKey: "AIzaSyC35Ubf6GxyDi3JEiKWaYgVFkYGknMZrcw",
             authDomain: "tracy-s-karate-portal.firebaseapp.com",
             projectId: "tracy-s-karate-portal",
@@ -109,66 +119,57 @@
             messagingSenderId: "338865615783",
             appId: "1:338865615783:web:75865261864177d46536da"
         };
-
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        let userRank = 0;
 
-        // --- VIDEO LOGIC ---
-        window.playVid = (id) => {
-            document.getElementById('videoPlayerFrame').src = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0`;
+        let player;
+        let progressTimer;
+
+        // PLAYER LOGIC
+        window.onYouTubeIframeAPIReady = () => {
+            player = new YT.Player('ytPlayer', {
+                videoId: '19Ktd4FfDGg',
+                playerVars: { 'controls': 0, 'disablekb': 1, 'modestbranding': 1, 'rel': 0, 'playsinline': 1 },
+                events: { 'onStateChange': onPlayerStateChange }
+            });
         };
 
-        window.searchVideos = () => {
-            const q = document.getElementById('vidSearch').value.toLowerCase();
-            const btns = document.querySelectorAll('.tech-btn');
-            if(q.length > 0) document.querySelectorAll('.belt-content').forEach(c => c.style.display = 'block');
-            btns.forEach(btn => btn.style.display = btn.innerText.toLowerCase().includes(q) ? 'block' : 'none');
+        window.togglePlay = () => {
+            const state = player.getPlayerState();
+            state === 1 ? player.pauseVideo() : player.playVideo();
         };
 
-        // --- AUTH & NAVIGATION ---
-        document.getElementById('loginBtn').addEventListener('click', async () => {
-            const email = document.getElementById('emailInput').value.trim();
-            const pass = document.getElementById('passInput').value;
-            try {
-                const cred = await signInWithEmailAndPassword(auth, email, pass);
-                const snap = await getDoc(doc(db, "users", cred.user.uid));
-                if (snap.exists()) {
-                    userRank = snap.data().rankLevel || 0;
-                    document.getElementById('loginBox').style.display = 'none';
-                    document.getElementById('portalView').style.display = 'block';
-                    document.getElementById('staffMenuBtn').style.display = userRank >= 15 ? 'block' : 'none';
-                    document.getElementById('dbMenuBtn').style.display = userRank >= 10 ? 'block' : 'none';
-                    document.getElementById('curMenuBtn').style.display = userRank >= 1 ? 'block' : 'none';
-                }
-            } catch (err) { alert("Login failed"); }
-        });
+        window.seek = (sec) => { player.seekTo(player.getCurrentTime() + sec, true); };
+        window.changeVid = (id) => { player.loadVideoById(id); };
 
-        window.openSection = (id) => {
-            document.getElementById('mainMenu').style.display = 'none';
-            document.getElementById(id).style.display = 'block';
-            if(id === 'staffDashboard') syncStaff();
+        function onPlayerStateChange(event) {
+            const btn = document.getElementById('playPauseBtn');
+            if (event.data === 1) {
+                btn.innerText = "Pause";
+                progressTimer = setInterval(() => {
+                    const val = (player.getCurrentTime() / player.getDuration()) * 100;
+                    document.getElementById('seekBar').value = val || 0;
+                }, 500);
+            } else {
+                btn.innerText = "Play";
+                clearInterval(progressTimer);
+            }
+        }
+
+        document.getElementById('seekBar').oninput = function() {
+            player.seekTo(player.getDuration() * (this.value / 100), true);
         };
 
-        window.showMainMenu = () => {
-            document.querySelectorAll('#portalView > div:not(:first-child)').forEach(d => d.style.display = 'none');
-            document.getElementById('mainMenu').style.display = 'block';
-        };
-
-        // --- STAFF SYNC (Fixes name and level UI) ---
+        // STAFF NAME & LEVEL UI FIX
         window.syncStaff = () => {
             onSnapshot(collection(db, "users"), (snap) => {
-                let html = `<table><tr><th>Staff</th><th>Lvl</th><th>Update</th></tr>`;
+                let html = `<table><tr><th>Staff Name</th><th>Rank Lvl</th><th></th></tr>`;
                 snap.forEach(docSnap => {
                     const u = docSnap.data();
-                    // Fix: Use u.name as seen in your database screenshot
-                    const displayName = u.name || "Unknown User";
-                    html += `<tr>
-                        <td>${displayName}</td>
-                        <td><input type="number" class="lvl-input" id="lvl-${docSnap.id}" value="${u.rankLevel || 0}"></td>
-                        <td><button onclick="updateRank('${docSnap.id}')" style="background:var(--gold); padding:8px; border-radius:6px;">✔</button></td>
-                    </tr>`;
+                    html += `<tr><td>${u.name || "Unknown"}</td>
+                    <td><input type="number" class="lvl-input" id="lvl-${docSnap.id}" value="${u.rankLevel || 0}"></td>
+                    <td><button class="control-btn" onclick="updateRank('${docSnap.id}')">✔</button></td></tr>`;
                 });
                 document.getElementById('staffTableArea').innerHTML = html + "</table>";
             });
@@ -177,11 +178,41 @@
         window.updateRank = async (uid) => {
             const val = parseInt(document.getElementById(`lvl-${uid}`).value);
             await updateDoc(doc(db, "users", uid), { rankLevel: val });
-            alert("Rank Updated");
+            alert("Updated Successfully");
         };
 
-        window.toggleGate = (id, req) => {
-            const e = document.getElementById(id); e.style.display = (e.style.display === "none") ? "block" : "none";
+        // NAVIGATION
+        document.getElementById('loginBtn').onclick = async () => {
+            try {
+                const cred = await signInWithEmailAndPassword(auth, document.getElementById('emailInput').value, document.getElementById('passInput').value);
+                const snap = await getDoc(doc(db, "users", cred.user.uid));
+                if (snap.exists()) {
+                    document.getElementById('loginBox').style.display = 'none';
+                    document.getElementById('portalView').style.display = 'block';
+                    if (snap.data().rankLevel >= 15) document.getElementById('staffBtn').style.display = 'block';
+                }
+            } catch (e) { alert("Login failed. Check credentials."); }
+        };
+
+        window.openSection = (id) => {
+            document.getElementById('mainMenu').style.display = 'none';
+            document.getElementById(id).style.display = 'block';
+            if(id === 'staffDashboard') syncStaff();
+        };
+
+        window.showMainMenu = () => {
+            document.querySelectorAll('#portalView > div:not(:first-child):not(:first-child)').forEach(d => d.style.display = 'none');
+            document.getElementById('mainMenu').style.display = 'block';
+        };
+
+        window.toggleGate = (id) => {
+            const el = document.getElementById(id);
+            el.style.display = el.style.display === "none" ? "block" : "none";
+        };
+
+        window.searchVideos = () => {
+            const q = document.getElementById('vidSearch').value.toLowerCase();
+            document.querySelectorAll('.tech-btn').forEach(b => b.style.display = b.innerText.toLowerCase().includes(q) ? "block" : "none");
         };
     </script>
 </body>
