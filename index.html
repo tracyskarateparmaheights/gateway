@@ -9,7 +9,6 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#ffcc00">
-    
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     
     <style>
@@ -29,7 +28,6 @@
         .belt-header { background: #3d3d3d; padding: 16px; margin-top: 10px; border-radius: 8px; font-weight: 600; color: var(--gold); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
         .tech-btn { background: #222; color: #eee; padding: 16px; margin: 8px 0; border-radius: 6px; cursor: pointer; text-align: left; font-size: 14px; border-left: 4px solid var(--gold); display: block; width: 100%; box-sizing: border-box; }
         #portalView { display: none; width: 100%; }
-        #progressBar { width: 100%; margin-top: 15px; accent-color: var(--gold); }
     </style>
 </head>
 <body>
@@ -52,7 +50,6 @@
 
         <div id="playerContainer">
             <div class="video-box"><div id="player"></div></div>
-            <input type="range" id="progressBar" value="0" min="0" max="100" step="0.1" oninput="scrub(this.value)">
             <div style="display:flex; gap:5px; margin-top:10px;">
                 <button class="nav-btn" onclick="rewind()" style="flex:1;">⏪ -10s</button>
                 <button class="nav-btn" id="playPauseBtn" onclick="togglePlay()" style="flex:1; background:var(--gold); color:#000;">⏸ Pause</button>
@@ -85,15 +82,7 @@
                     <div class="tech-btn" onclick="loadVideo('E44w7Eh73xs')">Breaking the Sword</div>
                 </div>
             </div>
-
-            <div class="rank-group" id="group-orange" data-level="2"><div class="belt-header" onclick="toggleGroup('list-orange')">🟠 Orange Belt <span>▼</span></div><div id="list-orange" style="display:none;"></div></div>
-            <div class="rank-group" id="group-purple" data-level="3"><div class="belt-header" onclick="toggleGroup('list-purple')">🟣 Purple Belt <span>▼</span></div><div id="list-purple" style="display:none;"></div></div>
-            <div class="rank-group" id="group-blue" data-level="4"><div class="belt-header" onclick="toggleGroup('list-blue')">🔵 Blue Belt <span>▼</span></div><div id="list-blue" style="display:none;"></div></div>
-            <div class="rank-group" id="group-green" data-level="5"><div class="belt-header" onclick="toggleGroup('list-green')">🟢 Green Belt <span>▼</span></div><div id="list-green" style="display:none;"></div></div>
-            <div class="rank-group" id="group-brown" data-level="6"><div class="belt-header" onclick="toggleGroup('list-brown')">🟤 Brown Belt <span>▼</span></div><div id="list-brown" style="display:none;"></div></div>
-            <div class="rank-group" id="group-black" data-level="9"><div class="belt-header" onclick="toggleGroup('list-black')">⚫ Black Belt <span>▼</span></div><div id="list-black" style="display:none;"></div></div>
-            <div class="rank-group" id="group-sensei" data-level="15"><div class="belt-header" onclick="toggleGroup('list-sensei')" style="border: 1px solid var(--gold);">🥋 Instructor Keys <span>▼</span></div><div id="list-sensei" style="display:none;"></div></div>
-        </div>
+            </div>
     </div>
 
     <script src="https://www.youtube.com/iframe_api"></script>
@@ -118,9 +107,19 @@
         let currentUserLevel = 0;
         let isPlaying = false;
 
+        // ENTER KEY FEATURE
+        const emailIn = document.getElementById('emailInput');
+        const passIn = document.getElementById('passInput');
+        
+        [emailIn, passIn].forEach(el => {
+            el.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') doLogin();
+            });
+        });
+
         async function doLogin() {
             try {
-                const cred = await signInWithEmailAndPassword(auth, emailInput.value, passInput.value);
+                const cred = await signInWithEmailAndPassword(auth, emailIn.value, passIn.value);
                 const snap = await getDoc(doc(db, "users", cred.user.uid));
                 if (snap.exists()) {
                     currentUserLevel = snap.data().rankLevel || 0;
@@ -128,29 +127,31 @@
                     document.getElementById('loginBox').style.display = 'none';
                     document.getElementById('portalView').style.display = 'block';
                 } else {
-                    alert("Account found! But you need to create a Firestore document named: " + cred.user.uid);
+                    alert("Account active. Now name your Firestore document: " + cred.user.uid);
                 }
             } catch (e) {
-                // SPECIFIC FIX FOR 403 FORBIDDEN
-                if (e.code === 'auth/network-request-failed' || e.message.includes('403')) {
-                    alert("Security Error (403): Your API Key is restricted. Please go to Google Cloud Console and set 'API Restrictions' to 'None' for this key.");
+                if (e.message.includes('403') || e.code === 'auth/network-request-failed') {
+                    alert("403 Forbidden: Please unlock API restrictions in Google Cloud Console.");
                 } else {
-                    alert("Login Failed: " + e.message);
+                    alert("Login failed. Please check credentials.");
                 }
             }
         }
 
         document.getElementById('loginBtn').addEventListener('click', doLogin);
+
         function applyRankRights() {
             document.querySelectorAll('.rank-group').forEach(group => {
                 const req = parseInt(group.getAttribute('data-level'));
                 group.style.display = (currentUserLevel >= req) ? 'block' : 'none';
             });
         }
+
         window.toggleGroup = (id) => {
             const el = document.getElementById(id);
             el.style.display = (el.style.display === "none") ? "block" : "none";
         };
+
         window.loadVideo = (id) => {
             document.getElementById('playerContainer').style.display = 'block';
             if (window.player && window.player.loadVideoById) {
@@ -164,7 +165,18 @@
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
-        window.goBack = () => { document.getElementById('globalSearch').value = ""; filterAll(); };
+
+        window.togglePlay = () => isPlaying ? window.player.pauseVideo() : window.player.playVideo();
+        window.rewind = () => window.player.seekTo(window.player.getCurrentTime() - 10);
+        window.fastForward = () => window.player.seekTo(window.player.getCurrentTime() + 10);
+        window.closePlayer = () => { if(window.player) window.player.stopVideo(); document.getElementById('playerContainer').style.display='none'; };
+        
+        window.goBack = () => { 
+            document.getElementById('globalSearch').value = ""; 
+            filterAll(); 
+            closePlayer(); 
+        };
+
         window.filterAll = () => {
             const query = document.getElementById('globalSearch').value.toLowerCase();
             document.querySelectorAll('.rank-group').forEach(group => {
