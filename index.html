@@ -86,54 +86,13 @@
                 </div>
             </div>
 
-            <div class="rank-group" id="group-orange" data-level="2">
-                <div class="belt-header" onclick="toggleGroup('list-orange')">🟠 Orange Belt <span>▼</span></div>
-                <div id="list-orange" style="display:none; padding-top: 5px;">
-                    <div class="tech-btn" onclick="loadVideo('VIDEO_ID')">Orange Technique 1</div>
-                </div>
-            </div>
-
-            <div class="rank-group" id="group-purple" data-level="3">
-                <div class="belt-header" onclick="toggleGroup('list-purple')">🟣 Purple Belt <span>▼</span></div>
-                <div id="list-purple" style="display:none; padding-top: 5px;">
-                    <div class="tech-btn" onclick="loadVideo('VIDEO_ID')">Purple Technique 1</div>
-                </div>
-            </div>
-
-            <div class="rank-group" id="group-blue" data-level="4">
-                <div class="belt-header" onclick="toggleGroup('list-blue')">🔵 Blue Belt <span>▼</span></div>
-                <div id="list-blue" style="display:none; padding-top: 5px;">
-                    <div class="tech-btn" onclick="loadVideo('VIDEO_ID')">Blue Technique 1</div>
-                </div>
-            </div>
-
-            <div class="rank-group" id="group-green" data-level="5">
-                <div class="belt-header" onclick="toggleGroup('list-green')">🟢 Green Belt <span>▼</span></div>
-                <div id="list-green" style="display:none; padding-top: 5px;">
-                    <div class="tech-btn" onclick="loadVideo('VIDEO_ID')">Green Technique 1</div>
-                </div>
-            </div>
-
-            <div class="rank-group" id="group-brown" data-level="6">
-                <div class="belt-header" onclick="toggleGroup('list-brown')">🟤 Brown Belt <span>▼</span></div>
-                <div id="list-brown" style="display:none; padding-top: 5px;">
-                    <div class="tech-btn" onclick="loadVideo('VIDEO_ID')">Brown Belt Material</div>
-                </div>
-            </div>
-
-            <div class="rank-group" id="group-black" data-level="9">
-                <div class="belt-header" onclick="toggleGroup('list-black')">⚫ Black Belt <span>▼</span></div>
-                <div id="list-black" style="display:none; padding-top: 5px;">
-                    <div class="tech-btn" onclick="loadVideo('VIDEO_ID')">Black Belt Material</div>
-                </div>
-            </div>
-
-            <div class="rank-group" id="group-sensei" data-level="15">
-                <div class="belt-header" onclick="toggleGroup('list-sensei')" style="border: 1px solid var(--gold);">🥋 Instructor Keys <span>▼</span></div>
-                <div id="list-sensei" style="display:none; padding-top: 5px;">
-                    <div class="tech-btn" onclick="loadVideo('dQw4w9WgXcQ')">Instructor Training</div>
-                </div>
-            </div>
+            <div class="rank-group" id="group-orange" data-level="2"><div class="belt-header" onclick="toggleGroup('list-orange')">🟠 Orange Belt <span>▼</span></div><div id="list-orange" style="display:none;"></div></div>
+            <div class="rank-group" id="group-purple" data-level="3"><div class="belt-header" onclick="toggleGroup('list-purple')">🟣 Purple Belt <span>▼</span></div><div id="list-purple" style="display:none;"></div></div>
+            <div class="rank-group" id="group-blue" data-level="4"><div class="belt-header" onclick="toggleGroup('list-blue')">🔵 Blue Belt <span>▼</span></div><div id="list-blue" style="display:none;"></div></div>
+            <div class="rank-group" id="group-green" data-level="5"><div class="belt-header" onclick="toggleGroup('list-green')">🟢 Green Belt <span>▼</span></div><div id="list-green" style="display:none;"></div></div>
+            <div class="rank-group" id="group-brown" data-level="6"><div class="belt-header" onclick="toggleGroup('list-brown')">🟤 Brown Belt <span>▼</span></div><div id="list-brown" style="display:none;"></div></div>
+            <div class="rank-group" id="group-black" data-level="9"><div class="belt-header" onclick="toggleGroup('list-black')">⚫ Black Belt <span>▼</span></div><div id="list-black" style="display:none;"></div></div>
+            <div class="rank-group" id="group-sensei" data-level="15"><div class="belt-header" onclick="toggleGroup('list-sensei')" style="border: 1px solid var(--gold);">🥋 Instructor Keys <span>▼</span></div><div id="list-sensei" style="display:none;"></div></div>
         </div>
     </div>
 
@@ -169,13 +128,14 @@
                     document.getElementById('loginBox').style.display = 'none';
                     document.getElementById('portalView').style.display = 'block';
                 } else {
-                    alert("Success! Now create a Firestore document named: " + cred.user.uid);
+                    alert("Account found! But you need to create a Firestore document named: " + cred.user.uid);
                 }
             } catch (e) {
-                if (e.code === 'auth/network-request-failed') {
-                    alert("Security Error: API Key Restricted. Check Google Cloud.");
+                // SPECIFIC FIX FOR 403 FORBIDDEN
+                if (e.code === 'auth/network-request-failed' || e.message.includes('403')) {
+                    alert("Security Error (403): Your API Key is restricted. Please go to Google Cloud Console and set 'API Restrictions' to 'None' for this key.");
                 } else {
-                    alert("Access Denied. Ensure your account is authorized.");
+                    alert("Login Failed: " + e.message);
                 }
             }
         }
