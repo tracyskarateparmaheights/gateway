@@ -8,12 +8,11 @@
         :root { --gold: #ffcc00; --bg: #1a1a1a; --card: #2b2b2b; --input-bg: #1e1e1e; --green: #2ecc71; --red: #e74c3c; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg); color: white; margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; box-sizing: border-box; }
         
-        .container { background: var(--card); padding: 30px 20px; border-radius: 12px; border-top: 5px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 100%; max-width: 480px; margin-top: 20px; position: relative; }
-        .logo-img { width: 180px; height: auto; margin-bottom: 10px; }
+        .container { background: var(--card); padding: 30px 20px; border-radius: 12px; border-top: 5px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 100%; max-width: 480px; margin-top: 20px; }
         
-        /* VIDEO AREA - REFINED FOR VISIBILITY */
-        .video-wrapper { position: relative; width: 100%; padding-top: 56.25%; /* 16:9 Aspect Ratio */ background: #000; border-radius: 8px; overflow: hidden; margin-bottom: 10px; border: 1px solid #444; }
-        #ytPlayer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        /* VIDEO AREA - FIXED OVERLAY ISSUES */
+        .video-wrapper { position: relative; width: 100%; padding-top: 56.25%; background: #000; border-radius: 8px; overflow: hidden; margin-bottom: 10px; border: 1px solid #444; }
+        #ytPlayer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
         
         .custom-controls { background: #333; padding: 12px; border-radius: 8px; margin-bottom: 15px; position: relative; z-index: 10; }
         .control-row { display: flex; justify-content: center; gap: 12px; align-items: center; margin-top: 8px; }
@@ -21,24 +20,18 @@
         #seekBar { width: 100%; height: 6px; appearance: none; background: #555; border-radius: 5px; cursor: pointer; outline: none; }
         #seekBar::-webkit-slider-thumb { appearance: none; width: 16px; height: 16px; background: var(--gold); border-radius: 50%; border: 2px solid #000; }
 
-        /* UI ELEMENTS */
-        .guide-box { background: #111; padding: 15px; border-radius: 8px; border: 1px solid #444; text-align: left; margin-bottom: 20px; font-size: 12px; line-height: 1.4; }
-        .lvl-input { width: 60px; padding: 8px; background: #111; color: var(--gold); border: 1px solid #555; text-align: center; font-weight: bold; border-radius: 4px; }
-        .control-btn { background: var(--gold); color: #000; border: none; padding: 10px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; }
-        .admin-tab { display: none; text-align: left; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        td { padding: 12px 5px; border-bottom: 1px solid #333; font-size: 14px; vertical-align: middle; }
-        
+        /* LISTS */
         .belt-header { background: #3d3d3d; padding: 15px; margin-top: 10px; border-radius: 8px; color: var(--gold); cursor: pointer; display: flex; justify-content: space-between; font-weight: bold; }
-        .tech-btn { background: #222; color: #eee; padding: 14px; margin: 5px 0; border-radius: 6px; border-left: 4px solid var(--gold); width: 100%; cursor: pointer; display: block; text-align: left; font-size: 13px; }
-
-        input, textarea { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #444; background: var(--input-bg); color: white; box-sizing: border-box; }
+        .tech-btn { background: #222; color: #eee; padding: 14px; margin: 5px 0; border-radius: 6px; border-left: 4px solid var(--gold); width: 100%; cursor: pointer; display: block; text-align: left; font-size: 13px; border: none; }
+        input { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #444; background: var(--input-bg); color: white; box-sizing: border-box; }
+        .control-btn { background: var(--gold); color: #000; border: none; padding: 10px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        .admin-tab { display: none; text-align: left; }
     </style>
 </head>
 <body>
 
     <div class="container" id="loginBox">
-        <img src="https://raw.githubusercontent.com/tracyskarateparmaheights/gateway/main/BLACK-TK.png" class="logo-img">
+        <img src="https://raw.githubusercontent.com/tracyskarateparmaheights/gateway/main/BLACK-TK.png" style="width:180px; margin-bottom:10px;">
         <input type="email" id="emailInput" placeholder="Email">
         <input type="password" id="passInput" placeholder="Password">
         <button id="loginBtn" class="control-btn" style="width:100%; padding:18px;">Sign In</button>
@@ -53,7 +46,6 @@
         <div id="mainMenu">
             <button class="tech-btn" style="padding:25px; text-align:center; font-size:18px;" onclick="openSection('curriculumSection')">🥋 Video Library</button>
             <button class="tech-btn" style="padding:25px; text-align:center; font-size:18px; display:none;" id="rosterBtn" onclick="openSection('adminDashboard')">👥 Student Roster</button>
-            <button class="tech-btn" style="padding:25px; text-align:center; font-size:18px; display:none;" id="staffBtn" onclick="openSection('staffDashboard')">🛡️ Staff Access</button>
         </div>
 
         <div id="curriculumSection" style="display:none;">
@@ -77,69 +69,14 @@
                         <button class="tech-btn" onclick="loadVideo('JIFwfcykAY8')">1. Japanese Sword (A/B)</button>
                         <button class="tech-btn" onclick="loadVideo('RoSuLCLOKuU')">2. Chinese Sword (A/B)</button>
                         <button class="tech-btn" onclick="loadVideo('NjXYf4QOZnU')">3. Delayed Sword</button>
-                        <button class="tech-btn" onclick="loadVideo('SaCwJIsQWE8')">4. Knee of Vengeance</button>
-                        <button class="tech-btn" onclick="loadVideo('xNzobYNSQ4Y')">5. Fang of the Cobra (A/B)</button>
-                        <button class="tech-btn" onclick="loadVideo('ZJNmDVtXnBY')">6. Twisting Talon (A/B)</button>
-                        <button class="tech-btn" onclick="loadVideo('u0ceVbYXUXQ')">7. Returning Dragon</button>
-                        <button class="tech-btn" onclick="loadVideo('E44w7Eh73xs')">8. Breaking the Sword</button>
-                        <button class="tech-btn" onclick="loadVideo('yvrhFEiuHKc')">9. Kenpo Shield (A/B)</button>
-                        <button class="tech-btn" onclick="loadVideo('i-vyUr_6xZU')">10. Evasion</button>
-                    </div>
-                </div>
-                <div id="belt-2" class="belt-group" style="display:none;">
-                    <div class="belt-header" onclick="toggleGate('orange-techs')">🟠 Orange Belt <span>▼</span></div>
-                    <div id="orange-techs" class="tech-list" style="display:none;">
-                        <button class="tech-btn" onclick="loadVideo('34h_COkntes')">1. Sumo</button>
-                        <button class="tech-btn" onclick="loadVideo('RoSuLCLOKuU')">2. Attacking the Circle</button>
                     </div>
                 </div>
             </div>
         </div>
 
         <div id="adminDashboard" style="display:none;">
-            <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom:15px;">
-                <h3 style="margin:0;">Student Roster</h3>
-                <div style="display:flex; gap:8px;">
-                    <button class="control-btn" style="background:var(--green); color:white; display:none;" id="exportBtn" onclick="exportStudents()">💾 Export</button>
-                    <button class="control-btn" style="display:none;" id="addNewBtn" onclick="prepareAdd()">+ New</button>
-                </div>
-            </div>
-            <div id="studentForm" class="admin-tab">
-                <input type="hidden" id="editId">
-                <input type="text" id="fName" placeholder="Full Name">
-                <input type="text" id="fPhone" placeholder="Phone">
-                <input type="email" id="fEmail" placeholder="Email">
-                <textarea id="fComments" placeholder="Notes" style="height:100px;"></textarea>
-                <button class="control-btn" style="width:100%;" onclick="handleSave()">Save Record</button>
-                <button class="control-btn" style="width:100%; background:none; color:#888;" onclick="switchAdmin('listView')">Cancel</button>
-            </div>
-            <div id="listView" class="admin-tab" style="display:block;">
-                <input type="text" id="rosterSearch" placeholder="🔍 Search records..." onkeyup="searchRoster()">
-                <div id="rosterTableArea"></div>
-            </div>
-        </div>
-
-        <div id="staffDashboard" style="display:none;">
-            <h3>Staff Access</h3>
-            <div class="guide-box">
-                <b>LVL 0: Student</b> - Access to Video Library only (White).
-<b>LVL 1: Student</b> - Access to Video Library only (Yellow).
-<b>LVL 2: Student</b> - Access to Video Library only (Orange)
-<b>LVL 3: Student</b> - Access to Video Library only (Purple).
-<b>LVL 4: Student</b> - Access to Video Library only (Blue).
-<b>LVL 5: Student</b> - Access to Video Library only (Green).
-<b>LVL 6: Student</b> - Access to Video Library only (Brown-3).
-<b>LVL 7: Student</b> - Access to Video Library only (Brown-2).
-<b>LVL 8: Student</b> - Access to Video Library only (Brown-1).
-<b>LVL 9: Student</b> - Access to Video Library only (Black-1).
-<b>LVL 10: Student</b> - Access to Video Library only (Black-2).
-<b>LVL 11: Student</b> - Access to Video Library only (Black-3).
-<b>LVL 12: Student</b> - Access to Video Library only (Black-4).
-<b>LVL 13: Student</b> - Access to Video Library only (Black-5).
-<b>LVL 14: Instructor</b> - Access to Student Roster (View) and Video Library.
-<b>LVL 15: Admin</b> - Access to Staff Permissions (This page), Student Roster (View/Edit) and Video Library.
-            </div>
-            <div id="staffTableArea"></div>
+            <input type="text" id="rosterSearch" placeholder="🔍 Search records..." onkeyup="searchRoster()">
+            <div id="rosterTableArea"></div>
         </div>
     </div>
 
@@ -148,7 +85,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, collection, onSnapshot, updateDoc, addDoc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = { 
             apiKey: "AIzaSyC35Ubf6GxyDi3JEiKWaYgVFkYGknMZrcw",
@@ -162,37 +99,38 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        let ytPlayer, currentUserRank = 0, studentsList = [];
+        let ytPlayer = null, currentUserRank = 0;
 
-        // REFINED PLAYER INITIALIZATION
-        window.onYouTubeIframeAPIReady = () => {
-            ytPlayer = new YT.Player('ytPlayer', {
-                height: '100%', width: '100%',
-                playerVars: { 'controls': 0, 'rel': 0, 'modestbranding': 1, 'playsinline': 1, 'iv_load_policy': 3 },
-                events: { 'onStateChange': (e) => { document.getElementById('playPauseBtn').innerText = (e.data === 1) ? "Pause" : "Play"; }}
-            });
-        };
-
+        // FORCE INITIALIZE ON CALL
         window.loadVideo = (id) => {
-            if (ytPlayer && ytPlayer.loadVideoById) {
+            if (ytPlayer && typeof ytPlayer.loadVideoById === 'function') {
                 ytPlayer.loadVideoById(id);
                 ytPlayer.playVideo();
+            } else {
+                // If player doesn't exist yet, create it with the requested video
+                ytPlayer = new YT.Player('ytPlayer', {
+                    height: '100%', width: '100%', videoId: id,
+                    playerVars: { 'autoplay': 1, 'controls': 0, 'modestbranding': 1, 'rel': 0, 'playsinline': 1 },
+                    events: {
+                        'onReady': (e) => e.target.playVideo(),
+                        'onStateChange': (e) => { document.getElementById('playPauseBtn').innerText = (e.data === 1) ? "Pause" : "Play"; }
+                    }
+                });
             }
         };
 
         window.togglePlay = () => {
-            const s = ytPlayer.getPlayerState();
-            s === 1 ? ytPlayer.pauseVideo() : ytPlayer.playVideo();
+            if (!ytPlayer || !ytPlayer.getPlayerState) return;
+            ytPlayer.getPlayerState() === 1 ? ytPlayer.pauseVideo() : ytPlayer.playVideo();
         };
 
-        window.seek = (s) => ytPlayer.seekTo(ytPlayer.getCurrentTime() + s, true);
+        window.seek = (s) => { if(ytPlayer && ytPlayer.seekTo) ytPlayer.seekTo(ytPlayer.getCurrentTime() + s, true); };
         
         window.searchVideos = () => {
             const q = document.getElementById('videoSearch').value.toLowerCase();
             document.querySelectorAll('#videoContainer .tech-btn').forEach(btn => {
                 btn.style.display = btn.innerText.toLowerCase().includes(q) ? "block" : "none";
             });
-            if(q.length > 1) document.querySelectorAll('.tech-list').forEach(l => l.style.display = 'block');
         };
 
         window.toggleGate = (id) => { const el = document.getElementById(id); el.style.display = (el.style.display === "none") ? "block" : "none"; };
@@ -201,52 +139,18 @@
             document.querySelectorAll('#portalView > div:not(:first-child)').forEach(d => d.style.display='none'); 
             document.getElementById(id).style.display='block';
             if(id === 'adminDashboard') syncRoster();
-            if(id === 'staffDashboard') syncStaff();
         };
 
         const syncRoster = () => {
             onSnapshot(query(collection(db, "students"), orderBy("fullName")), (snap) => {
-                let html = `<table>`; studentsList = [];
+                let html = `<table style="width:100%;">`;
                 snap.forEach(docSnap => {
-                    const s = docSnap.data(); const id = docSnap.id; studentsList.push(s);
-                    html += `<tr class="sr-row" onclick="window.toggleDetail('${id}')">
-                        <td><b>${s.fullName}</b><br><small>${s.phone || ''}</small></td>
-                        <td style="text-align:right;">${currentUserRank >= 15 ? `<button class="control-btn" onclick="event.stopPropagation(); window.editStudent('${id}', ${JSON.stringify(s).replace(/"/g, '&quot;')})">EDIT</button>` : ''}</td>
-                    </tr>
-                    <tr id="det-${id}" style="display:none;"><td colspan="2" style="background:#222; padding:10px; font-size:12px; border-radius:4px;">Email: ${s.email}<br>Notes: ${s.comments}</td></tr>`;
+                    const s = docSnap.data();
+                    html += `<tr><td style="padding:10px; border-bottom:1px solid #444;"><b>${s.fullName}</b><br><small>${s.phone || ''}</small></td></tr>`;
                 });
                 document.getElementById('rosterTableArea').innerHTML = html + "</table>";
             });
         };
-
-        window.toggleDetail = (id) => { const el = document.getElementById(`det-${id}`); el.style.display = el.style.display === "none" ? "table-row" : "none"; };
-        window.searchRoster = () => { const q = document.getElementById('rosterSearch').value.toLowerCase(); document.querySelectorAll('.sr-row').forEach(r => r.style.display = r.innerText.toLowerCase().includes(q) ? "" : "none"); };
-        window.prepareAdd = () => { document.getElementById('editId').value = ""; ['fName','fPhone','fEmail','fComments'].forEach(i => document.getElementById(i).value=""); window.switchAdmin('studentForm'); };
-        window.editStudent = (id, s) => { document.getElementById('editId').value = id; document.getElementById('fName').value = s.fullName; document.getElementById('fPhone').value = s.phone; document.getElementById('fEmail').value = s.email; document.getElementById('fComments').value = s.comments; window.switchAdmin('studentForm'); };
-        window.switchAdmin = (id) => { document.querySelectorAll('.admin-tab').forEach(t => t.style.display='none'); document.getElementById(id).style.display='block'; };
-        window.handleSave = async () => {
-            const id = document.getElementById('editId').value;
-            const data = { fullName: document.getElementById('fName').value, phone: document.getElementById('fPhone').value, email: document.getElementById('fEmail').value, comments: document.getElementById('fComments').value, updatedAt: serverTimestamp() };
-            if(id) await updateDoc(doc(db, "students", id), data); else await addDoc(collection(db, "students"), data);
-            window.switchAdmin('listView');
-        };
-        window.exportStudents = () => {
-            let csv = "Name,Phone,Email\n"; studentsList.forEach(s => csv += `"${s.fullName}","${s.phone}","${s.email}"\n`);
-            const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'})); a.download='Roster.csv'; a.click();
-        };
-
-        const syncStaff = () => {
-            onSnapshot(collection(db, "users"), (snap) => {
-                let html = `<table><tr><th>NAME</th><th>LVL</th><th></th></tr>`;
-                snap.forEach(docSnap => {
-                    const u = docSnap.data();
-                    html += `<tr><td>${u.name || 'User'}</td><td><input type="number" class="lvl-input" id="lvl-${docSnap.id}" value="${u.rankLevel || 0}"></td>
-                    <td style="text-align:right;"><button class="control-btn" onclick="window.updateRank('${docSnap.id}')">✔</button></td></tr>`;
-                });
-                document.getElementById('staffTableArea').innerHTML = html + "</table>";
-            });
-        };
-        window.updateRank = async (id) => { await updateDoc(doc(db, "users", id), { rankLevel: parseInt(document.getElementById(`lvl-${id}`).value) }); alert("Updated"); };
 
         document.getElementById('loginBtn').onclick = async () => {
             try {
@@ -257,8 +161,7 @@
                     document.getElementById('loginBox').style.display = 'none';
                     document.getElementById('portalView').style.display = 'block';
                     if(currentUserRank >= 14) document.getElementById('rosterBtn').style.display = 'block';
-                    if(currentUserRank >= 15) { document.getElementById('staffBtn').style.display = 'block'; document.getElementById('addNewBtn').style.display = 'block'; document.getElementById('exportBtn').style.display = 'block'; }
-                    for(let i=0; i<=currentUserRank && i<=13; i++) { if(document.getElementById(`belt-${i}`)) document.getElementById(`belt-${i}`).style.display = 'block'; }
+                    for(let i=1; i<=currentUserRank; i++) { if(document.getElementById(`belt-${i}`)) document.getElementById(`belt-${i}`).style.display = 'block'; }
                 }
             } catch(e) { alert("Login failed"); }
         };
