@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Tracy's Karate - Student Portal</title>
+    <title>Tracy's Karate - Instructor & Student Portal</title>
     <style>
         :root { 
             --gold: #ffcc00; 
@@ -26,6 +26,7 @@
             box-sizing: border-box;
         }
 
+        /* Container & Centering */
         .container { 
             background: var(--card); 
             padding: 40px 25px; 
@@ -34,13 +35,14 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
             text-align: center; 
             width: 100%; 
-            max-width: 400px; 
+            max-width: 420px; 
+            transition: all 0.3s ease;
         }
         
         .logo { width: 70px; height: auto; margin-bottom: 10px; }
         h1 { color: var(--gold); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 25px; font-size: 20px; }
 
-        /* CLEAN INPUTS */
+        /* Login Inputs */
         input[type="email"], input[type="password"], .search-box { 
             width: 100%; 
             padding: 16px; 
@@ -55,7 +57,7 @@
         }
         input:focus { border-color: var(--gold); }
 
-        /* MODERN FLAT BUTTON */
+        /* Modern Flat Sign-In Button */
         #loginBtn { 
             width: 100%; 
             padding: 18px; 
@@ -67,31 +69,32 @@
             font-weight: 700; 
             text-transform: uppercase;
             cursor: pointer; 
-            transition: background 0.2s ease;
         }
-        #loginBtn:hover { background-color: #e6b800; }
-        #loginBtn:active { transform: translateY(1px); }
+        #loginBtn:active { transform: translateY(2px); background-color: #e6b800; }
 
-        /* UI ELEMENTS */
-        .top-nav { display: flex; justify-content: space-between; margin-bottom: 20px; }
-        .nav-btn { background: #444; color: #fff; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; }
+        /* Navigation */
+        .top-nav { display: flex; justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid #444; padding-bottom: 15px; }
+        .nav-btn { background: #444; color: #fff; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; }
         
-        #playerContainer { display: none; margin-bottom: 25px; }
+        /* Video Player & Scrub Bar */
+        #playerContainer { display: none; margin-bottom: 25px; scroll-margin-top: 20px; }
         .video-box { position: relative; width: 100%; padding-bottom: 56.25%; background: #000; border-radius: 8px; overflow: hidden; border: 2px solid var(--gold); }
         #player { position: absolute; top: -65px; left: 0; width: 100%; height: calc(100% + 130px); }
 
-        .belt-header { background: #3d3d3d; padding: 16px; margin-top: 10px; border-radius: 8px; font-weight: 600; color: var(--gold); cursor: pointer; display: flex; justify-content: space-between; }
-        .tech-btn { background: #222; color: #eee; padding: 15px; margin: 6px 0; border-radius: 6px; cursor: pointer; text-align: left; font-size: 14px; border-left: 4px solid var(--gold); border-right:none; border-top:none; border-bottom:none; display: block; width: 100%; }
+        /* Belt Headers & Technique Buttons */
+        .belt-header { background: #3d3d3d; padding: 16px; margin-top: 10px; border-radius: 8px; font-weight: 600; color: var(--gold); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .tech-btn { background: #222; color: #eee; padding: 15px; margin: 6px 0; border-radius: 6px; cursor: pointer; text-align: left; font-size: 14px; border-left: 4px solid var(--gold); border-right:none; border-top:none; border-bottom:none; display: block; width: 100%; box-sizing: border-box; }
         
         #portalView { display: none; width: 100%; }
+        .arrow { font-size: 12px; }
     </style>
 </head>
 <body>
 
     <div class="container" id="loginBox">
         <img src="BLACK-TK.png" alt="Logo" class="logo">
-        <h1>Student Portal</h1>
-        <input type="email" id="emailInput" placeholder="Email" inputmode="email">
+        <h1>Dojo Portal</h1>
+        <input type="email" id="emailInput" placeholder="Email Address" inputmode="email">
         <input type="password" id="passInput" placeholder="Password">
         <button id="loginBtn">Sign In</button>
     </div>
@@ -101,36 +104,83 @@
             <button class="nav-btn" onclick="goBack()">⬅ Reset View</button>
             <button class="nav-btn" onclick="location.reload()" style="background:#882222;">Log Out</button>
         </div>
+        
         <h1 id="welcomeTitle">Dojo Access</h1>
 
-        <input type="text" id="globalSearch" class="search-box" placeholder="Search techniques..." onkeyup="filterAll()">
+        <input type="text" id="globalSearch" class="search-box" placeholder="🔍 Search techniques..." onkeyup="filterAll()">
 
         <div id="playerContainer">
             <div class="video-box"><div id="player"></div></div>
-            <input type="range" id="progressBar" style="width:100%; margin-top:10px;" value="0" min="0" max="100" step="0.1">
+            <input type="range" id="progressBar" style="width:100%; margin-top:15px; accent-color: var(--gold);" value="0" min="0" max="100" step="0.1">
             <div style="display:flex; gap:10px; margin-top:10px;">
                 <button class="nav-btn" onclick="rewind()" style="flex:1;">⏪ -10s</button>
                 <button class="nav-btn" id="playPauseBtn" onclick="togglePlay()" style="flex:1; background:var(--gold); color:#000;">⏸ Pause</button>
                 <button class="nav-btn" onclick="fastForward()" style="flex:1;">+10s ⏩</button>
+                <button class="nav-btn" onclick="closePlayer()" style="background:#600;">✖</button>
             </div>
         </div>
 
         <div id="masterList">
+            
+            <div class="rank-group" id="group-white" data-level="0">
+                <div class="belt-header" onclick="toggleGroup('list-white')">⚪ White Belt <span class="arrow">▼</span></div>
+                <div id="list-white" style="display:none;">
+                    <div class="tech-btn" onclick="loadVideo('ID_HERE')">Basic Stances</div>
+                </div>
+            </div>
+
             <div class="rank-group" id="group-yellow" data-level="1">
-                <div class="belt-header" onclick="toggleGroup('list-yellow')">🟡 Yellow Belt <span>▼</span></div>
+                <div class="belt-header" onclick="toggleGroup('list-yellow')">🟡 Yellow Belt <span class="arrow">▼</span></div>
                 <div id="list-yellow" style="display:none;">
                     <div class="tech-btn" onclick="loadVideo('19Ktd4FfDGg')">Yellow History</div>
                     <div class="tech-btn" onclick="loadVideo('JIFwfcykAY8')">Japanese Sword</div>
                     <div class="tech-btn" onclick="loadVideo('RoSuLCLOKuU')">Chinese Sword</div>
+                    <div class="tech-btn" onclick="loadVideo('NjXYf4QOZnU')">Delayed Sword</div>
+                    <div class="tech-btn" onclick="loadVideo('SaCwJIsQWE8')">Knee of Vengeance</div>
+                    <div class="tech-btn" onclick="loadVideo('xNzobYNSQ4Y')">Fang of the Cobra</div>
+                    <div class="tech-btn" onclick="loadVideo('ZJNmDVtXnBY')">Twisted Talon</div>
+                    <div class="tech-btn" onclick="loadVideo('u0ceVbYXUXQ')">Returning Dragon</div>
+                    <div class="tech-btn" onclick="loadVideo('yvrhFEiuHKc')">Kenpo Shield</div>
+                    <div class="tech-btn" onclick="loadVideo('i-vyUr_6xZU')">Evasion</div>
+                    <div class="tech-btn" onclick="loadVideo('E44w7Eh73xs')">Breaking the Sword</div>
                 </div>
             </div>
 
             <div class="rank-group" id="group-orange" data-level="2">
-                <div class="belt-header" onclick="toggleGroup('list-orange')">🟠 Orange Belt <span>▼</span></div>
-                <div id="list-orange" style="display:none;">
-                    <div class="tech-btn" onclick="loadVideo('VIDEO_ID')">Orange Technique 1</div>
-                </div>
+                <div class="belt-header" onclick="toggleGroup('list-orange')">🟠 Orange Belt <span class="arrow">▼</span></div>
+                <div id="list-orange" style="display:none;"></div>
             </div>
+
+            <div class="rank-group" id="group-purple" data-level="3">
+                <div class="belt-header" onclick="toggleGroup('list-purple')">🟣 Purple Belt <span class="arrow">▼</span></div>
+                <div id="list-purple" style="display:none;"></div>
+            </div>
+
+            <div class="rank-group" id="group-blue" data-level="4">
+                <div class="belt-header" onclick="toggleGroup('list-blue')">🔵 Blue Belt <span class="arrow">▼</span></div>
+                <div id="list-blue" style="display:none;"></div>
+            </div>
+
+            <div class="rank-group" id="group-green" data-level="5">
+                <div class="belt-header" onclick="toggleGroup('list-green')">🟢 Green Belt <span class="arrow">▼</span></div>
+                <div id="list-green" style="display:none;"></div>
+            </div>
+
+            <div class="rank-group" id="group-brown" data-level="6">
+                <div class="belt-header" onclick="toggleGroup('list-brown')">🟤 Brown Belt Curriculum <span class="arrow">▼</span></div>
+                <div id="list-brown" style="display:none;"></div>
+            </div>
+
+            <div class="rank-group" id="group-black" data-level="9">
+                <div class="belt-header" onclick="toggleGroup('list-black')">⚫ Black Belt Material <span class="arrow">▼</span></div>
+                <div id="list-black" style="display:none;"></div>
+            </div>
+
+            <div class="rank-group" id="group-instructor" data-level="15">
+                <div class="belt-header" onclick="toggleGroup('list-instructor')" style="border: 1px solid var(--gold);">🥋 Instructor Master Keys <span class="arrow">▼</span></div>
+                <div id="list-instructor" style="display:none;"></div>
+            </div>
+
         </div>
     </div>
 
@@ -155,8 +205,9 @@
 
         let currentUserLevel = 0;
         let isPlaying = false;
+        let progressTimer;
 
-        // ENTER KEY LOGIN
+        // Sign-in Listeners
         [document.getElementById('emailInput'), document.getElementById('passInput')].forEach(el => {
             el.addEventListener('keypress', (e) => { if(e.key === 'Enter') doLogin(); });
         });
@@ -172,10 +223,11 @@
                     document.getElementById('portalView').style.display = 'block';
                     document.getElementById('welcomeTitle').innerText = "Welcome, " + snap.data().name.split(' ')[0];
                 }
-            } catch (e) { alert("Invalid login."); }
+            } catch (e) { alert("Access Denied. Check credentials."); }
         }
         document.getElementById('loginBtn').addEventListener('click', doLogin);
 
+        // Security logic: Hide belts above user level
         function applyRankRights() {
             document.querySelectorAll('.rank-group').forEach(group => {
                 const req = parseInt(group.getAttribute('data-level'));
@@ -186,47 +238,65 @@
         window.filterAll = () => {
             const query = document.getElementById('globalSearch').value.toLowerCase();
             document.querySelectorAll('.rank-group').forEach(group => {
-                if (group.style.display !== 'none') {
+                if (parseInt(group.getAttribute('data-level')) <= currentUserLevel) {
                     const buttons = group.querySelectorAll('.tech-btn');
+                    const list = group.querySelector('div[id^="list-"]');
                     let matches = 0;
                     buttons.forEach(btn => {
                         const found = btn.innerText.toLowerCase().includes(query);
                         btn.style.display = found ? "block" : "none";
                         if(found) matches++;
                     });
-                    group.querySelector('div[id^="list-"]').style.display = (query.length > 0 && matches > 0) ? "block" : "none";
+                    if (query.length > 0) {
+                        group.style.display = matches > 0 ? "block" : "none";
+                        list.style.display = matches > 0 ? "block" : "none";
+                    } else {
+                        group.style.display = "block";
+                        list.style.display = "none";
+                    }
                 }
             });
         };
 
         window.toggleGroup = (id) => {
             const el = document.getElementById(id);
-            el.style.display = el.style.display === "none" ? "block" : "none";
+            el.style.display = (el.style.display === "none") ? "block" : "none";
         };
 
         window.loadVideo = (id) => {
-            if (window.player) window.player.loadVideoById(id);
-            else {
+            if (window.player) {
+                window.player.loadVideoById(id);
+            } else {
                 window.player = new YT.Player('player', {
                     videoId: id,
-                    playerVars: { 'autoplay': 1, 'controls': 0, 'playsinline': 1 },
-                    events: { 'onStateChange': (e) => { isPlaying = (e.data == 1); } }
+                    playerVars: { 'autoplay': 1, 'controls': 0, 'playsinline': 1, 'modestbranding': 1 },
+                    events: { 'onStateChange': (e) => { isPlaying = (e.data == 1); if(isPlaying) startBarUpdate(); } }
                 });
             }
             document.getElementById('playerContainer').style.display = 'block';
             document.getElementById('playerContainer').scrollIntoView({ behavior: 'smooth', block: 'center' });
         };
 
-        window.goBack = () => {
-            document.getElementById('globalSearch').value = "";
-            filterAll();
-            document.getElementById('playerContainer').style.display = 'none';
-            if(window.player) window.player.stopVideo();
-        };
+        function startBarUpdate() {
+            clearInterval(progressTimer);
+            progressTimer = setInterval(() => {
+                if (window.player && isPlaying) {
+                    let curr = window.player.getCurrentTime();
+                    let dur = window.player.getDuration();
+                    document.getElementById('progressBar').value = (curr / dur) * 100;
+                }
+            }, 500);
+        }
+
+        document.getElementById('progressBar').addEventListener('input', (e) => {
+            if (window.player) window.player.seekTo((e.target.value / 100) * window.player.getDuration());
+        });
 
         window.togglePlay = () => isPlaying ? window.player.pauseVideo() : window.player.playVideo();
         window.rewind = () => window.player.seekTo(window.player.getCurrentTime() - 10);
         window.fastForward = () => window.player.seekTo(window.player.getCurrentTime() + 10);
+        window.closePlayer = () => { if(window.player) window.player.stopVideo(); document.getElementById('playerContainer').style.display='none'; };
+        window.goBack = () => { document.getElementById('globalSearch').value = ""; filterAll(); closePlayer(); window.scrollTo({top:0, behavior:'smooth'}); };
     </script>
 </body>
 </html>
