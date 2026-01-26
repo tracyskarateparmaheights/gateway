@@ -6,7 +6,7 @@
     <title>Tracy's Karate - Instructor & Student Portal</title>
     <style>
         body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #1a1a1a; color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px 0; }
-        .container { background: #2b2b2b; padding: 40px; border-radius: 12px; border-top: 6px solid #ffcc00; box-shadow: 0 15px 35px rgba(0,0,0,0.6); text-align: center; width: 90%; max-width: 450px; }
+        .container { background: #2b2b2b; padding: 40px; border-radius: 12px; border-top: 6px solid #ffcc00; box-shadow: 0 15px 35px rgba(0,0,0,0.6); text-align: center; width: 90%; max-width: 500px; }
         
         .header-container { display: flex; align-items: center; justify-content: center; margin-bottom: 20px; gap: 15px; }
         .logo { width: 60px; height: auto; border-radius: 4px; }
@@ -23,15 +23,15 @@
         
         #error { color: #ff4d4d; font-size: 14px; margin-top: 15px; display: none; }
         
-        /* Video Section */
         #videoContent { display: none; text-align: left; }
         .video-link { display: none; background: #333; color: #fff; padding: 18px; margin: 12px 0; text-decoration: none; border-left: 5px solid #ffcc00; border-radius: 4px; transition: 0.3s; font-weight: 600; cursor: pointer; }
         .video-link:hover { background: #444; padding-left: 25px; color: #ffcc00; }
         
-        /* Player Styling */
-        #playerContainer { display: none; margin-bottom: 20px; }
-        .close-player { background: #444; color: #ffcc00; font-size: 11px; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-bottom: 10px; display: inline-block; font-weight: bold; border: 1px solid #555; }
-        .video-frame { width: 100%; height: 250px; border-radius: 8px; border: 2px solid #ffcc00; background: #000; }
+        /* Optimized Player Styling */
+        #playerContainer { display: none; margin-bottom: 25px; }
+        .close-player { background: #444; color: #ffcc00; font-size: 11px; padding: 8px 15px; border-radius: 4px; cursor: pointer; margin-bottom: 12px; display: inline-block; font-weight: bold; border: 1px solid #555; text-transform: uppercase; }
+        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; border: 2px solid #ffcc00; background: #000; }
+        .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
         
         .logout-btn { background: #444; color: white; margin-top: 30px; font-size: 14px; }
     </style>
@@ -44,7 +44,7 @@
             <h1>Material Access</h1>
         </div>
         <p>Tracy's Karate Parma Heights</p>
-        <div class="notice"><strong>INSTRUCTOR NOTICE:</strong> Login activity is monitored for security purposes.</div>
+        <div class="notice"><strong>INSTRUCTOR NOTICE:</strong> Click the "Playlist" icon in the top right of the video player to see all techniques.</div>
         <input type="email" id="emailInput" placeholder="Email Address">
         <input type="password" id="passInput" placeholder="Password">
         <button id="loginBtn">Enter Dojo</button>
@@ -58,8 +58,10 @@
         </div>
 
         <div id="playerContainer">
-            <div class="close-player" onclick="closeVideo()">✖ CLOSE VIDEO</div>
-            <iframe id="videoPlayer" class="video-frame" src="" frameborder="0" allowfullscreen></iframe>
+            <div class="close-player" onclick="closeVideo()">✖ Close Video</div>
+            <div class="video-wrapper">
+                <iframe id="videoPlayer" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
         </div>
 
         <p>Your Curriculum:</p>
@@ -68,8 +70,6 @@
         <div onclick="loadVideo('PLudsFr1QJtbK1MkX-oILTeyyq7BBxRO0G')" id="rank-yellow" class="video-link" style="border-left-color: #ffff00;">🟡 Yellow Belt Material</div>
         <div onclick="loadVideo('YOUR_ORANGE_ID')" id="rank-orange" class="video-link" style="border-left-color: #ff8c00;">🟠 Orange Belt Material</div>
         <div onclick="loadVideo('YOUR_PURPLE_ID')" id="rank-purple" class="video-link" style="border-left-color: #800080;">🟣 Purple Belt Material</div>
-        <div onclick="loadVideo('YOUR_BLUE_ID')" id="rank-blue" class="video-link" style="border-left-color: #0000ff;">🔵 Blue Belt Material</div>
-        <div onclick="loadVideo('YOUR_INSTRUCTOR_ID')" id="rank-instructor" class="video-link" style="border-left-color: #ff0000;">🔴 Instructor Resources</div>
 
         <button class="logout-btn" onclick="location.reload()">Log Out</button>
     </div>
@@ -106,7 +106,7 @@
                 if (userDoc.exists()) {
                     showPortal(userDoc.data());
                 } else {
-                    alert("No rank assigned in database. Contact Sensei.");
+                    alert("No rank assigned. Contact Sensei.");
                 }
             } catch (e) {
                 errorMsg.style.display = 'block';
@@ -116,9 +116,8 @@
         function showPortal(userData) {
             document.getElementById('loginBox').style.display = 'none';
             document.getElementById('videoContent').style.display = 'block';
-            document.getElementById('welcomeTitle').innerText = "Welcome, " + (userData.name || "Student");
+            document.getElementById('welcomeTitle').innerText = "WELCOME, " + (userData.name || "STUDENT").toUpperCase();
 
-            // Logic to show links
             document.getElementById('rank-basics').style.display = 'block';
             const userRank = userData.rank ? userData.rank.toLowerCase() : '';
 
@@ -130,11 +129,11 @@
             }
         }
 
-        // Global functions for video player
         window.loadVideo = function(playlistId) {
             const player = document.getElementById('videoPlayer');
             const container = document.getElementById('playerContainer');
-            player.src = "https://www.youtube.com/embed/videoseries?list=" + playlistId;
+            // Adding listType=playlist helps the menu show up clearly
+            player.src = "https://www.youtube.com/embed/videoseries?list=" + playlistId + "&rel=0&showinfo=1";
             container.style.display = 'block';
             container.scrollIntoView({ behavior: 'smooth' });
         };
