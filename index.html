@@ -5,10 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tracy's Karate - Instructor & Student Portal</title>
     <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #1a1a1a; color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #1a1a1a; color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px 0; }
         .container { background: #2b2b2b; padding: 40px; border-radius: 12px; border-top: 6px solid #ffcc00; box-shadow: 0 15px 35px rgba(0,0,0,0.6); text-align: center; width: 90%; max-width: 450px; }
         
-        /* Header Styling with Logo */
         .header-container { display: flex; align-items: center; justify-content: center; margin-bottom: 20px; gap: 15px; }
         .logo { width: 60px; height: auto; border-radius: 4px; }
         h1 { color: #ffcc00; text-transform: uppercase; letter-spacing: 2px; margin: 0; font-size: 22px; }
@@ -24,10 +23,14 @@
         
         #error { color: #ff4d4d; font-size: 14px; margin-top: 15px; display: none; }
         
-        /* Hidden Video Section */
         #videoContent { display: none; text-align: left; }
-        .video-link { display: none; background: #333; color: #fff; padding: 18px; margin: 12px 0; text-decoration: none; border-left: 5px solid #ffcc00; border-radius: 4px; transition: 0.3s; font-weight: 600; }
+        .video-link { display: none; background: #333; color: #fff; padding: 18px; margin: 12px 0; text-decoration: none; border-left: 5px solid #ffcc00; border-radius: 4px; transition: 0.3s; font-weight: 600; cursor: pointer; }
         .video-link:hover { background: #444; padding-left: 25px; color: #ffcc00; }
+        
+        #playerContainer { display: none; margin-bottom: 20px; }
+        .close-player { background: #444; color: #ffcc00; font-size: 11px; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-bottom: 10px; display: inline-block; font-weight: bold; border: 1px solid #555; }
+        .video-frame { width: 100%; height: 250px; border-radius: 8px; border: 2px solid #ffcc00; background: #000; }
+        
         .logout-btn { background: #444; color: white; margin-top: 30px; font-size: 14px; }
     </style>
 </head>
@@ -39,23 +42,11 @@
             <h1>Material Access</h1>
         </div>
         <p>Tracy's Karate Parma Heights</p>
-        
-        <div class="notice">
-            <strong>INSTRUCTOR NOTICE:</strong> This portal is restricted to current Tracy's Karate instructors and active students. Login activity is monitored.
-        </div>
-
+        <div class="notice"><strong>INSTRUCTOR NOTICE:</strong> Login activity is monitored for security purposes.</div>
         <input type="email" id="emailInput" placeholder="Email Address">
         <input type="password" id="passInput" placeholder="Password">
         <button id="loginBtn">Enter Dojo</button>
         <div id="error">Invalid login credentials.</div>
-
-        <div style="margin-top: 25px; border-top: 1px solid #444; padding-top: 15px;">
-            <p style="margin-bottom: 5px; font-size: 12px; color: #888;">Trouble logging in?</p>
-            <a href="mailto:tracyskarateparmahts.website@gmail.com?subject=Dojo%20Portal%20Access%20Help" 
-               style="color: #ffcc00; text-decoration: none; font-size: 14px; font-weight: bold;">
-               📧 Contact Sensei for Support
-            </a>
-        </div>
     </div>
 
     <div class="container" id="videoContent">
@@ -63,10 +54,91 @@
             <img src="BLACK-TK.png" alt="Tracy's Logo" class="logo">
             <h1 id="welcomeTitle">Training Library</h1>
         </div>
+
+        <div id="playerContainer">
+            <div class="close-player" onclick="closeVideo()">✖ CLOSE VIDEO</div>
+            <iframe id="videoPlayer" class="video-frame" src="" frameborder="0" allowfullscreen></iframe>
+        </div>
+
         <p>Your Curriculum:</p>
 
-        <a href="https://www.youtube.com/playlist?list=PLudsFr1QJtbLfLddHmojVO4fen7GlvEVQ" id="rank-basics" class="video-link" style="border-left-color: #ffffff;">⚫ Basics & Fundamentals</a>
-        <a href="LINK" id="rank-yellow" class="video-link" style="border-left-color: #ffff00;">🟡 Yellow Belt Material</a>
-        <a href="LINK" id="rank-orange" class="video-link" style="border-left-color: #ff8c00;">🟠 Orange Belt Material</a>
-        <a href="LINK" id="rank-purple" class="video-link" style="border-left-color: #800080;">🟣 Purple Belt Material</a>
-        <a href="LINK
+        <div onclick="loadVideo('PLudsFr1QJtbLfLddHmojVO4fen7GlvEVQ')" id="rank-basics" class="video-link" style="border-left-color: #ffffff;">⚫ Basics & Fundamentals</div>
+        <div onclick="loadVideo('PLudsFr1QJtbK1MkX-oILTeyyq7BBxRO0G')" id="rank-yellow" class="video-link" style="border-left-color: #ffff00;">🟡 Yellow Belt Material</div>
+        <div onclick="loadVideo('ADD_ORANGE_ID_HERE')" id="rank-orange" class="video-link" style="border-left-color: #ff8c00;">🟠 Orange Belt Material</div>
+        <div onclick="loadVideo('ADD_PURPLE_ID_HERE')" id="rank-purple" class="video-link" style="border-left-color: #800080;">🟣 Purple Belt Material</div>
+        <div onclick="loadVideo('ADD_BLUE_ID_HERE')" id="rank-blue" class="video-link" style="border-left-color: #0000ff;">🔵 Blue Belt Material</div>
+        <div onclick="loadVideo('ADD_INSTRUCTOR_ID_HERE')" id="rank-instructor" class="video-link" style="border-left-color: #ff0000;">🔴 Instructor Resources</div>
+
+        <button class="logout-btn" onclick="location.reload()">Log Out</button>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyC35Ubf6GxyDi3JEiKWaYgVFkYGknMZrcw",
+            authDomain: "tracy-s-karate-portal.firebaseapp.com",
+            projectId: "tracy-s-karate-portal",
+            storageBucket: "tracy-s-karate-portal.appspot.com",
+            messagingSenderId: "236877703560",
+            appId: "1:236877703560:web:9a01e386b0e97dc229b23d"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const loginBtn = document.getElementById('loginBtn');
+        const errorMsg = document.getElementById('error');
+
+        loginBtn.addEventListener('click', async () => {
+            const email = document.getElementById('emailInput').value;
+            const pass = document.getElementById('passInput').value;
+
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, pass);
+                const userDoc = await getDoc(doc(db, "users", userCredential.user.uid));
+                
+                if (userDoc.exists()) {
+                    showPortal(userDoc.data());
+                } else {
+                    alert("No rank data found in database. Contact Sensei.");
+                }
+            } catch (e) {
+                errorMsg.style.display = 'block';
+            }
+        });
+
+        function showPortal(userData) {
+            document.getElementById('loginBox').style.display = 'none';
+            document.getElementById('videoContent').style.display = 'block';
+            document.getElementById('welcomeTitle').innerText = "Welcome, " + (userData.name || "Student");
+
+            document.getElementById('rank-basics').style.display = 'block';
+            const userRank = userData.rank ? userData.rank.toLowerCase() : '';
+
+            if (userRank === 'instructor') {
+                document.querySelectorAll('.video-link').forEach(link => link.style.display = 'block');
+            } else if (userRank) {
+                const specificRank = document.getElementById('rank-' + userRank);
+                if (specificRank) specificRank.style.display = 'block';
+            }
+        }
+
+        window.loadVideo = function(playlistId) {
+            const player = document.getElementById('videoPlayer');
+            const container = document.getElementById('playerContainer');
+            player.src = "https://www.youtube.com/embed/videoseries?list=" + playlistId;
+            container.style.display = 'block';
+            container.scrollIntoView({ behavior: 'smooth' });
+        };
+
+        window.closeVideo = function() {
+            document.getElementById('videoPlayer').src = ""; 
+            document.getElementById('playerContainer').style.display = 'none';
+        };
+    </script>
+</body>
+</html>
