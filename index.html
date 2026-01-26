@@ -11,7 +11,7 @@
         .container { background: var(--card); padding: 30px 20px; border-radius: 12px; border-top: 5px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 100%; max-width: 480px; margin-top: 20px; }
         .logo-img { width: 180px; height: auto; margin-bottom: 10px; }
         
-        /* VIDEO AREA - STABILIZED */
+        /* VIDEO AREA */
         .video-wrapper { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 8px; overflow: hidden; margin-bottom: 10px; border: 1px solid #444; }
         #ytPlayer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
         
@@ -66,29 +66,33 @@
                     <button class="control-btn" onclick="seek(10)">+10s</button>
                 </div>
             </div>
-            
-            <div id="belt-1" style="display:none;">
-                <div class="belt-header" onclick="toggleGate('yellow-techs')">🟡 Yellow Belt <span>▼</span></div>
-                <div id="yellow-techs" style="display:none;">
-                    <button class="tech-btn" onclick="loadVideo('19Ktd4FfDGg')">Yellow Belt History</button>
-                    <button class="tech-btn" onclick="loadVideo('JIFwfcykAY8')">1. Japanese Sword (A/B)</button>
-                    <button class="tech-btn" onclick="loadVideo('RoSuLCLOKuU')">2. Chinese Sword (A/B)</button>
-                    <button class="tech-btn" onclick="loadVideo('NjXYf4QOZnU')">3. Delayed Sword</button>
-                    <button class="tech-btn" onclick="loadVideo('SaCwJIsQWE8')">4. Knee of Vengeance</button>
-                    <button class="tech-btn" onclick="loadVideo('xNzobYNSQ4Y')">5. Fang of the Cobra (A/B)</button>
-                    <button class="tech-btn" onclick="loadVideo('ZJNmDVtXnBY')">6. Twisting Talon (A/B)</button>
-                    <button class="tech-btn" onclick="loadVideo('u0ceVbYXUXQ')">7. Returning Dragon</button>
-                    <button class="tech-btn" onclick="loadVideo('E44w7Eh73xs')">8. Breaking the Sword</button>
-                    <button class="tech-btn" onclick="loadVideo('yvrhFEiuHKc')">9. Kenpo Shield (A/B)</button>
-                    <button class="tech-btn" onclick="loadVideo('i-vyUr_6xZU')">10. Evasion</button>
-                </div>
-            </div>
 
-            <div id="belt-2" style="display:none;">
-                <div class="belt-header" onclick="toggleGate('orange-techs')">🟠 Orange Belt <span>▼</span></div>
-                <div id="orange-techs" style="display:none;">
-                    <button class="tech-btn" onclick="loadVideo('34h_COkntes')">1. Sumo</button>
-                    <button class="tech-btn" onclick="loadVideo('RoSuLCLOKuU')">2. Attacking the Circle</button>
+            <input type="text" id="videoSearch" placeholder="🔍 Search techniques..." onkeyup="searchVideos()" style="margin-bottom:15px;">
+            
+            <div id="videoContainer">
+                <div id="belt-1" class="belt-group" style="display:none;">
+                    <div class="belt-header" onclick="toggleGate('yellow-techs')">🟡 Yellow Belt <span>▼</span></div>
+                    <div id="yellow-techs" class="tech-list" style="display:none;">
+                        <button class="tech-btn" onclick="loadVideo('19Ktd4FfDGg')">Yellow Belt History</button>
+                        <button class="tech-btn" onclick="loadVideo('JIFwfcykAY8')">1. Japanese Sword (A/B)</button>
+                        <button class="tech-btn" onclick="loadVideo('RoSuLCLOKuU')">2. Chinese Sword (A/B)</button>
+                        <button class="tech-btn" onclick="loadVideo('NjXYf4QOZnU')">3. Delayed Sword</button>
+                        <button class="tech-btn" onclick="loadVideo('SaCwJIsQWE8')">4. Knee of Vengeance</button>
+                        <button class="tech-btn" onclick="loadVideo('xNzobYNSQ4Y')">5. Fang of the Cobra (A/B)</button>
+                        <button class="tech-btn" onclick="loadVideo('ZJNmDVtXnBY')">6. Twisting Talon (A/B)</button>
+                        <button class="tech-btn" onclick="loadVideo('u0ceVbYXUXQ')">7. Returning Dragon</button>
+                        <button class="tech-btn" onclick="loadVideo('E44w7Eh73xs')">8. Breaking the Sword</button>
+                        <button class="tech-btn" onclick="loadVideo('yvrhFEiuHKc')">9. Kenpo Shield (A/B)</button>
+                        <button class="tech-btn" onclick="loadVideo('i-vyUr_6xZU')">10. Evasion</button>
+                    </div>
+                </div>
+
+                <div id="belt-2" class="belt-group" style="display:none;">
+                    <div class="belt-header" onclick="toggleGate('orange-techs')">🟠 Orange Belt <span>▼</span></div>
+                    <div id="orange-techs" class="tech-list" style="display:none;">
+                        <button class="tech-btn" onclick="loadVideo('34h_COkntes')">1. Sumo</button>
+                        <button class="tech-btn" onclick="loadVideo('RoSuLCLOKuU')">2. Attacking the Circle</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -132,8 +136,10 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, collection, onSnapshot, updateDoc, addDoc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, collection, onSnapshot, updateDoc, addDoc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore as getDB } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+        // Manually re-mapping because of module scope
         const firebaseConfig = { 
             apiKey: "AIzaSyC35Ubf6GxyDi3JEiKWaYgVFkYGknMZrcw",
             authDomain: "tracy-s-karate-portal.firebaseapp.com",
@@ -144,67 +150,51 @@
         };
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        const db = getFirestore(app);
+        const db = getDB(app);
 
         let ytPlayer, currentUserRank = 0, studentsList = [];
 
-        // YOUTUBE INIT - NOW ATTACHED TO WINDOW PROPERLY
+        // YT PLAYER INIT
         window.onYouTubeIframeAPIReady = () => {
-            console.log("YouTube API Ready");
-            initPlayer();
+            ytPlayer = new YT.Player('ytPlayer', {
+                height: '100%', width: '100%', videoId: '19Ktd4FfDGg',
+                playerVars: { 'controls': 0, 'rel': 0, 'modestbranding': 1, 'playsinline': 1 },
+                events: { 'onStateChange': (e) => { document.getElementById('playPauseBtn').innerText = (e.data === 1) ? "Pause" : "Play"; }}
+            });
         };
 
-        function initPlayer() {
-            ytPlayer = new YT.Player('ytPlayer', {
-                height: '100%', width: '100%',
-                videoId: '19Ktd4FfDGg', // Pre-load Yellow History so it's ready
-                playerVars: { 'controls': 0, 'rel': 0, 'modestbranding': 1, 'playsinline': 1 },
-                events: {
-                    'onReady': () => console.log("Player Active"),
-                    'onStateChange': (e) => {
-                        document.getElementById('playPauseBtn').innerText = (e.data === 1) ? "Pause" : "Play";
-                    }
+        // EXPOSED VIDEO FUNCTIONS
+        window.loadVideo = (id) => { if(ytPlayer && ytPlayer.loadVideoById) ytPlayer.loadVideoById(id); };
+        window.togglePlay = () => { const s = ytPlayer.getPlayerState(); s === 1 ? ytPlayer.pauseVideo() : ytPlayer.playVideo(); };
+        window.seek = (s) => ytPlayer.seekTo(ytPlayer.getCurrentTime() + s, true);
+        
+        window.searchVideos = () => {
+            const q = document.getElementById('videoSearch').value.toLowerCase();
+            const techButtons = document.querySelectorAll('.tech-btn');
+            techButtons.forEach(btn => {
+                // Only search within the video curriculum buttons, not the menu buttons
+                if(btn.closest('#videoContainer')) {
+                    const isMatch = btn.innerText.toLowerCase().includes(q);
+                    btn.style.display = isMatch ? "block" : "none";
                 }
             });
-        }
-
-        // GLOBAL VIDEO CONTROLS
-        window.loadVideo = (id) => {
-            if (ytPlayer && ytPlayer.loadVideoById) {
-                ytPlayer.loadVideoById(id);
-            } else {
-                // If player crashed, try to re-init
-                initPlayer();
-                setTimeout(() => ytPlayer.loadVideoById(id), 1000);
-            }
+            // Auto-open belts if searching
+            document.querySelectorAll('.tech-list').forEach(list => {
+                if(q.length > 1) list.style.display = 'block';
+            });
         };
 
-        window.togglePlay = () => {
-            const state = ytPlayer.getPlayerState();
-            state === 1 ? ytPlayer.pauseVideo() : ytPlayer.playVideo();
-        };
-
-        window.seek = (s) => ytPlayer.seekTo(ytPlayer.getCurrentTime() + s, true);
-
-        // UI HELPERS
-        window.toggleGate = (id) => {
-            const el = document.getElementById(id);
-            el.style.display = (el.style.display === "none") ? "block" : "none";
-        };
-
-        window.showMainMenu = () => {
-            document.querySelectorAll('#portalView > div:not(:first-child)').forEach(d => d.style.display='none');
-            document.getElementById('mainMenu').style.display='block';
-        };
-
-        window.openSection = (id) => {
-            document.querySelectorAll('#portalView > div:not(:first-child)').forEach(d => d.style.display='none');
+        // UI NAVIGATION
+        window.toggleGate = (id) => { const el = document.getElementById(id); el.style.display = (el.style.display === "none") ? "block" : "none"; };
+        window.showMainMenu = () => { document.querySelectorAll('#portalView > div:not(:first-child)').forEach(d => d.style.display='none'); document.getElementById('mainMenu').style.display='block'; };
+        window.openSection = (id) => { 
+            document.querySelectorAll('#portalView > div:not(:first-child)').forEach(d => d.style.display='none'); 
             document.getElementById(id).style.display='block';
             if(id === 'adminDashboard') syncRoster();
             if(id === 'staffDashboard') syncStaff();
         };
 
-        // ADMIN ROSTER LOGIC
+        // ADMIN ROSTER
         const syncRoster = () => {
             onSnapshot(query(collection(db, "students"), orderBy("fullName")), (snap) => {
                 let html = `<table>`; studentsList = [];
@@ -214,68 +204,30 @@
                         <td><b>${s.fullName}</b><br><small>${s.phone || ''}</small></td>
                         <td style="text-align:right;">${currentUserRank >= 15 ? `<button class="control-btn" onclick="event.stopPropagation(); window.editStudent('${id}', ${JSON.stringify(s).replace(/"/g, '&quot;')})">EDIT</button>` : ''}</td>
                     </tr>
-                    <tr id="det-${id}" style="display:none;"><td colspan="2" style="background:#222; padding:10px; font-size:12px; border-radius:4px;">
-                        <b>Email:</b> ${s.email}<br><b>Notes:</b> ${s.comments}
-                    </td></tr>`;
+                    <tr id="det-${id}" style="display:none;"><td colspan="2" style="background:#222; padding:10px; font-size:12px; border-radius:4px;">Email: ${s.email}<br>Notes: ${s.comments}</td></tr>`;
                 });
                 document.getElementById('rosterTableArea').innerHTML = html + "</table>";
             });
         };
 
-        window.toggleDetail = (id) => {
-            const el = document.getElementById(`det-${id}`);
-            el.style.display = el.style.display === "none" ? "table-row" : "none";
-        };
-
-        window.searchRoster = () => {
-            const q = document.getElementById('rosterSearch').value.toLowerCase();
-            document.querySelectorAll('.sr-row').forEach(r => r.style.display = r.innerText.toLowerCase().includes(q) ? "" : "none");
-        };
-
-        window.prepareAdd = () => { 
-            document.getElementById('editId').value = ""; 
-            ['fName','fPhone','fEmail','fComments'].forEach(i => document.getElementById(i).value=""); 
-            window.switchAdmin('studentForm'); 
-        };
-
-        window.editStudent = (id, s) => { 
-            document.getElementById('editId').value = id; 
-            document.getElementById('fName').value = s.fullName; 
-            document.getElementById('fPhone').value = s.phone; 
-            document.getElementById('fEmail').value = s.email; 
-            document.getElementById('fComments').value = s.comments; 
-            window.switchAdmin('studentForm'); 
-        };
-
-        window.switchAdmin = (id) => {
-            document.querySelectorAll('.admin-tab').forEach(t => t.style.display='none');
-            document.getElementById(id).style.display='block';
-        };
-
+        window.toggleDetail = (id) => { const el = document.getElementById(`det-${id}`); el.style.display = el.style.display === "none" ? "table-row" : "none"; };
+        window.searchRoster = () => { const q = document.getElementById('rosterSearch').value.toLowerCase(); document.querySelectorAll('.sr-row').forEach(r => r.style.display = r.innerText.toLowerCase().includes(q) ? "" : "none"); };
+        window.prepareAdd = () => { document.getElementById('editId').value = ""; ['fName','fPhone','fEmail','fComments'].forEach(i => document.getElementById(i).value=""); window.switchAdmin('studentForm'); };
+        window.editStudent = (id, s) => { document.getElementById('editId').value = id; document.getElementById('fName').value = s.fullName; document.getElementById('fPhone').value = s.phone; document.getElementById('fEmail').value = s.email; document.getElementById('fComments').value = s.comments; window.switchAdmin('studentForm'); };
+        window.switchAdmin = (id) => { document.querySelectorAll('.admin-tab').forEach(t => t.style.display='none'); document.getElementById(id).style.display='block'; };
         window.handleSave = async () => {
             const id = document.getElementById('editId').value;
-            const data = { 
-                fullName: document.getElementById('fName').value, 
-                phone: document.getElementById('fPhone').value, 
-                email: document.getElementById('fEmail').value, 
-                comments: document.getElementById('fComments').value, 
-                updatedAt: serverTimestamp() 
-            };
-            if(id) await updateDoc(doc(db, "students", id), data); 
-            else await addDoc(collection(db, "students"), data);
+            const data = { fullName: document.getElementById('fName').value, phone: document.getElementById('fPhone').value, email: document.getElementById('fEmail').value, comments: document.getElementById('fComments').value, updatedAt: serverTimestamp() };
+            if(id) await updateDoc(doc(db, "students", id), data); else await addDoc(collection(db, "students"), data);
             window.switchAdmin('listView');
         };
-
         window.exportStudents = () => {
-            let csv = "Name,Phone,Email,Notes\n";
-            studentsList.forEach(s => csv += `"${s.fullName}","${s.phone}","${s.email}","${s.comments}"\n`);
-            const blob = new Blob([csv], {type:'text/csv'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href=url; a.download='Tracy_Roster.csv'; a.click();
+            let csv = "Name,Phone,Email\n"; studentsList.forEach(s => csv += `"${s.fullName}","${s.phone}","${s.email}"\n`);
+            const blob = new Blob([csv], {type:'text/csv'}); const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href=url; a.download='Roster.csv'; a.click();
         };
 
-        // STAFF PERMISSIONS
+        // STAFF
         const syncStaff = () => {
             onSnapshot(collection(db, "users"), (snap) => {
                 let html = `<table><tr><th>NAME</th><th>LVL</th><th></th></tr>`;
@@ -287,12 +239,9 @@
                 document.getElementById('staffTableArea').innerHTML = html + "</table>";
             });
         };
-        window.updateRank = async (id) => { 
-            await updateDoc(doc(db, "users", id), { rankLevel: parseInt(document.getElementById(`lvl-${id}`).value) }); 
-            alert("Level Updated"); 
-        };
+        window.updateRank = async (id) => { await updateDoc(doc(db, "users", id), { rankLevel: parseInt(document.getElementById(`lvl-${id}`).value) }); alert("Updated"); };
 
-        // LOGIN ENGINE
+        // LOGIN
         document.getElementById('loginBtn').onclick = async () => {
             try {
                 const cred = await signInWithEmailAndPassword(auth, document.getElementById('emailInput').value, document.getElementById('passInput').value);
@@ -301,35 +250,15 @@
                     currentUserRank = snap.data().rankLevel;
                     document.getElementById('loginBox').style.display = 'none';
                     document.getElementById('portalView').style.display = 'block';
-                    
-                    // Show hidden tabs based on rank
                     if(currentUserRank >= 14) document.getElementById('rosterBtn').style.display = 'block';
-                    if(currentUserRank >= 15) { 
-                        document.getElementById('staffBtn').style.display = 'block'; 
-                        document.getElementById('addNewBtn').style.display = 'block'; 
-                        document.getElementById('exportBtn').style.display = 'block'; 
-                    }
-                    // Unlock Belts
-                    for(let i=0; i<=currentUserRank && i<=13; i++) { 
-                        if(document.getElementById(`belt-${i}`)) document.getElementById(`belt-${i}`).style.display = 'block'; 
-                    }
+                    if(currentUserRank >= 15) { document.getElementById('staffBtn').style.display = 'block'; document.getElementById('addNewBtn').style.display = 'block'; document.getElementById('exportBtn').style.display = 'block'; }
+                    for(let i=0; i<=currentUserRank && i<=13; i++) { if(document.getElementById(`belt-${i}`)) document.getElementById(`belt-${i}`).style.display = 'block'; }
                 }
-            } catch(e) { alert("Login failed. Please check credentials."); }
+            } catch(e) { alert("Login failed"); }
         };
 
-        // SEEKBAR TRACKING
-        setInterval(() => { 
-            if(ytPlayer && ytPlayer.getCurrentTime && ytPlayer.getDuration) {
-                const perc = (ytPlayer.getCurrentTime() / ytPlayer.getDuration()) * 100;
-                document.getElementById('seekBar').value = perc || 0;
-            }
-        }, 500);
-
-        document.getElementById('seekBar').oninput = function() { 
-            if(ytPlayer && ytPlayer.getDuration) {
-                ytPlayer.seekTo(ytPlayer.getDuration() * (this.value / 100), true); 
-            }
-        };
+        setInterval(() => { if(ytPlayer && ytPlayer.getCurrentTime) document.getElementById('seekBar').value = (ytPlayer.getCurrentTime() / ytPlayer.getDuration()) * 100; }, 500);
+        document.getElementById('seekBar').oninput = function() { ytPlayer.seekTo(ytPlayer.getDuration() * (this.value / 100), true); };
     </script>
 </body>
 </html>
