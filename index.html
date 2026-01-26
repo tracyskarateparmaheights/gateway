@@ -7,7 +7,12 @@
     <style>
         :root { --gold: #ffcc00; --bg: #1a1a1a; --card: #2b2b2b; --input-bg: #1e1e1e; --green: #2ecc71; --red: #e74c3c; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg); color: white; margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; box-sizing: border-box; }
-        .logo { width: 120px; height: auto; margin-bottom: 10px; border-radius: 50%; border: 2px solid var(--gold); }
+        
+        /* Logo Styles */
+        .logo-container { margin-bottom: 20px; }
+        .logo-img { width: 180px; height: auto; border-radius: 8px; filter: drop-shadow(0 0 10px rgba(0,0,0,0.7)); }
+        .mini-logo { height: 45px; width: auto; vertical-align: middle; border-radius: 4px; }
+
         .container { background: var(--card); padding: 30px 20px; border-radius: 12px; border-top: 5px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 100%; max-width: 450px; margin-top: 20px; }
         h1, h2, h3 { color: var(--gold); text-transform: uppercase; letter-spacing: 1.5px; margin: 10px 0; }
         input, select, textarea { width: 100%; padding: 16px; margin-bottom: 12px; border-radius: 8px; border: 1px solid #444; background: var(--input-bg); color: white; font-size: 16px; box-sizing: border-box; outline: none; }
@@ -19,8 +24,7 @@
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th { color: var(--gold); border-bottom: 1px solid #444; padding: 8px; font-size: 11px; text-transform: uppercase; text-align: left; }
         td { padding: 12px 8px; border-bottom: 1px solid #222; vertical-align: top; font-size: 13px; }
-        .sr-detail { font-size: 11px; color: #aaa; background: #1a1a1a; line-height: 1.4; border-bottom: 2px solid #333; }
-        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; text-transform: uppercase; border:none; cursor: pointer; }
+        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; text-transform: uppercase; }
         .status-paid { background: var(--green); color: #000; }
         .status-due { background: var(--red); color: #fff; }
         .belt-header { background: #3d3d3d; padding: 16px; margin-top: 10px; border-radius: 8px; font-weight: 600; color: var(--gold); cursor: pointer; display: flex; justify-content: space-between; }
@@ -31,7 +35,9 @@
 <body>
 
     <div class="container" id="loginBox">
-        <img src="https://images.squarespace-cdn.com/content/v1/59400263f7e0ab07e5e19191/1497368685116-IWW5W539G3B68I1WJS38/image-asset.png" alt="Logo" class="logo">
+        <div class="logo-container">
+            <img src="Black_TK.png" class="logo-img" alt="Tracy Karate Logo" onerror="this.src='https://via.placeholder.com/180x100/2b2b2b/ffcc00?text=Tracy+Karate'">
+        </div>
         <h1>Dojo Portal</h1>
         <input type="email" id="emailInput" placeholder="Email">
         <input type="password" id="passInput" placeholder="Password">
@@ -41,7 +47,7 @@
     <div class="container" id="portalView" style="display:none;">
         <div style="display:flex; justify-content:space-between; align-items: center; margin-bottom:20px;">
             <button class="nav-btn" id="homeBtn" onclick="showMainMenu()" style="display:none;">🏠 Menu</button>
-            <img src="https://images.squarespace-cdn.com/content/v1/59400263f7e0ab07e5e19191/1497368685116-IWW5W539G3B68I1WJS38/image-asset.png" alt="Logo" style="height: 40px; width: auto;">
+            <img src="Black_TK.png" class="mini-logo" alt="Logo" onerror="this.style.visibility='hidden'">
             <button class="nav-btn" onclick="location.reload()" style="background:#822;">Log Out</button>
         </div>
 
@@ -57,7 +63,7 @@
         </div>
 
         <div id="adminDashboard" style="display:none;">
-            <h3 id="adminTitle">Student Roster</h3>
+            <h3>Student Roster</h3>
             <div id="adminControls" style="display:none; gap:5px; margin-bottom:15px;">
                 <button class="nav-btn" onclick="prepareAdd()">+ Add Student</button>
                 <button class="nav-btn" onclick="exportRoster()" style="background:#2e7d32;">📥 Export</button>
@@ -101,13 +107,7 @@
             </div>
 
             <div class="belt-header" onclick="toggleGate('list-orange', 2)">🟠 Orange Belt <span>▼</span></div>
-            <div id="list-orange" style="display:none; padding:10px;"><p style="color:#666;">Orange curriculum coming soon...</p></div>
-            <div class="belt-header" onclick="toggleGate('list-purple', 3)">🟣 Purple Belt <span>▼</span></div>
-            <div id="list-purple" style="display:none; padding:10px;"><p style="color:#666;">Purple curriculum coming soon...</p></div>
-            <div class="belt-header" onclick="toggleGate('list-blue', 4)">🔵 Blue Belt <span>▼</span></div>
-            <div id="list-blue" style="display:none; padding:10px;"><p style="color:#666;">Blue curriculum coming soon...</p></div>
-            <div class="belt-header" onclick="toggleGate('list-black', 15)">⚫ Black Belt <span>▼</span></div>
-            <div id="list-black" style="display:none; padding:10px;"><p style="color:#666;">Master Curriculum...</p></div>
+            <div id="list-orange" style="display:none; padding:10px;"><p style="color:#666;">Orange coming soon...</p></div>
         </div>
     </div>
 
@@ -130,6 +130,7 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
         let userRank = 0;
+        let studentsData = {}; // MEMORY CACHE FIX
 
         document.getElementById('loginBtn').addEventListener('click', async () => {
             const email = document.getElementById('emailInput').value.trim();
@@ -165,50 +166,45 @@
 
         window.loadStaff = async () => {
             const area = document.getElementById('staffTableArea');
-            area.innerHTML = "Loading Users...";
+            area.innerHTML = "Syncing users...";
             try {
                 const snap = await getDocs(collection(db, "users"));
                 let html = `<table><tr><th>User</th><th>Lvl</th><th>✔</th></tr>`;
                 snap.forEach(docSnap => {
                     const u = docSnap.data();
-                    const name = u.fullName || u.email || "Unknown";
-                    html += `<tr><td>${name}</td>
-                    <td><input type="number" id="lvl-${docSnap.id}" value="${u.rankLevel || 0}" style="width:40px;"></td>
-                    <td><button onclick="updateRank('${docSnap.id}')" style="background:var(--gold); padding:5px; border-radius:4px;">Save</button></td></tr>`;
+                    html += `<tr><td>${u.fullName || u.email || 'User'}</td>
+                    <td><input type="number" id="lvl-${docSnap.id}" value="${u.rankLevel || 0}" style="width:45px;"></td>
+                    <td><button onclick="updateRank('${docSnap.id}')" style="background:var(--gold); padding:5px; border-radius:4px;">✔</button></td></tr>`;
                 });
                 area.innerHTML = html + "</table>";
-            } catch (e) { area.innerHTML = "Error loading users."; }
+            } catch (e) { area.innerHTML = "Permissions Error."; }
         };
 
         window.updateRank = async (uid) => {
             const val = parseInt(document.getElementById(`lvl-${uid}`).value);
             await updateDoc(doc(db, "users", uid), { rankLevel: val });
-            alert("Rank Updated");
+            alert("Updated.");
         };
 
         window.loadRoster = async () => {
             const area = document.getElementById('rosterTableArea');
             const snap = await getDocs(query(collection(db, "students"), orderBy("fullName")));
             let html = `<table><tr><th>Name</th><th>Belt</th><th>Status</th></tr>`;
+            studentsData = {}; // Clear cache before reload
             snap.forEach(docSnap => {
                 const s = docSnap.data(), id = docSnap.id;
+                studentsData[id] = s; // CACHE DATA TO ID
                 const statusClass = s.tuitionStatus ? 'status-paid' : 'status-due';
-                const sName = (s.fullName || "").replace(/'/g, "\\'");
-                const sNotes = (s.notes || "").replace(/'/g, "\\'").replace(/\n/g, " ");
-
                 html += `
                 <tr class="sr-main">
                     <td><b>${s.fullName}</b></td>
                     <td>${s.beltRank}</td>
-                    <td><button onclick="${userRank >= 15 ? `toggleQuickStatus('${id}', ${s.tuitionStatus})` : ''}" class="status-badge ${statusClass}">${s.tuitionStatus?'Paid':'Due'}</button></td>
+                    <td><span class="status-badge ${statusClass}">${s.tuitionStatus?'Paid':'Due'}</span></td>
                 </tr>
                 <tr class="sr-detail">
-                    <td colspan="2"><b>Ph:</b> ${s.phone}<br><b>Guardian:</b> ${s.guardian}<br><b>Notes:</b> ${s.notes || '--'}</td>
+                    <td colspan="2" style="font-size:11px; color:#aaa;">Ph: ${s.phone}<br>Notes: ${s.notes || '--'}</td>
                     <td style="text-align:right;">
-                        ${userRank >= 15 ? `
-                            <button onclick="editStudent('${id}','${sName}','${s.phone}','${s.guardian}','${s.beltRank}',${s.tuitionStatus},'${sNotes}')" style="background:#444; color:var(--gold); padding:5px; width:100%; border-radius:4px; margin-bottom:4px;">Edit</button>
-                            <button onclick="delEnt('${id}')" style="background:#400; color:#fff; padding:5px; width:100%; border-radius:4px;">Del</button>
-                        ` : '<i>Read-Only</i>'}
+                        ${userRank >= 15 ? `<button onclick="editStudent('${id}')" style="background:#444; color:var(--gold); padding:6px; border-radius:4px;">Edit</button>` : ''}
                     </td>
                 </tr>`;
             });
@@ -227,7 +223,7 @@
         };
 
         window.toggleGate = (id, req) => {
-            if (userRank < req && userRank < 15) return alert("Rank Level " + req + " Required.");
+            if (userRank < req && userRank < 15) return alert("Higher Rank Required.");
             const e = document.getElementById(id); e.style.display = (e.style.display === "none") ? "block" : "none";
         };
 
@@ -237,29 +233,42 @@
         };
 
         window.switchAdminTab = (id) => { document.querySelectorAll('.admin-tab').forEach(t => t.style.display = 'none'); document.getElementById(id).style.display = 'block'; };
-        window.prepareAdd = () => { document.getElementById('editStudentId').value = ""; ['sName', 'sPhone', 'sGuardian', 'sBelt', 'sNotes'].forEach(id => document.getElementById(id).value = ""); switchAdminTab('studentForm'); };
         
-        window.editStudent = (id, n, p, g, b, s, nt) => { 
+        window.prepareAdd = () => { 
+            document.getElementById('editStudentId').value = ""; 
+            ['sName', 'sPhone', 'sGuardian', 'sBelt', 'sNotes'].forEach(f => document.getElementById(f).value = ""); 
+            switchAdminTab('studentForm'); 
+        };
+        
+        // STABLE EDIT: Grabs from cache using ID
+        window.editStudent = (id) => {
+            const s = studentsData[id];
             document.getElementById('editStudentId').value = id; 
-            document.getElementById('sName').value = n; 
-            document.getElementById('sPhone').value = p; 
-            document.getElementById('sGuardian').value = g; 
-            document.getElementById('sBelt').value = b; 
-            document.getElementById('sTuition').value = s.toString(); 
-            document.getElementById('sNotes').value = nt; 
+            document.getElementById('sName').value = s.fullName; 
+            document.getElementById('sPhone').value = s.phone; 
+            document.getElementById('sGuardian').value = s.guardian || ""; 
+            document.getElementById('sBelt').value = s.beltRank; 
+            document.getElementById('sTuition').value = s.tuitionStatus.toString(); 
+            document.getElementById('sNotes').value = s.notes || ""; 
             switchAdminTab('studentForm'); 
         };
 
         window.handleSave = async () => {
             const id = document.getElementById('editStudentId').value;
-            const data = { fullName: document.getElementById('sName').value, phone: document.getElementById('sPhone').value, guardian: document.getElementById('sGuardian').value, beltRank: document.getElementById('sBelt').value, tuitionStatus: document.getElementById('sTuition').value === 'true', notes: document.getElementById('sNotes').value, lastTestDate: serverTimestamp() };
-            if(id) await updateDoc(doc(db, "students", id), data); else await addDoc(collection(db, "students"), data);
+            const data = { 
+                fullName: document.getElementById('sName').value, 
+                phone: document.getElementById('sPhone').value, 
+                guardian: document.getElementById('sGuardian').value, 
+                beltRank: document.getElementById('sBelt').value, 
+                tuitionStatus: document.getElementById('sTuition').value === 'true', 
+                notes: document.getElementById('sNotes').value, 
+                lastUpdate: serverTimestamp() 
+            };
+            if(id) await updateDoc(doc(db, "students", id), data); 
+            else await addDoc(collection(db, "students"), data);
             loadRoster(); switchAdminTab('listView');
         };
-        
-        window.toggleQuickStatus = async (id, cur) => { await updateDoc(doc(db, "students", id), { tuitionStatus: !cur }); loadRoster(); };
-        window.delEnt = async (id) => { if(confirm("Delete?")) { await deleteDoc(doc(db, "students", id)); loadRoster(); } };
-        
+
         window.exportRoster = async () => {
             const snap = await getDocs(collection(db, "students"));
             let csv = "Name,Belt,Phone,Status\n";
