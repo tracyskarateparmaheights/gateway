@@ -4,57 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Tracy's Karate - Portal</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#ffcc00">
+    
     <link rel="icon" type="image/x-icon" href="favicon.ico">
+    
     <style>
         :root { --gold: #ffcc00; --bg: #1a1a1a; --card: #2b2b2b; --input-bg: #1e1e1e; }
-        
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; 
-            background-color: var(--bg); color: white; margin: 0; padding: 15px; 
-            display: flex; flex-direction: column; align-items: center; 
-            min-height: 100vh; box-sizing: border-box; 
-        }
-
-        .container { 
-            background: var(--card); padding: 30px 20px; border-radius: 12px; 
-            border-top: 5px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
-            text-align: center; width: 100%; max-width: 420px; margin-top: 20px;
-        }
-        
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg); color: white; margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; box-sizing: border-box; }
+        .container { background: var(--card); padding: 30px 20px; border-radius: 12px; border-top: 5px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 100%; max-width: 420px; margin-top: 20px; }
         .logo { width: 70px; height: auto; margin-bottom: 10px; }
         h1 { color: var(--gold); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 25px; font-size: 20px; }
-
-        input[type="email"], input[type="password"], .search-box { 
-            width: 100%; padding: 16px; margin-bottom: 12px; border-radius: 8px; 
-            border: 1px solid #444; background: var(--input-bg); color: white; 
-            font-size: 16px; box-sizing: border-box; outline: none;
-        }
-
-        #loginBtn { 
-            width: 100%; padding: 18px; background-color: var(--gold); color: #000; 
-            border: none; border-radius: 8px; font-size: 17px; font-weight: 700; 
-            text-transform: uppercase; cursor: pointer; 
-        }
-
+        input[type="email"], input[type="password"], .search-box { width: 100%; padding: 16px; margin-bottom: 12px; border-radius: 8px; border: 1px solid #444; background: var(--input-bg); color: white; font-size: 16px; box-sizing: border-box; outline: none; }
+        #loginBtn { width: 100%; padding: 18px; background-color: var(--gold); color: #000; border: none; border-radius: 8px; font-size: 17px; font-weight: 700; text-transform: uppercase; cursor: pointer; }
         .top-nav { display: flex; justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid #444; padding-bottom: 15px; }
         .nav-btn { background: #444; color: #fff; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; }
-        
-        #playerContainer { display: none; margin-bottom: 25px; width: 100%; scroll-margin-top: 20px; }
+        #playerContainer { display: none; margin-bottom: 25px; width: 100%; }
         .video-box { position: relative; width: 100%; padding-bottom: 56.25%; background: #000; border-radius: 8px; overflow: hidden; border: 2px solid var(--gold); }
         #player { position: absolute; top: -65px; left: 0; width: 100%; height: calc(100% + 130px); }
-
         #masterList { width: 100%; text-align: left; }
         .belt-header { background: #3d3d3d; padding: 16px; margin-top: 10px; border-radius: 8px; font-weight: 600; color: var(--gold); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
-        
-        .tech-btn { 
-            background: #222; color: #eee; padding: 16px; margin: 8px 0; 
-            border-radius: 6px; cursor: pointer; text-align: left; font-size: 14px; 
-            border-left: 4px solid var(--gold); display: block; width: 100%; 
-            box-sizing: border-box; position: relative; z-index: 10;
-        }
-
+        .tech-btn { background: #222; color: #eee; padding: 16px; margin: 8px 0; border-radius: 6px; cursor: pointer; text-align: left; font-size: 14px; border-left: 4px solid var(--gold); display: block; width: 100%; box-sizing: border-box; }
         #portalView { display: none; width: 100%; }
-        #progressBar { width: 100%; margin-top: 15px; accent-color: var(--gold); cursor: pointer; }
+        #progressBar { width: 100%; margin-top: 15px; accent-color: var(--gold); }
     </style>
 </head>
 <body>
@@ -111,23 +86,58 @@
                 </div>
             </div>
 
-            <div class="rank-group" id="group-orange" data-level="2"><div class="belt-header" onclick="toggleGroup('list-orange')">🟠 Orange Belt <span>▼</span></div><div id="list-orange" style="display:none;"></div></div>
-            <div class="rank-group" id="group-purple" data-level="3"><div class="belt-header" onclick="toggleGroup('list-purple')">🟣 Purple Belt <span>▼</span></div><div id="list-purple" style="display:none;"></div></div>
-            <div class="rank-group" id="group-blue" data-level="4"><div class="belt-header" onclick="toggleGroup('list-blue')">🔵 Blue Belt <span>▼</span></div><div id="list-blue" style="display:none;"></div></div>
-            <div class="rank-group" id="group-green" data-level="5"><div class="belt-header" onclick="toggleGroup('list-green')">🟢 Green Belt <span>▼</span></div><div id="list-green" style="display:none;"></div></div>
+            <div class="rank-group" id="group-orange" data-level="2">
+                <div class="belt-header" onclick="toggleGroup('list-orange')">🟠 Orange Belt <span>▼</span></div>
+                <div id="list-orange" style="display:none; padding-top: 5px;">
+                    <div class="tech-btn" onclick="loadVideo('VIDEO_ID')">Orange Technique 1</div>
+                </div>
+            </div>
 
-            <div class="rank-group" id="group-brown" data-level="6"><div class="belt-header" onclick="toggleGroup('list-brown')">🟤 Brown Belt Curriculum <span>▼</span></div><div id="list-brown" style="display:none;"></div></div>
-            <div class="rank-group" id="group-black" data-level="9"><div class="belt-header" onclick="toggleGroup('list-black')">⚫ Black Belt Material <span>▼</span></div><div id="list-black" style="display:none;"></div></div>
+            <div class="rank-group" id="group-purple" data-level="3">
+                <div class="belt-header" onclick="toggleGroup('list-purple')">🟣 Purple Belt <span>▼</span></div>
+                <div id="list-purple" style="display:none; padding-top: 5px;">
+                    <div class="tech-btn" onclick="loadVideo('VIDEO_ID')">Purple Technique 1</div>
+                </div>
+            </div>
+
+            <div class="rank-group" id="group-blue" data-level="4">
+                <div class="belt-header" onclick="toggleGroup('list-blue')">🔵 Blue Belt <span>▼</span></div>
+                <div id="list-blue" style="display:none; padding-top: 5px;">
+                    <div class="tech-btn" onclick="loadVideo('VIDEO_ID')">Blue Technique 1</div>
+                </div>
+            </div>
+
+            <div class="rank-group" id="group-green" data-level="5">
+                <div class="belt-header" onclick="toggleGroup('list-green')">🟢 Green Belt <span>▼</span></div>
+                <div id="list-green" style="display:none; padding-top: 5px;">
+                    <div class="tech-btn" onclick="loadVideo('VIDEO_ID')">Green Technique 1</div>
+                </div>
+            </div>
+
+            <div class="rank-group" id="group-brown" data-level="6">
+                <div class="belt-header" onclick="toggleGroup('list-brown')">🟤 Brown Belt <span>▼</span></div>
+                <div id="list-brown" style="display:none; padding-top: 5px;">
+                    <div class="tech-btn" onclick="loadVideo('VIDEO_ID')">Brown Belt Material</div>
+                </div>
+            </div>
+
+            <div class="rank-group" id="group-black" data-level="9">
+                <div class="belt-header" onclick="toggleGroup('list-black')">⚫ Black Belt <span>▼</span></div>
+                <div id="list-black" style="display:none; padding-top: 5px;">
+                    <div class="tech-btn" onclick="loadVideo('VIDEO_ID')">Black Belt Material</div>
+                </div>
+            </div>
 
             <div class="rank-group" id="group-sensei" data-level="15">
-                <div class="belt-header" onclick="toggleGroup('list-sensei')" style="border: 1px solid var(--gold);">🥋 Instructor Master Keys <span>▼</span></div>
-                <div id="list-sensei" style="display:none; padding-top: 5px;"></div>
+                <div class="belt-header" onclick="toggleGroup('list-sensei')" style="border: 1px solid var(--gold);">🥋 Instructor Keys <span>▼</span></div>
+                <div id="list-sensei" style="display:none; padding-top: 5px;">
+                    <div class="tech-btn" onclick="loadVideo('dQw4w9WgXcQ')">Instructor Training</div>
+                </div>
             </div>
         </div>
     </div>
 
     <script src="https://www.youtube.com/iframe_api"></script>
-
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -148,51 +158,39 @@
 
         let currentUserLevel = 0;
         let isPlaying = false;
-        let progressTimer;
-
-        // Enter Key Login Logic
-        [emailInput, passInput].forEach(field => {
-            field.addEventListener('keypress', (e) => { if (e.key === 'Enter') doLogin(); });
-        });
 
         async function doLogin() {
             try {
                 const cred = await signInWithEmailAndPassword(auth, emailInput.value, passInput.value);
                 const snap = await getDoc(doc(db, "users", cred.user.uid));
-                
                 if (snap.exists()) {
                     currentUserLevel = snap.data().rankLevel || 0;
                     applyRankRights();
                     document.getElementById('loginBox').style.display = 'none';
                     document.getElementById('portalView').style.display = 'block';
                 } else {
-                    // Specific Database Match Error
-                    alert("Access Denied: No record found for UID " + cred.user.uid);
+                    alert("Success! Now create a Firestore document named: " + cred.user.uid);
                 }
-            } catch (e) { 
-                console.error("Firebase Error:", e.code);
-                // Specifically catches the 403 Forbidden
+            } catch (e) {
                 if (e.code === 'auth/network-request-failed') {
-                    alert("Security Error: API Key restricted. Check Google Cloud settings.");
+                    alert("Security Error: API Key Restricted. Check Google Cloud.");
                 } else {
-                    alert("Login Failed: " + e.message);
+                    alert("Access Denied. Ensure your account is authorized.");
                 }
             }
         }
-        document.getElementById('loginBtn').addEventListener('click', doLogin);
 
+        document.getElementById('loginBtn').addEventListener('click', doLogin);
         function applyRankRights() {
             document.querySelectorAll('.rank-group').forEach(group => {
                 const req = parseInt(group.getAttribute('data-level'));
                 group.style.display = (currentUserLevel >= req) ? 'block' : 'none';
             });
         }
-
         window.toggleGroup = (id) => {
             const el = document.getElementById(id);
             el.style.display = (el.style.display === "none") ? "block" : "none";
         };
-
         window.loadVideo = (id) => {
             document.getElementById('playerContainer').style.display = 'block';
             if (window.player && window.player.loadVideoById) {
@@ -201,35 +199,12 @@
                 window.player = new YT.Player('player', {
                     videoId: id,
                     playerVars: { 'autoplay': 1, 'controls': 0, 'playsinline': 1 },
-                    events: { 'onStateChange': (e) => { isPlaying = (e.data == 1); if(isPlaying) startBarUpdate(); } }
+                    events: { 'onStateChange': (e) => { isPlaying = (e.data == 1); } }
                 });
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
-
-        function startBarUpdate() {
-            clearInterval(progressTimer);
-            progressTimer = setInterval(() => {
-                if (window.player && isPlaying && window.player.getDuration) {
-                    let curr = window.player.getCurrentTime();
-                    let dur = window.player.getDuration();
-                    document.getElementById('progressBar').value = (curr / dur) * 100;
-                }
-            }, 500);
-        }
-
-        window.scrub = (value) => {
-            if (window.player && window.player.getDuration) {
-                window.player.seekTo((value / 100) * window.player.getDuration(), true);
-            }
-        };
-
-        window.togglePlay = () => isPlaying ? window.player.pauseVideo() : window.player.playVideo();
-        window.rewind = () => window.player.seekTo(window.player.getCurrentTime() - 10);
-        window.fastForward = () => window.player.seekTo(window.player.getCurrentTime() + 10);
-        window.closePlayer = () => { if(window.player) window.player.stopVideo(); document.getElementById('playerContainer').style.display='none'; };
-        window.goBack = () => { document.getElementById('globalSearch').value = ""; filterAll(); closePlayer(); };
-
+        window.goBack = () => { document.getElementById('globalSearch').value = ""; filterAll(); };
         window.filterAll = () => {
             const query = document.getElementById('globalSearch').value.toLowerCase();
             document.querySelectorAll('.rank-group').forEach(group => {
