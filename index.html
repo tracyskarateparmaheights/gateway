@@ -8,7 +8,7 @@
         :root { --gold: #ffcc00; --bg: #1a1a1a; --card: #2b2b2b; --input-bg: #1e1e1e; --green: #2ecc71; --red: #e74c3c; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg); color: white; margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; box-sizing: border-box; }
         
-        .container { background: var(--card); padding: 30px 20px; border-radius: 12px; border-top: 5px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 100%; max-width: 450px; margin-top: 20px; }
+        .container { background: var(--card); padding: 30px 20px; border-radius: 12px; border-top: 5px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 100%; max-width: 480px; margin-top: 20px; }
         .logo-img { width: 180px; height: auto; margin-bottom: 20px; }
         
         /* VIDEO AREA & CUSTOM CONTROLS */
@@ -22,21 +22,24 @@
         #seekBar { width: 100%; height: 6px; appearance: none; background: #555; border-radius: 5px; cursor: pointer; outline: none; }
         #seekBar::-webkit-slider-thumb { appearance: none; width: 16px; height: 16px; background: var(--gold); border-radius: 50%; border: 2px solid #000; }
 
-        /* STAFF UI FIXES */
-        .lvl-input { width: 75px !important; text-align: center; padding: 10px !important; margin: 0; background: #111; color: var(--gold); border: 1px solid #444; border-radius: 4px; }
-        table { width: 100%; border-collapse: collapse; }
-        td { padding: 12px 5px; border-bottom: 1px solid #333; font-size: 14px; text-align: left; }
+        /* TABLES & ROSTER */
+        .admin-tab { display: none; text-align: left; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { color: var(--gold); font-size: 11px; text-transform: uppercase; border-bottom: 1px solid #444; padding-bottom: 8px; text-align: left; }
+        td { padding: 12px 5px; border-bottom: 1px solid #333; font-size: 13px; text-align: left; vertical-align: top; }
+        .lvl-input { width: 70px !important; text-align: center; padding: 8px !important; background: #111; color: var(--gold); border: 1px solid #444; }
         
-        /* CURRICULUM SCROLLING */
-        .curriculum-scroll { max-height: 400px; overflow-y: auto; text-align: left; padding-right: 5px; }
-        .curriculum-scroll::-webkit-scrollbar { width: 5px; }
-        .curriculum-scroll::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
-        
-        .belt-header { background: #3d3d3d; padding: 15px; margin-top: 10px; border-radius: 8px; color: var(--gold); cursor: pointer; display: flex; justify-content: space-between; font-weight: bold; font-size: 14px; }
-        .tech-btn { background: #222; color: #eee; padding: 14px; margin: 5px 0; border-radius: 6px; border-left: 4px solid var(--gold); width: 100%; cursor: pointer; display: block; text-align: left; font-size: 13px; }
-        .tech-btn:active { background: #444; }
+        /* Expanded Roster Detail */
+        .roster-detail { font-size: 12px; color: #bbb; padding: 10px; background: #222; border-radius: 4px; margin: 5px 0; display: none; }
+        .roster-detail b { color: var(--gold); }
 
-        input[type="text"], input[type="email"], input[type="password"] { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #444; background: var(--input-bg); color: white; box-sizing: border-box; }
+        /* CURRICULUM */
+        .curriculum-scroll { max-height: 400px; overflow-y: auto; text-align: left; padding-right: 5px; }
+        .belt-header { background: #3d3d3d; padding: 15px; margin-top: 10px; border-radius: 8px; color: var(--gold); cursor: pointer; display: flex; justify-content: space-between; font-weight: bold; }
+        .tech-btn { background: #222; color: #eee; padding: 14px; margin: 5px 0; border-radius: 6px; border-left: 4px solid var(--gold); width: 100%; cursor: pointer; display: block; text-align: left; font-size: 13px; }
+
+        input, select, textarea { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #444; background: var(--input-bg); color: white; box-sizing: border-box; font-size: 14px; }
+        textarea { height: 80px; resize: none; }
     </style>
 </head>
 <body>
@@ -45,7 +48,7 @@
         <img src="https://raw.githubusercontent.com/tracyskarateparmaheights/gateway/main/BLACK-TK.png" class="logo-img">
         <input type="email" id="emailInput" placeholder="Email">
         <input type="password" id="passInput" placeholder="Password">
-        <button id="loginBtn" style="width:100%; padding:18px; background:var(--gold); border:none; border-radius:8px; font-weight:bold; cursor:pointer;">Sign In</button>
+        <button id="loginBtn" class="control-btn" style="width:100%; padding:18px;">Sign In</button>
     </div>
 
     <div class="container" id="portalView" style="display:none;">
@@ -54,11 +57,14 @@
             <button class="control-btn" onclick="location.reload()" style="background:var(--red); color:white;">Log Out</button>
         </div>
 
-        <div id="curriculumSection" style="display:none;">
-            <div class="video-wrapper">
-                <div id="ytPlayer"></div>
-            </div>
+        <div id="mainMenu">
+            <button class="tech-btn" style="padding:25px; text-align:center; font-size:18px;" onclick="openSection('curriculumSection')">🥋 Video Library</button>
+            <button class="tech-btn" style="padding:25px; text-align:center; font-size:18px; display:none;" id="rosterBtn" onclick="openSection('adminDashboard')">👥 Student Roster</button>
+            <button class="tech-btn" style="padding:25px; text-align:center; font-size:18px; display:none;" id="staffBtn" onclick="openSection('staffDashboard')">🛡️ Staff Access</button>
+        </div>
 
+        <div id="curriculumSection" style="display:none;">
+            <div class="video-wrapper"><div id="ytPlayer"></div></div>
             <div class="custom-controls">
                 <input type="range" id="seekBar" value="0" step="0.1">
                 <div class="control-row">
@@ -67,12 +73,12 @@
                     <button class="control-btn" onclick="seek(10)">+10s</button>
                 </div>
             </div>
-
-            <input type="text" id="vidSearch" placeholder="🔍 Search Curriculum..." onkeyup="searchVideos()">
             
+            <input type="text" id="vidSearch" placeholder="🔍 Search Curriculum..." onkeyup="searchVideos()">
+
             <div class="curriculum-scroll">
                 <div class="belt-header" onclick="toggleGate('list-yellow')">🟡 Yellow Belt <span>▼</span></div>
-                <div id="list-yellow" class="belt-content" style="display:none;">
+                <div id="list-yellow" style="display:none;">
                     <button class="tech-btn" onclick="changeVid('19Ktd4FfDGg')">Yellow History</button>
                     <button class="tech-btn" onclick="changeVid('JIFwfcykAY8')">Japanese Sword</button>
                     <button class="tech-btn" onclick="changeVid('RoSuLCLOKuU')">Chinese Sword</button>
@@ -85,11 +91,36 @@
                     <button class="tech-btn" onclick="changeVid('i-vyUr_6xZU')">Evasion</button>
                     <button class="tech-btn" onclick="changeVid('E44w7Eh73xs')">Breaking the Sword</button>
                 </div>
-
                 <div class="belt-header" onclick="toggleGate('list-orange')">🟠 Orange Belt <span>▼</span></div>
-                <div id="list-orange" class="belt-content" style="display:none;">
-                    <button class="tech-btn" onclick="changeVid('VIDEO_ID_HERE')">TBA</button>
-                </div>
+                <div id="list-orange" style="display:none;">
+                    <button class="tech-btn" onclick="changeVid('ID_HERE')">TBA</button>
+                    </div>
+            </div>
+        </div>
+
+        <div id="adminDashboard" style="display:none;">
+            <div style="display:flex; justify-content: space-between; align-items: center;">
+                <h3>Student Roster</h3>
+                <button class="control-btn" onclick="prepareAdd()">+ New</button>
+            </div>
+
+            <div id="studentForm" class="admin-tab">
+                <input type="hidden" id="editId">
+                <input type="text" id="fName" placeholder="Student Name">
+                <input type="text" id="fParent" placeholder="Parent/Guardian">
+                <input type="text" id="fPhone" placeholder="Phone Number">
+                <input type="email" id="fEmail" placeholder="Email Address">
+                <input type="text" id="fAddress" placeholder="Mailing Address">
+                <input type="text" id="fCity" placeholder="City / Zip Code">
+                <input type="text" id="fSource" placeholder="How did you hear about us?">
+                <textarea id="fComments" placeholder="Comments"></textarea>
+                <button class="control-btn" style="width:100%; margin-bottom:5px;" onclick="handleSave()">Save Record</button>
+                <button class="control-btn" style="width:100%; background:transparent; color:#888;" onclick="switchAdmin('listView')">Cancel</button>
+            </div>
+
+            <div id="listView" class="admin-tab" style="display:block;">
+                <input type="text" id="rosterSearch" placeholder="🔍 Search Records..." onkeyup="searchRoster()">
+                <div id="rosterTableArea"></div>
             </div>
         </div>
 
@@ -97,20 +128,14 @@
             <h3>Staff Permissions</h3>
             <div id="staffTableArea"></div>
         </div>
-
-        <div id="mainMenu">
-            <button class="tech-btn" style="padding:25px; font-size:18px; text-align:center;" onclick="openSection('curriculumSection')">🥋 Video Library</button>
-            <button class="tech-btn" style="padding:25px; font-size:18px; text-align:center; display:none;" id="staffBtn" onclick="openSection('staffDashboard')">🛡️ Staff Access</button>
-        </div>
     </div>
 
     <script src="https://www.youtube.com/iframe_api"></script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, collection, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, collection, onSnapshot, updateDoc, addDoc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // CONFIG (Ensure this matches your actual Firebase Project)
         const firebaseConfig = { 
             apiKey: "AIzaSyC35Ubf6GxyDi3JEiKWaYgVFkYGknMZrcw",
             authDomain: "tracy-s-karate-portal.firebaseapp.com",
@@ -123,96 +148,154 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        let player;
-        let progressTimer;
+        let player, progressTimer, studentsData = {};
 
-        // PLAYER LOGIC
+        // VIDEO LOGIC
         window.onYouTubeIframeAPIReady = () => {
             player = new YT.Player('ytPlayer', {
                 videoId: '19Ktd4FfDGg',
                 playerVars: { 'controls': 0, 'disablekb': 1, 'modestbranding': 1, 'rel': 0, 'playsinline': 1 },
-                events: { 'onStateChange': onPlayerStateChange }
+                events: { 'onStateChange': (e) => {
+                    const btn = document.getElementById('playPauseBtn');
+                    if (e.data === 1) { 
+                        btn.innerText = "Pause"; 
+                        progressTimer = setInterval(() => { document.getElementById('seekBar').value = (player.getCurrentTime()/player.getDuration())*100; }, 500);
+                    } else { 
+                        btn.innerText = "Play"; 
+                        clearInterval(progressTimer); 
+                    }
+                }}
+            });
+        };
+        window.togglePlay = () => player.getPlayerState() === 1 ? player.pauseVideo() : player.playVideo();
+        window.seek = (s) => player.seekTo(player.getCurrentTime() + s, true);
+        window.changeVid = (id) => player.loadVideoById(id);
+
+        // ROSTER LOGIC
+        window.syncRoster = () => {
+            onSnapshot(query(collection(db, "students"), orderBy("fullName")), (snap) => {
+                let html = `<table><tr><th>Student</th><th>Contact</th><th></th></tr>`;
+                studentsData = {};
+                snap.forEach(docSnap => {
+                    const s = docSnap.data();
+                    const id = docSnap.id;
+                    studentsData[id] = s;
+                    html += `<tr class="sr-row" onclick="toggleDetail('${id}')">
+                        <td><b>${s.fullName || '---'}</b><br><small>${s.parentName || ''}</small></td>
+                        <td>${s.phone || ''}</td>
+                        <td><button class="control-btn" style="padding:5px;" onclick="event.stopPropagation(); editStudent('${id}')">EDIT</button></td>
+                    </tr>
+                    <tr id="det-${id}" class="roster-detail-row" style="display:none;"><td colspan="3">
+                        <div class="roster-detail">
+                            <b>Email:</b> ${s.email || 'N/A'}<br>
+                            <b>Address:</b> ${s.address || ''}, ${s.cityZip || ''}<br>
+                            <b>Source:</b> ${s.source || ''}<br>
+                            <b>Comments:</b> ${s.comments || ''}
+                        </div>
+                    </td></tr>`;
+                });
+                document.getElementById('rosterTableArea').innerHTML = html + "</table>";
             });
         };
 
-        window.togglePlay = () => {
-            const state = player.getPlayerState();
-            state === 1 ? player.pauseVideo() : player.playVideo();
+        window.toggleDetail = (id) => {
+            const el = document.getElementById(`det-${id}`);
+            el.style.display = el.style.display === "none" ? "table-row" : "none";
         };
 
-        window.seek = (sec) => { player.seekTo(player.getCurrentTime() + sec, true); };
-        window.changeVid = (id) => { player.loadVideoById(id); };
-
-        function onPlayerStateChange(event) {
-            const btn = document.getElementById('playPauseBtn');
-            if (event.data === 1) {
-                btn.innerText = "Pause";
-                progressTimer = setInterval(() => {
-                    const val = (player.getCurrentTime() / player.getDuration()) * 100;
-                    document.getElementById('seekBar').value = val || 0;
-                }, 500);
-            } else {
-                btn.innerText = "Play";
-                clearInterval(progressTimer);
-            }
-        }
-
-        document.getElementById('seekBar').oninput = function() {
-            player.seekTo(player.getDuration() * (this.value / 100), true);
+        window.prepareAdd = () => {
+            document.getElementById('editId').value = "";
+            ['fName', 'fParent', 'fPhone', 'fEmail', 'fAddress', 'fCity', 'fSource', 'fComments'].forEach(i => document.getElementById(i).value = "");
+            switchAdmin('studentForm');
         };
 
-        // STAFF NAME & LEVEL UI FIX
+        window.editStudent = (id) => {
+            const s = studentsData[id];
+            document.getElementById('editId').value = id;
+            document.getElementById('fName').value = s.fullName || "";
+            document.getElementById('fParent').value = s.parentName || "";
+            document.getElementById('fPhone').value = s.phone || "";
+            document.getElementById('fEmail').value = s.email || "";
+            document.getElementById('fAddress').value = s.address || "";
+            document.getElementById('fCity').value = s.cityZip || "";
+            document.getElementById('fSource').value = s.source || "";
+            document.getElementById('fComments').value = s.comments || "";
+            switchAdmin('studentForm');
+        };
+
+        window.handleSave = async () => {
+            const id = document.getElementById('editId').value;
+            const data = {
+                fullName: document.getElementById('fName').value,
+                parentName: document.getElementById('fParent').value,
+                phone: document.getElementById('fPhone').value,
+                email: document.getElementById('fEmail').value,
+                address: document.getElementById('fAddress').value,
+                cityZip: document.getElementById('fCity').value,
+                source: document.getElementById('fSource').value,
+                comments: document.getElementById('fComments').value,
+                updated: serverTimestamp()
+            };
+            if(id) await updateDoc(doc(db, "students", id), data);
+            else await addDoc(collection(db, "students"), data);
+            switchAdmin('listView');
+        };
+
+        window.searchRoster = () => {
+            const q = document.getElementById('rosterSearch').value.toLowerCase();
+            document.querySelectorAll('.sr-row').forEach(r => r.style.display = r.innerText.toLowerCase().includes(q) ? "" : "none");
+        };
+
+        window.switchAdmin = (id) => {
+            document.querySelectorAll('.admin-tab').forEach(t => t.style.display = 'none');
+            document.getElementById(id).style.display = 'block';
+        };
+
+        // STAFF LOGIC
         window.syncStaff = () => {
             onSnapshot(collection(db, "users"), (snap) => {
-                let html = `<table><tr><th>Staff Name</th><th>Rank Lvl</th><th></th></tr>`;
+                let html = `<table><tr><th>Name</th><th>LVL</th><th></th></tr>`;
                 snap.forEach(docSnap => {
                     const u = docSnap.data();
-                    html += `<tr><td>${u.name || "Unknown"}</td>
-                    <td><input type="number" class="lvl-input" id="lvl-${docSnap.id}" value="${u.rankLevel || 0}"></td>
+                    html += `<tr><td>${u.name || "User"}</td><td><input type="number" class="lvl-input" id="lvl-${docSnap.id}" value="${u.rankLevel || 0}"></td>
                     <td><button class="control-btn" onclick="updateRank('${docSnap.id}')">✔</button></td></tr>`;
                 });
                 document.getElementById('staffTableArea').innerHTML = html + "</table>";
             });
         };
-
-        window.updateRank = async (uid) => {
-            const val = parseInt(document.getElementById(`lvl-${uid}`).value);
-            await updateDoc(doc(db, "users", uid), { rankLevel: val });
-            alert("Updated Successfully");
+        window.updateRank = async (id) => {
+            await updateDoc(doc(db, "users", id), { rankLevel: parseInt(document.getElementById(`lvl-${id}`).value) });
+            alert("Updated");
         };
 
-        // NAVIGATION
+        // NAV
         document.getElementById('loginBtn').onclick = async () => {
             try {
                 const cred = await signInWithEmailAndPassword(auth, document.getElementById('emailInput').value, document.getElementById('passInput').value);
                 const snap = await getDoc(doc(db, "users", cred.user.uid));
                 if (snap.exists()) {
+                    const rank = snap.data().rankLevel;
                     document.getElementById('loginBox').style.display = 'none';
                     document.getElementById('portalView').style.display = 'block';
-                    if (snap.data().rankLevel >= 15) document.getElementById('staffBtn').style.display = 'block';
+                    if (rank >= 10) document.getElementById('rosterBtn').style.display = 'block';
+                    if (rank >= 15) document.getElementById('staffBtn').style.display = 'block';
                 }
-            } catch (e) { alert("Login failed. Check credentials."); }
+            } catch (e) { alert("Login failed"); }
         };
-
         window.openSection = (id) => {
-            document.getElementById('mainMenu').style.display = 'none';
+            document.querySelectorAll('#portalView > div:not(:first-child)').forEach(d => d.style.display = 'none');
             document.getElementById(id).style.display = 'block';
-            if(id === 'staffDashboard') syncStaff();
+            if (id === 'adminDashboard') syncRoster();
+            if (id === 'staffDashboard') syncStaff();
         };
-
         window.showMainMenu = () => {
-            document.querySelectorAll('#portalView > div:not(:first-child):not(:first-child)').forEach(d => d.style.display = 'none');
+            document.querySelectorAll('#portalView > div:not(:first-child)').forEach(d => d.style.display = 'none');
             document.getElementById('mainMenu').style.display = 'block';
         };
-
-        window.toggleGate = (id) => {
-            const el = document.getElementById(id);
-            el.style.display = el.style.display === "none" ? "block" : "none";
-        };
-
+        window.toggleGate = (id) => { const el = document.getElementById(id); el.style.display = el.style.display === "none" ? "block" : "none"; };
         window.searchVideos = () => {
             const q = document.getElementById('vidSearch').value.toLowerCase();
-            document.querySelectorAll('.tech-btn').forEach(b => b.style.display = b.innerText.toLowerCase().includes(q) ? "block" : "none");
+            document.querySelectorAll('.tech-btn').forEach(b => b.style.display = b.innerText.toLowerCase().includes(q) ? "" : "none");
         };
     </script>
 </body>
