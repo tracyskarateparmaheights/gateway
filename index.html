@@ -16,7 +16,7 @@
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg); color: white; margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; box-sizing: border-box; }
         .container { background: var(--card); padding: 30px 20px; border-radius: 12px; border-top: 5px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 100%; max-width: 450px; margin-top: 20px; }
         .logo { width: 70px; height: auto; margin-bottom: 10px; }
-        h1, h2, h3 { color: var(--gold); text-transform: uppercase; letter-spacing: 1.5px; }
+        h1, h2, h3 { color: var(--gold); text-transform: uppercase; letter-spacing: 1.5px; margin: 10px 0; }
         input, select, textarea { width: 100%; padding: 16px; margin-bottom: 12px; border-radius: 8px; border: 1px solid #444; background: var(--input-bg); color: white; font-size: 16px; box-sizing: border-box; outline: none; }
         button { cursor: pointer; transition: 0.2s; border: none; }
         #loginBtn { width: 100%; padding: 18px; background-color: var(--gold); color: #000; border-radius: 8px; font-size: 17px; font-weight: 700; }
@@ -32,8 +32,8 @@
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th { color: var(--gold); border-bottom: 1px solid #444; padding: 8px; font-size: 11px; text-transform: uppercase; text-align: left; }
         td { padding: 12px 8px; border-bottom: 1px solid #222; vertical-align: top; font-size: 13px; }
-        .detail-row { font-size: 11px; color: #aaa; background: #1e1e1e; line-height: 1.4; }
-        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; text-transform: uppercase; cursor: pointer; border: none; }
+        .detail-row { font-size: 11px; color: #aaa; background: #1e1e1e; line-height: 1.4; border-bottom: 2px solid #333; }
+        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; text-transform: uppercase; cursor: pointer; }
         .status-paid { background: var(--green); color: #000; }
         .status-due { background: var(--red); color: #fff; }
     </style>
@@ -61,39 +61,43 @@
         </div>
 
         <div id="adminDashboard" style="display:none;">
-            <h3 style="text-align:left;">Student Management</h3>
-            <div style="display:flex; gap:8px; margin-bottom:15px;">
-                <button class="nav-btn" id="addNewStudentBtn" onclick="switchAdminTab('addForm')" style="flex:1;">+ Add New</button>
-                <button class="nav-btn" onclick="switchAdminTab('listView'); loadRoster();" style="flex:1;">👥 Roster</button>
+            <h3 id="adminTitle">Student Roster</h3>
+            <div style="display:flex; gap:5px; margin-bottom:15px;">
+                <button class="nav-btn" id="addNewStudentBtn" onclick="prepareAdd()" style="flex:1;">+ Add</button>
+                <button class="nav-btn" onclick="switchAdminTab('listView'); loadRoster();" style="flex:1;">👥 View</button>
+                <button class="nav-btn" id="exportBtn" onclick="exportRoster()" style="flex:1; background:#2e7d32;">📥 Export</button>
             </div>
-            <div id="addForm" class="admin-tab">
-                <input type="text" id="newStudentName" placeholder="Full Name">
-                <input type="text" id="newStudentPhone" placeholder="Phone Number">
-                <input type="text" id="newStudentGuardian" placeholder="Guardian">
-                <input type="text" id="newStudentBelt" placeholder="Belt Rank">
-                <label style="font-size: 12px; color: var(--gold);">Initial Tuition Status:</label>
-                <select id="newStudentTuition">
-                    <option value="true">Paid</option>
-                    <option value="false">Due</option>
+            
+            <div id="studentForm" class="admin-tab">
+                <input type="hidden" id="editStudentId">
+                <input type="text" id="sName" placeholder="Full Name">
+                <input type="text" id="sPhone" placeholder="Phone Number">
+                <input type="text" id="sGuardian" placeholder="Guardian">
+                <input type="text" id="sBelt" placeholder="Belt Rank">
+                <label style="font-size: 11px; color: var(--gold);">Tuition Status:</label>
+                <select id="sTuition">
+                    <option value="true">Paid / Active</option>
+                    <option value="false">Due / Inactive</option>
                 </select>
-                <textarea id="newStudentNotes" placeholder="Notes" style="height:70px;"></textarea>
-                <button onclick="saveStudent()" style="width:100%; padding:15px; background:var(--gold); border-radius:8px; font-weight:bold; color:#000;">Save Record</button>
+                <textarea id="sNotes" placeholder="Student Notes..." style="height:70px;"></textarea>
+                <button id="saveBtn" onclick="handleSave()" style="width:100%; padding:15px; background:var(--gold); border-radius:8px; font-weight:bold; color:#000;">Save Record</button>
             </div>
+
             <div id="listView" class="admin-tab">
-                <input type="text" id="rosterSearch" placeholder="🔍 Search roster..." onkeyup="searchRoster()">
+                <input type="text" id="rosterSearch" placeholder="🔍 Search..." onkeyup="searchRoster()">
                 <div id="rosterTableArea" style="max-height: 500px; overflow-y: auto;"></div>
             </div>
         </div>
 
         <div id="curriculumSection" style="display:none;">
-            <h3 style="text-align:left;">Instructor Curriculum</h3>
+            <h3>Video Library</h3>
             <div id="playerContainer">
                 <div class="video-box"><div id="player"></div></div>
                 <input type="range" id="progressBar" value="0" min="0" max="100" step="0.1" oninput="scrubVideo(this.value)">
                 <div style="display:flex; gap:5px; margin-top:10px;">
-                    <button class="nav-btn" onclick="skip(-10)" style="flex:1;">⏪ -10s</button>
+                    <button class="nav-btn" onclick="skip(-10)">⏪ -10s</button>
                     <button class="nav-btn" id="playPauseBtn" onclick="togglePlayback()" style="flex:1; background:var(--gold); color:#000;">⏸ Pause</button>
-                    <button class="nav-btn" onclick="skip(10)" style="flex:1;">+10s ⏩</button>
+                    <button class="nav-btn" onclick="skip(10)">+10s ⏩</button>
                     <button class="nav-btn" onclick="closeVideo()" style="background:#600;">✖</button>
                 </div>
             </div>
@@ -103,13 +107,6 @@
                 <button class="tech-btn" onclick="playVid('JIFwfcykAY8')">Japanese Sword</button>
                 <button class="tech-btn" onclick="playVid('RoSuLCLOKuU')">Chinese Sword</button>
                 <button class="tech-btn" onclick="playVid('NjXYf4QOZnU')">Delayed Sword</button>
-                <button class="tech-btn" onclick="playVid('SaCwJIsQWE8')">Knee of Vengeance</button>
-                <button class="tech-btn" onclick="playVid('xNzobYNSQ4Y')">Fang of the Cobra</button>
-                <button class="tech-btn" onclick="playVid('ZJNmDVtXnBY')">Twisted Talon</button>
-                <button class="tech-btn" onclick="playVid('u0ceVbYXUXQ')">Returning Dragon</button>
-                <button class="tech-btn" onclick="playVid('yvrhFEiuHKc')">Kenpo Shield</button>
-                <button class="tech-btn" onclick="playVid('i-vyUr_6xZU')">Evasion</button>
-                <button class="tech-btn" onclick="playVid('E44w7Eh73xs')">Breaking the Sword</button>
             </div>
         </div>
     </div>
@@ -135,39 +132,32 @@
 
         let userRank = 0, isPlaying = false, scrubberInterval;
 
-        const eField = document.getElementById('emailInput'), pField = document.getElementById('passInput');
-        [eField, pField].forEach(f => f.addEventListener('keypress', (e) => { if(e.key === 'Enter') doLogin(); }));
-        document.getElementById('loginBtn').addEventListener('click', doLogin);
-
-        async function doLogin() {
+        document.getElementById('loginBtn').addEventListener('click', async () => {
             try {
-                const cred = await signInWithEmailAndPassword(auth, eField.value, pField.value);
+                const cred = await signInWithEmailAndPassword(auth, document.getElementById('emailInput').value, document.getElementById('passInput').value);
                 const snap = await getDoc(doc(db, "users", cred.user.uid));
                 if (snap.exists()) {
                     userRank = snap.data().rankLevel || 0;
                     document.getElementById('loginBox').style.display = 'none';
                     document.getElementById('portalView').style.display = 'block';
-                    const dbBtn = document.getElementById('dbMenuBtn'), curBtn = document.getElementById('curMenuBtn'), addBtn = document.getElementById('addNewStudentBtn');
-                    if (userRank >= 15) { dbBtn.style.display = 'block'; curBtn.style.display = 'block'; }
-                    else if (userRank === 10) { dbBtn.style.display = 'block'; curBtn.style.display = 'none'; addBtn.style.display = 'none'; }
-                    else if (userRank >= 1 && userRank < 10) { dbBtn.style.display = 'none'; curBtn.style.display = 'block'; }
+                    document.getElementById('dbMenuBtn').style.display = userRank >= 10 ? 'block' : 'none';
+                    document.getElementById('curMenuBtn').style.display = userRank >= 1 ? 'block' : 'none';
                 }
-            } catch (err) { alert("Access Denied."); }
-        }
+            } catch (err) { alert("Login Error"); }
+        });
 
         window.showMainMenu = () => {
             document.getElementById('mainMenu').style.display = 'block';
             document.getElementById('adminDashboard').style.display = 'none';
             document.getElementById('curriculumSection').style.display = 'none';
             document.getElementById('homeBtn').style.display = 'none';
-            if(window.player) window.player.stopVideo();
         };
 
         window.openSection = (id) => {
             document.getElementById('mainMenu').style.display = 'none';
             document.getElementById(id).style.display = 'block';
             document.getElementById('homeBtn').style.display = 'block';
-            if(id === 'adminDashboard') { switchAdminTab('listView'); loadRoster(); }
+            if(id === 'adminDashboard') loadRoster();
         };
 
         window.switchAdminTab = (id) => {
@@ -175,65 +165,65 @@
             document.getElementById(id).style.display = 'block';
         };
 
-        window.saveStudent = async () => {
-            const data = {
-                fullName: document.getElementById('newStudentName').value,
-                phone: document.getElementById('newStudentPhone').value,
-                guardian: document.getElementById('newStudentGuardian').value,
-                beltRank: document.getElementById('newStudentBelt').value,
-                tuitionStatus: document.getElementById('newStudentTuition').value === 'true',
-                notes: document.getElementById('newStudentNotes').value,
-                lastTestDate: serverTimestamp()
-            };
-            if(!data.fullName) return alert("Name Required");
-            try {
-                await addDoc(collection(db, "students"), data);
-                alert("Saved!");
-                ['newStudentName', 'newStudentPhone', 'newStudentGuardian', 'newStudentBelt', 'newStudentNotes'].forEach(i => document.getElementById(i).value = "");
-                loadRoster();
-            } catch (e) { alert("Error: Permission Denied"); }
+        window.prepareAdd = () => {
+            document.getElementById('adminTitle').innerText = "Add Student";
+            document.getElementById('editStudentId').value = "";
+            ['sName', 'sPhone', 'sGuardian', 'sBelt', 'sNotes'].forEach(id => document.getElementById(id).value = "");
+            switchAdminTab('studentForm');
         };
 
-        window.toggleTuition = async (id, currentStatus) => {
-            if(userRank < 10) return; // Only Staff/Sensei can toggle
+        window.editStudent = (id, name, phone, guardian, belt, status, notes) => {
+            document.getElementById('adminTitle').innerText = "Edit Student";
+            document.getElementById('editStudentId').value = id;
+            document.getElementById('sName').value = name;
+            document.getElementById('sPhone').value = phone;
+            document.getElementById('sGuardian').value = guardian;
+            document.getElementById('sBelt').value = belt;
+            document.getElementById('sTuition').value = status.toString();
+            document.getElementById('sNotes').value = notes;
+            switchAdminTab('studentForm');
+        };
+
+        window.handleSave = async () => {
+            const id = document.getElementById('editStudentId').value;
+            const data = {
+                fullName: document.getElementById('sName').value,
+                phone: document.getElementById('sPhone').value,
+                guardian: document.getElementById('sGuardian').value,
+                beltRank: document.getElementById('sBelt').value,
+                tuitionStatus: document.getElementById('sTuition').value === 'true',
+                notes: document.getElementById('sNotes').value,
+                lastTestDate: serverTimestamp()
+            };
             try {
-                const studentRef = doc(db, "students", id);
-                await updateDoc(studentRef, { tuitionStatus: !currentStatus });
-                loadRoster();
-            } catch (e) { alert("Update failed: " + e.message); }
+                if(id) await updateDoc(doc(db, "students", id), data);
+                else await addDoc(collection(db, "students"), data);
+                alert("Success!"); loadRoster(); switchAdminTab('listView');
+            } catch (e) { alert("No Permission"); }
         };
 
         window.loadRoster = async () => {
             const area = document.getElementById('rosterTableArea');
             const snap = await getDocs(collection(db, "students"));
-            let html = `<table><tr><th>Student</th><th>Belt</th><th>Status</th></tr>`;
+            let html = `<table><tr><th>Name</th><th>Belt</th><th>Status</th></tr>`;
             snap.forEach(docSnap => {
-                const s = docSnap.data();
-                const id = docSnap.id;
-                const testDate = s.lastTestDate ? new Date(s.lastTestDate.seconds * 1000).toLocaleDateString() : 'N/A';
+                const s = docSnap.data(), id = docSnap.id;
+                const date = s.lastTestDate ? new Date(s.lastTestDate.seconds * 1000).toLocaleDateString() : '--';
                 const statusClass = s.tuitionStatus ? 'status-paid' : 'status-due';
-                const statusText = s.tuitionStatus ? 'Paid' : 'Due';
                 
-                html += `<tr class="sr">
-                            <td style="font-weight:bold;">${s.fullName}</td>
-                            <td>${s.beltRank}</td>
-                            <td><button onclick="toggleTuition('${id}', ${s.tuitionStatus})" class="status-badge ${statusClass}">${statusText}</button></td>
-                         </tr>
-                         <tr class="sr detail-row">
-                            <td colspan="2">
-                                <b>Phone:</b> ${s.phone || 'N/A'}<br>
-                                <b>Guardian:</b> ${s.guardian || 'N/A'}<br>
-                                <b>Last Test:</b> ${testDate}<br>
-                                <b>Notes:</b> ${s.notes || '---'}
-                            </td>
-                            <td style="text-align:right; vertical-align:bottom;">
-                                ${userRank >= 15 ? `<button onclick="delEnt('${id}')" style="background:#400; color:#fff; padding:5px; border-radius:4px;">Del</button>` : ''}
-                            </td>
-                         </tr>`;
+                html += `<tr class="sr"><td><b>${s.fullName}</b></td><td>${s.beltRank}</td>
+                         <td><button onclick="toggleQuickStatus('${id}', ${s.tuitionStatus})" class="status-badge ${statusClass}">${s.tuitionStatus?'Paid':'Due'}</button></td></tr>
+                         <tr class="sr detail-row"><td colspan="2"><b>Ph:</b> ${s.phone || 'N/A'}<br><b>Guardian:</b> ${s.guardian || 'N/A'}<br><b>Notes:</b> ${s.notes || '--'}</td>
+                         <td style="text-align:right;">
+                            <button onclick="editStudent('${id}','${s.fullName}','${s.phone}','${s.guardian}','${s.beltRank}',${s.tuitionStatus},'${s.notes}')" style="background:#444; color:var(--gold); padding:5px; margin-bottom:5px; border-radius:4px; display:block; width:100%;">Edit</button>
+                            ${userRank >= 15 ? `<button onclick="delEnt('${id}')" style="background:#400; color:#fff; padding:5px; border-radius:4px; width:100%;">Del</button>` : ''}
+                         </td></tr>`;
             });
             area.innerHTML = html + "</table>";
         };
 
+        window.toggleQuickStatus = async (id, cur) => { await updateDoc(doc(db, "students", id), { tuitionStatus: !cur }); loadRoster(); };
+        window.delEnt = async (id) => { if(confirm("Delete Student?")) { await deleteDoc(doc(db, "students", id)); loadRoster(); } };
         window.searchRoster = () => {
             const q = document.getElementById('rosterSearch').value.toLowerCase();
             document.querySelectorAll('.sr').forEach((r, i) => {
@@ -243,23 +233,28 @@
             });
         };
 
-        window.delEnt = async (id) => { if(confirm("Delete student?")) { await deleteDoc(doc(db, "students", id)); loadRoster(); } };
-
-        window.playVid = (id) => {
-            document.getElementById('playerContainer').style.display = 'block';
-            if (window.player && window.player.loadVideoById) window.player.loadVideoById(id);
-            else window.player = new YT.Player('player', { videoId: id, playerVars: { 'autoplay': 1, 'controls': 0, 'playsinline': 1 }, 
-                events: { 'onStateChange': (e) => { isPlaying = (e.data == 1); if(isPlaying) startScrub(); else clearInterval(scrubberInterval); }}});
+        window.exportRoster = async () => {
+            const snap = await getDocs(collection(db, "students"));
+            let csv = "Name,Belt,Phone,Guardian,Status,Notes\n";
+            snap.forEach(d => {
+                const s = d.data();
+                csv += `${s.fullName},${s.beltRank},${s.phone},${s.guardian},${s.tuitionStatus?'Paid':'Due'},${s.notes.replace(/,/g, " ")}\n`;
+            });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+            link.download = "Roster.csv"; link.click();
         };
-        function startScrub() {
-            clearInterval(scrubberInterval);
-            scrubberInterval = setInterval(() => { if(isPlaying) document.getElementById('progressBar').value = (player.getCurrentTime()/player.getDuration())*100; }, 500);
-        }
-        window.scrubVideo = (v) => player.seekTo((v/100)*player.getDuration(), true);
-        window.togglePlayback = () => isPlaying ? player.pauseVideo() : player.playVideo();
-        window.skip = (s) => player.seekTo(player.getCurrentTime() + s, true);
-        window.closeVideo = () => { player.stopVideo(); document.getElementById('playerContainer').style.display='none'; };
-        window.toggleMenu = (id) => { const e = document.getElementById(id); e.style.display = (e.style.display==="none") ? "block" : "none"; };
+
+        // Video code remains same...
+        window.playVid = (id) => {
+            document.getElementById('playerContainer').style.display='block';
+            if(window.player && window.player.loadVideoById) window.player.loadVideoById(id);
+            else window.player = new YT.Player('player',{videoId:id,playerVars:{'autoplay':1,'controls':0},events:{'onStateChange':(e)=>{isPlaying=(e.data==1);}}});
+        };
+        window.togglePlayback=()=>{isPlaying?player.pauseVideo():player.playVideo();};
+        window.skip=(s)=>player.seekTo(player.getCurrentTime()+s,true);
+        window.closeVideo=()=>{player.stopVideo(); document.getElementById('playerContainer').style.display='none';};
+        window.toggleMenu=(id)=>{const e=document.getElementById(id); e.style.display=(e.style.display==="none")?"block":"none";};
     </script>
 </body>
 </html>
