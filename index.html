@@ -10,9 +10,9 @@
         
         .container { background: var(--card); padding: 30px 20px; border-radius: 12px; border-top: 5px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 100%; max-width: 480px; margin-top: 20px; }
         
-        /* VIDEO AREA - FIXED OVERLAY ISSUES */
+        /* VIDEO AREA */
         .video-wrapper { position: relative; width: 100%; padding-top: 56.25%; background: #000; border-radius: 8px; overflow: hidden; margin-bottom: 10px; border: 1px solid #444; }
-        #ytPlayer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        #ytPlayer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
         
         .custom-controls { background: #333; padding: 12px; border-radius: 8px; margin-bottom: 15px; position: relative; z-index: 10; }
         .control-row { display: flex; justify-content: center; gap: 12px; align-items: center; margin-top: 8px; }
@@ -20,12 +20,16 @@
         #seekBar { width: 100%; height: 6px; appearance: none; background: #555; border-radius: 5px; cursor: pointer; outline: none; }
         #seekBar::-webkit-slider-thumb { appearance: none; width: 16px; height: 16px; background: var(--gold); border-radius: 50%; border: 2px solid #000; }
 
-        /* LISTS */
-        .belt-header { background: #3d3d3d; padding: 15px; margin-top: 10px; border-radius: 8px; color: var(--gold); cursor: pointer; display: flex; justify-content: space-between; font-weight: bold; }
+        /* UI ELEMENTS */
+        .lvl-input { width: 60px; padding: 8px; background: #111; color: var(--gold); border: 1px solid #555; text-align: center; font-weight: bold; border-radius: 4px; }
+        .control-btn { background: var(--gold); color: #000; border: none; padding: 10px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; }
         .tech-btn { background: #222; color: #eee; padding: 14px; margin: 5px 0; border-radius: 6px; border-left: 4px solid var(--gold); width: 100%; cursor: pointer; display: block; text-align: left; font-size: 13px; border: none; }
-        input { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #444; background: var(--input-bg); color: white; box-sizing: border-box; }
-        .control-btn { background: var(--gold); color: #000; border: none; padding: 10px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        .belt-header { background: #3d3d3d; padding: 15px; margin-top: 10px; border-radius: 8px; color: var(--gold); cursor: pointer; display: flex; justify-content: space-between; font-weight: bold; }
+        
+        input, textarea { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #444; background: var(--input-bg); color: white; box-sizing: border-box; }
         .admin-tab { display: none; text-align: left; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        td { padding: 12px 5px; border-bottom: 1px solid #333; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -46,6 +50,7 @@
         <div id="mainMenu">
             <button class="tech-btn" style="padding:25px; text-align:center; font-size:18px;" onclick="openSection('curriculumSection')">🥋 Video Library</button>
             <button class="tech-btn" style="padding:25px; text-align:center; font-size:18px; display:none;" id="rosterBtn" onclick="openSection('adminDashboard')">👥 Student Roster</button>
+            <button class="tech-btn" style="padding:25px; text-align:center; font-size:18px; display:none;" id="staffBtn" onclick="openSection('staffDashboard')">🛡️ Staff Access</button>
         </div>
 
         <div id="curriculumSection" style="display:none;">
@@ -58,25 +63,41 @@
                     <button class="control-btn" onclick="seek(10)">+10s</button>
                 </div>
             </div>
-
-            <input type="text" id="videoSearch" placeholder="🔍 Search techniques..." onkeyup="searchVideos()" style="margin-bottom:15px;">
-            
+            <input type="text" id="videoSearch" placeholder="🔍 Search techniques..." onkeyup="searchVideos()">
             <div id="videoContainer">
                 <div id="belt-1" class="belt-group" style="display:none;">
                     <div class="belt-header" onclick="toggleGate('yellow-techs')">🟡 Yellow Belt <span>▼</span></div>
                     <div id="yellow-techs" class="tech-list" style="display:none;">
                         <button class="tech-btn" onclick="loadVideo('19Ktd4FfDGg')">Yellow Belt History</button>
-                        <button class="tech-btn" onclick="loadVideo('JIFwfcykAY8')">1. Japanese Sword (A/B)</button>
-                        <button class="tech-btn" onclick="loadVideo('RoSuLCLOKuU')">2. Chinese Sword (A/B)</button>
-                        <button class="tech-btn" onclick="loadVideo('NjXYf4QOZnU')">3. Delayed Sword</button>
+                        <button class="tech-btn" onclick="loadVideo('JIFwfcykAY8')">1. Japanese Sword</button>
                     </div>
                 </div>
             </div>
         </div>
 
         <div id="adminDashboard" style="display:none;">
-            <input type="text" id="rosterSearch" placeholder="🔍 Search records..." onkeyup="searchRoster()">
-            <div id="rosterTableArea"></div>
+            <div style="display:flex; justify-content: space-between; margin-bottom:15px;">
+                <button class="control-btn" id="addNewBtn" style="display:none;" onclick="prepareAdd()">+ New</button>
+                <button class="control-btn" id="exportBtn" style="display:none; background:var(--green); color:white;" onclick="exportStudents()">💾 CSV</button>
+            </div>
+            <div id="studentForm" class="admin-tab">
+                <input type="hidden" id="editId">
+                <input type="text" id="fName" placeholder="Full Name">
+                <input type="text" id="fPhone" placeholder="Phone">
+                <input type="email" id="fEmail" placeholder="Email">
+                <textarea id="fComments" placeholder="Notes" style="height:100px;"></textarea>
+                <button class="control-btn" style="width:100%;" onclick="handleSave()">Save</button>
+                <button class="control-btn" style="width:100%; background:none; color:#888;" onclick="switchAdmin('listView')">Cancel</button>
+            </div>
+            <div id="listView" class="admin-tab" style="display:block;">
+                <input type="text" id="rosterSearch" placeholder="🔍 Search roster..." onkeyup="searchRoster()">
+                <div id="rosterTableArea"></div>
+            </div>
+        </div>
+
+        <div id="staffDashboard" style="display:none;">
+            <h3>Staff Permissions</h3>
+            <div id="staffTableArea"></div>
         </div>
     </div>
 
@@ -85,7 +106,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, collection, onSnapshot, updateDoc, addDoc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = { 
             apiKey: "AIzaSyC35Ubf6GxyDi3JEiKWaYgVFkYGknMZrcw",
@@ -99,59 +120,113 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        let ytPlayer = null, currentUserRank = 0;
+        let ytPlayer = null, currentUserRank = 0, studentsList = [];
 
-        // FORCE INITIALIZE ON CALL
+        // VIDEO ENGINE
         window.loadVideo = (id) => {
-            if (ytPlayer && typeof ytPlayer.loadVideoById === 'function') {
+            if (ytPlayer && ytPlayer.loadVideoById) {
                 ytPlayer.loadVideoById(id);
                 ytPlayer.playVideo();
             } else {
-                // If player doesn't exist yet, create it with the requested video
                 ytPlayer = new YT.Player('ytPlayer', {
                     height: '100%', width: '100%', videoId: id,
                     playerVars: { 'autoplay': 1, 'controls': 0, 'modestbranding': 1, 'rel': 0, 'playsinline': 1 },
-                    events: {
-                        'onReady': (e) => e.target.playVideo(),
-                        'onStateChange': (e) => { document.getElementById('playPauseBtn').innerText = (e.data === 1) ? "Pause" : "Play"; }
-                    }
+                    events: { 'onStateChange': (e) => { document.getElementById('playPauseBtn').innerText = (e.data === 1) ? "Pause" : "Play"; } }
                 });
             }
         };
 
-        window.togglePlay = () => {
-            if (!ytPlayer || !ytPlayer.getPlayerState) return;
-            ytPlayer.getPlayerState() === 1 ? ytPlayer.pauseVideo() : ytPlayer.playVideo();
-        };
-
-        window.seek = (s) => { if(ytPlayer && ytPlayer.seekTo) ytPlayer.seekTo(ytPlayer.getCurrentTime() + s, true); };
-        
+        window.togglePlay = () => { if(ytPlayer && ytPlayer.getPlayerState) ytPlayer.getPlayerState() === 1 ? ytPlayer.pauseVideo() : ytPlayer.playVideo(); };
+        window.seek = (s) => { if(ytPlayer && ytPlayer.getCurrentTime) ytPlayer.seekTo(ytPlayer.getCurrentTime() + s, true); };
         window.searchVideos = () => {
             const q = document.getElementById('videoSearch').value.toLowerCase();
-            document.querySelectorAll('#videoContainer .tech-btn').forEach(btn => {
-                btn.style.display = btn.innerText.toLowerCase().includes(q) ? "block" : "none";
-            });
+            document.querySelectorAll('#videoContainer .tech-btn').forEach(btn => btn.style.display = btn.innerText.toLowerCase().includes(q) ? "block" : "none");
         };
 
+        // NAVIGATION
         window.toggleGate = (id) => { const el = document.getElementById(id); el.style.display = (el.style.display === "none") ? "block" : "none"; };
         window.showMainMenu = () => { document.querySelectorAll('#portalView > div:not(:first-child)').forEach(d => d.style.display='none'); document.getElementById('mainMenu').style.display='block'; };
         window.openSection = (id) => { 
             document.querySelectorAll('#portalView > div:not(:first-child)').forEach(d => d.style.display='none'); 
             document.getElementById(id).style.display='block';
             if(id === 'adminDashboard') syncRoster();
+            if(id === 'staffDashboard') syncStaff();
         };
 
+        // ADMIN FUNCTIONS (RESTORED)
         const syncRoster = () => {
             onSnapshot(query(collection(db, "students"), orderBy("fullName")), (snap) => {
-                let html = `<table style="width:100%;">`;
+                let html = `<table>`; studentsList = [];
                 snap.forEach(docSnap => {
-                    const s = docSnap.data();
-                    html += `<tr><td style="padding:10px; border-bottom:1px solid #444;"><b>${s.fullName}</b><br><small>${s.phone || ''}</small></td></tr>`;
+                    const s = docSnap.data(); const id = docSnap.id; studentsList.push(s);
+                    html += `<tr class="sr-row">
+                        <td><b>${s.fullName}</b><br><small>${s.phone || ''}</small></td>
+                        <td style="text-align:right;">${currentUserRank >= 15 ? `<button class="control-btn" onclick="window.editStudent('${id}', ${JSON.stringify(s).replace(/"/g, '&quot;')})">EDIT</button>` : ''}</td>
+                    </tr>`;
                 });
                 document.getElementById('rosterTableArea').innerHTML = html + "</table>";
             });
         };
 
+        window.searchRoster = () => {
+            const q = document.getElementById('rosterSearch').value.toLowerCase();
+            document.querySelectorAll('.sr-row').forEach(r => r.style.display = r.innerText.toLowerCase().includes(q) ? "" : "none");
+        };
+
+        window.editStudent = (id, s) => {
+            document.getElementById('editId').value = id;
+            document.getElementById('fName').value = s.fullName;
+            document.getElementById('fPhone').value = s.phone;
+            document.getElementById('fEmail').value = s.email;
+            document.getElementById('fComments').value = s.comments;
+            window.switchAdmin('studentForm');
+        };
+
+        window.prepareAdd = () => {
+            document.getElementById('editId').value = "";
+            ['fName','fPhone','fEmail','fComments'].forEach(i => document.getElementById(i).value="");
+            window.switchAdmin('studentForm');
+        };
+
+        window.switchAdmin = (id) => {
+            document.querySelectorAll('.admin-tab').forEach(t => t.style.display='none');
+            document.getElementById(id).style.display='block';
+        };
+
+        window.handleSave = async () => {
+            const id = document.getElementById('editId').value;
+            const data = { fullName: document.getElementById('fName').value, phone: document.getElementById('fPhone').value, email: document.getElementById('fEmail').value, comments: document.getElementById('fComments').value, updatedAt: serverTimestamp() };
+            if(id) await updateDoc(doc(db, "students", id), data); else await addDoc(collection(db, "students"), data);
+            window.switchAdmin('listView');
+        };
+
+        window.exportStudents = () => {
+            let csv = "Name,Phone,Email\n";
+            studentsList.forEach(s => csv += `"${s.fullName}","${s.phone}","${s.email}"\n`);
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
+            a.download='Roster.csv'; a.click();
+        };
+
+        const syncStaff = () => {
+            onSnapshot(collection(db, "users"), (snap) => {
+                let html = `<table><tr><th>Name</th><th>LVL</th><th></th></tr>`;
+                snap.forEach(docSnap => {
+                    const u = docSnap.data();
+                    html += `<tr><td>${u.name || 'User'}</td>
+                    <td><input type="number" class="lvl-input" id="lvl-${docSnap.id}" value="${u.rankLevel || 0}"></td>
+                    <td><button class="control-btn" onclick="window.updateRank('${docSnap.id}')">✔</button></td></tr>`;
+                });
+                document.getElementById('staffTableArea').innerHTML = html + "</table>";
+            });
+        };
+
+        window.updateRank = async (id) => {
+            await updateDoc(doc(db, "users", id), { rankLevel: parseInt(document.getElementById(`lvl-${id}`).value) });
+            alert("Rank Updated");
+        };
+
+        // LOGIN ENGINE
         document.getElementById('loginBtn').onclick = async () => {
             try {
                 const cred = await signInWithEmailAndPassword(auth, document.getElementById('emailInput').value, document.getElementById('passInput').value);
@@ -161,6 +236,11 @@
                     document.getElementById('loginBox').style.display = 'none';
                     document.getElementById('portalView').style.display = 'block';
                     if(currentUserRank >= 14) document.getElementById('rosterBtn').style.display = 'block';
+                    if(currentUserRank >= 15) { 
+                        document.getElementById('staffBtn').style.display = 'block'; 
+                        document.getElementById('addNewBtn').style.display = 'block'; 
+                        document.getElementById('exportBtn').style.display = 'block'; 
+                    }
                     for(let i=1; i<=currentUserRank; i++) { if(document.getElementById(`belt-${i}`)) document.getElementById(`belt-${i}`).style.display = 'block'; }
                 }
             } catch(e) { alert("Login failed"); }
