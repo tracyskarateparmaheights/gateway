@@ -12,9 +12,9 @@
         .logo-img { width: 180px; height: auto; margin-bottom: 10px; }
         .login-title { color: var(--gold); font-size: 24px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 25px; }
 
-        /* VIDEO AREA - NO YOUTUBE CONTROLS */
+        /* VIDEO AREA */
         .video-wrapper { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 8px; overflow: hidden; margin-bottom: 10px; border: 1px solid #444; }
-        #ytPlayer { width: 100%; height: 100%; pointer-events: none; } /* Disables clicking on video to go to YouTube */
+        #ytPlayer { width: 100%; height: 100%; pointer-events: none; }
         
         .custom-controls { background: #333; padding: 12px; border-radius: 8px; margin-bottom: 15px; }
         .control-row { display: flex; justify-content: center; gap: 12px; align-items: center; margin-top: 8px; }
@@ -22,12 +22,12 @@
         #seekBar { width: 100%; height: 6px; appearance: none; background: #555; border-radius: 5px; cursor: pointer; outline: none; }
         #seekBar::-webkit-slider-thumb { appearance: none; width: 16px; height: 16px; background: var(--gold); border-radius: 50%; border: 2px solid #000; }
 
-        /* STAFF GUIDE */
-        .guide-box { background: #111; padding: 15px; border-radius: 8px; border: 1px solid #444; text-align: left; margin-bottom: 20px; font-size: 12px; line-height: 1.4; }
-        .guide-box b { color: var(--gold); display: block; margin-top: 5px; }
-
+        /* UI ELEMENTS */
+        .lvl-input { width: 60px !important; padding: 8px !important; background: #111; color: var(--gold); border: 1px solid #555; text-align: center; font-weight: bold; margin: 0 !important; border-radius: 4px; }
         .control-btn { background: var(--gold); color: #000; border: none; padding: 10px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; }
         .admin-tab { display: none; text-align: left; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        td { padding: 12px 5px; border-bottom: 1px solid #333; font-size: 14px; vertical-align: middle; }
         
         .belt-header { background: #3d3d3d; padding: 15px; margin-top: 10px; border-radius: 8px; color: var(--gold); cursor: pointer; display: flex; justify-content: space-between; font-weight: bold; }
         .tech-btn { background: #222; color: #eee; padding: 14px; margin: 5px 0; border-radius: 6px; border-left: 4px solid var(--gold); width: 100%; cursor: pointer; display: block; text-align: left; font-size: 13px; }
@@ -93,51 +93,34 @@
                     <div class="belt-header" onclick="toggleGate('orange-techs')">🟠 Orange Belt <span>▼</span></div>
                     <div id="orange-techs" style="display:none;">
                         <button class="tech-btn" onclick="loadVideo('34h_COkntes')">1. Sumo</button>
+                        <button class="tech-btn" onclick="loadVideo('34h_COkntes')">2. Attacking the Circle</button>
                     </div>
                 </div>
             </div>
         </div>
 
         <div id="adminDashboard" style="display:none;">
-             <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom:15px;">
-                <h3 style="margin:0;">Student Roster</h3>
-                <div style="display:flex; gap:8px;">
-                    <button class="control-btn" style="background:var(--green); color:white;" onclick="exportStudents()">💾 Export</button>
-                    <button class="control-btn" id="addNewBtn" onclick="prepareAdd()">+ New</button>
-                </div>
-            </div>
-            <div id="studentForm" class="admin-tab">
-                <input type="hidden" id="editId">
-                <input type="text" id="fName" placeholder="Student Name">
-                <input type="text" id="fPhone" placeholder="Phone Number">
-                <input type="email" id="fEmail" placeholder="Email">
-                <textarea id="fComments" placeholder="Comments" style="height:80px;"></textarea>
-                <button class="control-btn" style="width:100%; margin-bottom:10px;" onclick="handleSave()">Save Student</button>
-                <button class="control-btn" style="width:100%; background:transparent; color:#888;" onclick="switchAdmin('listView')">Cancel</button>
-            </div>
-            <div id="listView" class="admin-tab" style="display:block;">
-                <input type="text" id="rosterSearch" placeholder="🔍 Search records..." onkeyup="searchRoster()">
-                <div id="rosterTableArea"></div>
-            </div>
+            <h3>Student Roster</h3>
+            <input type="text" id="rosterSearch" placeholder="🔍 Search records..." onkeyup="searchRoster()">
+            <div id="rosterTableArea"></div>
         </div>
 
-        <div id="staffDashboard" style="display:none;">
-            <h3>Staff Access</h3>
-            <div class="guide-box">
-                <b>LVL 0-13: Student</b> (Belt increments)
-                <b>LVL 14: Instructor</b> (Roster View)
-                <b>LVL 15: Admin</b> (Full Permissions)
-            </div>
-            <div id="staffTableArea"></div>
-        </div>
+<div id="staffDashboard" style="display:none;">
+    <h3>Staff Access</h3>
+    <div class="guide-box">
+        <b>LVL 0: White</b> | <b>LVL 1: Yellow</b> | <b>LVL 2: Orange</b> | <b>LVL 3: Purple</b> | <b>LVL 4: Blue</b> | <b>LVL 5: Green</b> | <b>LVL 6-8: Brown</b> | <b>LVL 9-13: Black</b><br><br>
+        <b>LVL 14: Instructor</b> Access to Student Roster (View) and Video Library.<br>
+        <b>LVL 15: Admin</b> Full access: Staff Permissions, Roster (Edit), and Library.
     </div>
+    <div id="staffTableArea"></div>
+</div>
 
     <script src="https://www.youtube.com/iframe_api"></script>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, collection, onSnapshot, updateDoc, addDoc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, collection, onSnapshot, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = { 
             apiKey: "AIzaSyC35Ubf6GxyDi3JEiKWaYgVFkYGknMZrcw",
@@ -151,29 +134,16 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        let player;
+        let ytPlayer;
         let progressInterval;
         let currentUserRank = 0;
-        let studentsList = [];
 
-        // YouTube API Init
+        // YOUTUBE READY
         window.onYouTubeIframeAPIReady = () => {
-            player = new YT.Player('ytPlayer', {
-                height: '100%',
-                width: '100%',
-                videoId: '',
-                playerVars: {
-                    'controls': 0,
-                    'rel': 0,
-                    'modestbranding': 1,
-                    'showinfo': 0,
-                    'iv_load_policy': 3,
-                    'disablekb': 1,
-                    'playsinline': 1
-                },
-                events: {
-                    'onStateChange': onPlayerStateChange
-                }
+            ytPlayer = new YT.Player('ytPlayer', {
+                height: '100%', width: '100%', videoId: '',
+                playerVars: { 'controls': 0, 'rel': 0, 'modestbranding': 1, 'playsinline': 1 },
+                events: { 'onStateChange': onPlayerStateChange }
             });
         };
 
@@ -188,59 +158,39 @@
             }
         }
 
-        window.loadVideo = (id) => {
-            player.loadVideoById(id);
-        };
-
-        window.togglePlay = () => {
-            const state = player.getPlayerState();
-            state === 1 ? player.pauseVideo() : player.playVideo();
-        };
-
-        window.seek = (seconds) => {
-            const currentTime = player.getCurrentTime();
-            player.seekTo(currentTime + seconds, true);
-        };
-
         function startTracking() {
             clearInterval(progressInterval);
             progressInterval = setInterval(() => {
-                const current = player.getCurrentTime();
-                const total = player.getDuration();
-                if (total > 0) {
-                    document.getElementById('seekBar').value = (current / total) * 100;
+                if (ytPlayer && ytPlayer.getCurrentTime) {
+                    const current = ytPlayer.getCurrentTime();
+                    const total = ytPlayer.getDuration();
+                    if (total > 0) document.getElementById('seekBar').value = (current / total) * 100;
                 }
             }, 500);
         }
 
-        document.getElementById('seekBar').oninput = function() {
-            const total = player.getDuration();
-            const target = total * (this.value / 100);
-            player.seekTo(target, true);
+        // --- GLOBAL FUNCTIONS ---
+        window.loadVideo = (id) => {
+            if (ytPlayer && ytPlayer.loadVideoById) {
+                ytPlayer.loadVideoById(id);
+            } else {
+                console.error("Player not ready");
+            }
         };
 
-        // --- Firebase & UI Logic ---
-        document.getElementById('loginBtn').onclick = async () => {
-            try {
-                const cred = await signInWithEmailAndPassword(auth, document.getElementById('emailInput').value, document.getElementById('passInput').value);
-                const snap = await getDoc(doc(db, "users", cred.user.uid));
-                if (snap.exists()) {
-                    currentUserRank = snap.data().rankLevel;
-                    document.getElementById('loginBox').style.display = 'none';
-                    document.getElementById('portalView').style.display = 'block';
-                    
-                    if (currentUserRank >= 10) document.getElementById('rosterBtn').style.display = 'block';
-                    if (currentUserRank >= 15) {
-                        document.getElementById('staffBtn').style.display = 'block';
-                        document.getElementById('addNewBtn').style.display = 'block';
-                    }
+        window.togglePlay = () => {
+            const state = ytPlayer.getPlayerState();
+            state === 1 ? ytPlayer.pauseVideo() : ytPlayer.playVideo();
+        };
 
-                    for(let i=0; i<=currentUserRank && i<=13; i++) {
-                        const beltDiv = document.getElementById(`belt-${i}`);
-                        if(beltDiv) beltDiv.style.display = 'block';
-                    }
-                }
-            } catch (e) { alert("Login failed"); }
+        window.seek = (seconds) => {
+            const currentTime = ytPlayer.getCurrentTime();
+            ytPlayer.seekTo(currentTime + seconds, true);
+        };
+
+        window.toggleGate = (id) => {
+            const el = document.getElementById(id);
+            el.style.display = el.style.display === "none" ? "block" : "none";
         };
 
         window.showMainMenu = () => {
@@ -251,15 +201,73 @@
         window.openSection = (id) => {
             document.querySelectorAll('#portalView > div:not(:first-child)').forEach(d => d.style.display = 'none');
             document.getElementById(id).style.display = 'block';
+            if (id === 'adminDashboard') syncRoster();
+            if (id === 'staffDashboard') syncStaff();
         };
 
-        window.toggleGate = (id) => { 
-            const el = document.getElementById(id); 
-            el.style.display = el.style.display === "none" ? "block" : "none"; 
+        window.searchRoster = () => {
+            const q = document.getElementById('rosterSearch').value.toLowerCase();
+            document.querySelectorAll('.sr-row').forEach(r => {
+                r.style.display = r.innerText.toLowerCase().includes(q) ? "" : "none";
+            });
         };
-        
-        // Export & Other global functions...
-        window.exportStudents = () => { /* Logic existing */ };
+
+        // --- FIREBASE SYNC ---
+        const syncStaff = () => {
+            onSnapshot(collection(db, "users"), (snap) => {
+                let html = `<table><tr><th>NAME</th><th style="text-align:center;">LVL</th><th></th></tr>`;
+                snap.forEach(docSnap => {
+                    const u = docSnap.data();
+                    html += `<tr>
+                        <td>${u.name || "User"}</td>
+                        <td style="text-align:center;"><input type="number" class="lvl-input" id="lvl-${docSnap.id}" value="${u.rankLevel || 0}"></td>
+                        <td style="text-align:right;"><button class="control-btn" onclick="updateRank('${docSnap.id}')">✔</button></td>
+                    </tr>`;
+                });
+                document.getElementById('staffTableArea').innerHTML = html + "</table>";
+            });
+        };
+
+        window.updateRank = async (id) => {
+            const newVal = parseInt(document.getElementById(`lvl-${id}`).value);
+            await updateDoc(doc(db, "users", id), { rankLevel: newVal });
+            alert("Updated!");
+        };
+
+        const syncRoster = () => {
+            onSnapshot(query(collection(db, "students"), orderBy("fullName")), (snap) => {
+                let html = `<table>`;
+                snap.forEach(docSnap => {
+                    const s = docSnap.data();
+                    html += `<tr class="sr-row"><td><b>${s.fullName}</b><br><span style="font-size:11px; color:#888;">${s.phone || ""}</span></td></tr>`;
+                });
+                document.getElementById('rosterTableArea').innerHTML = html + "</table>";
+            });
+        };
+
+        document.getElementById('loginBtn').onclick = async () => {
+            try {
+                const cred = await signInWithEmailAndPassword(auth, document.getElementById('emailInput').value, document.getElementById('passInput').value);
+                const snap = await getDoc(doc(db, "users", cred.user.uid));
+                if (snap.exists()) {
+                    currentUserRank = snap.data().rankLevel;
+                    document.getElementById('loginBox').style.display = 'none';
+                    document.getElementById('portalView').style.display = 'block';
+                    
+                    if (currentUserRank >= 14) document.getElementById('rosterBtn').style.display = 'block';
+                    if (currentUserRank >= 15) document.getElementById('staffBtn').style.display = 'block';
+
+                    for(let i=0; i<=currentUserRank && i<=13; i++) {
+                        if(document.getElementById(`belt-${i}`)) document.getElementById(`belt-${i}`).style.display = 'block';
+                    }
+                }
+            } catch (e) { alert("Login failed"); }
+        };
+
+        document.getElementById('seekBar').oninput = function() {
+            const total = ytPlayer.getDuration();
+            ytPlayer.seekTo(total * (this.value / 100), true);
+        };
     </script>
 </body>
 </html>
