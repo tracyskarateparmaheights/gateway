@@ -7,24 +7,23 @@
     <style>
         :root { --gold: #ffcc00; --bg: #1a1a1a; --card: #2b2b2b; }
         
-        /* Centering Logic for Mobile */
         body { 
             font-family: 'Segoe UI', Arial, sans-serif; 
             background-color: var(--bg); 
             color: white; 
             margin: 0; 
-            padding: 20px 10px; 
+            padding: 10px; 
             display: flex; 
             flex-direction: column;
-            align-items: center; /* Horizontal Center */
-            justify-content: center; /* Vertical Center */
+            align-items: center; 
+            justify-content: center; 
             min-height: 100vh;
             box-sizing: border-box;
         }
 
         .container { 
             background: var(--card); 
-            padding: 30px 20px; 
+            padding: 20px; 
             border-radius: 12px; 
             border-top: 6px solid var(--gold); 
             box-shadow: 0 15px 35px rgba(0,0,0,0.6); 
@@ -32,40 +31,64 @@
             width: 100%; 
             max-width: 450px; 
             position: relative;
-            transition: all 0.3s ease;
         }
         
-        .logo { width: 75px; height: auto; margin-bottom: 10px; }
-        h1 { color: var(--gold); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; font-size: 20px; }
-        
-        /* PERSISTENT SEARCH BAR */
-        .search-container { position: sticky; top: 0; background: var(--card); z-index: 100; padding-bottom: 10px; }
-        .search-box { width: 100%; padding: 14px; border-radius: 8px; border: 1px solid #444; background: #333; color: white; font-size: 16px; box-sizing: border-box; outline: none; }
+        .logo { width: 60px; height: auto; margin-bottom: 5px; }
+        h1 { color: var(--gold); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; font-size: 18px; }
+
+        /* TOP NAVIGATION ROW */
+        .top-nav { 
+            display: flex; 
+            justify-content: space-between; 
+            margin-bottom: 15px; 
+            border-bottom: 1px solid #444; 
+            padding-bottom: 10px;
+        }
+        .nav-btn { 
+            background: #333; 
+            color: #ccc; 
+            border: 1px solid #555; 
+            padding: 6px 12px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-size: 11px; 
+            text-transform: uppercase;
+        }
+        .nav-btn:hover { color: var(--gold); border-color: var(--gold); }
+
+        /* SEARCH BAR */
+        .search-box { 
+            width: 100%; 
+            padding: 12px; 
+            margin-bottom: 15px;
+            border-radius: 8px; 
+            border: 1px solid #444; 
+            background: #222; 
+            color: white; 
+            font-size: 16px; 
+            box-sizing: border-box; 
+            outline: none; 
+        }
         .search-box:focus { border-color: var(--gold); }
 
         /* MASKED PLAYER */
-        #playerContainer { display: none; margin-bottom: 25px; scroll-margin-top: 20px; }
+        #playerContainer { display: none; margin-bottom: 20px; scroll-margin-top: 10px; }
         .video-box { position: relative; width: 100%; padding-bottom: 56.25%; background: #000; overflow: hidden; border: 2px solid var(--gold); border-radius: 8px; }
         #player { position: absolute; top: -65px; left: 0; width: 100%; height: calc(100% + 130px); }
 
         /* SCRUB BAR */
-        .progress-container { margin: 15px 0 10px 0; }
+        .progress-container { margin: 12px 0 8px 0; }
         #progressBar { width: 100%; height: 10px; cursor: pointer; accent-color: var(--gold); }
-        .time-labels { display: flex; justify-content: space-between; font-size: 11px; color: #888; margin-top: 5px; }
+        .time-labels { display: flex; justify-content: space-between; font-size: 10px; color: #888; }
 
-        /* CONTROLS */
-        .custom-controls { display: flex; justify-content: space-between; gap: 8px; }
-        .control-btn { background: #444; color: var(--gold); padding: 12px 5px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold; flex: 1; border: 1px solid #555; text-transform: uppercase; }
+        /* VIDEO CONTROLS */
+        .custom-controls { display: flex; justify-content: space-between; gap: 5px; }
+        .control-btn { background: #444; color: var(--gold); padding: 10px 2px; border-radius: 4px; cursor: pointer; font-size: 10px; font-weight: bold; flex: 1; border: 1px solid #555; }
 
-        /* BUTTONS & BELTS */
-        .tech-btn { background: #222; color: #eee; padding: 15px; margin: 8px 0; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; border: 1px solid #444; border-left: 5px solid var(--gold); display: block; }
-        .belt-header { background: #3d3d3d; padding: 15px; margin-top: 15px; border-radius: 4px; font-weight: bold; color: var(--gold); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        /* TECHNIQUE LISTS */
+        .tech-btn { background: #222; color: #eee; padding: 14px; margin: 6px 0; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; border: 1px solid #444; border-left: 5px solid var(--gold); display: block; }
+        .belt-header { background: #3d3d3d; padding: 14px; margin-top: 12px; border-radius: 4px; font-weight: bold; color: var(--gold); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
         
-        /* BACK & LOGOUT BUTTONS */
-        .action-row { display: flex; justify-content: space-between; margin-top: 20px; }
-        .nav-btn { background: transparent; color: #888; border: 1px solid #444; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; }
-        .nav-btn:hover { color: var(--gold); border-color: var(--gold); }
-
         #portalView { display: none; width: 100%; }
         input[type="email"], input[type="password"] { width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #444; border-radius: 6px; background: #333; color: white; box-sizing: border-box; font-size: 16px; }
         #loginBtn { width: 100%; padding: 15px; background: var(--gold); color: #1a1a1a; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 16px; }
@@ -75,19 +98,23 @@
 
     <div class="container" id="loginBox">
         <img src="BLACK-TK.png" alt="Logo" class="logo">
-        <h1>Material Access</h1>
+        <h1>Material Online Access</h1>
         <input type="email" id="emailInput" placeholder="Email" inputmode="email">
         <input type="password" id="passInput" placeholder="Password">
         <button id="loginBtn">Sign In</button>
     </div>
 
     <div class="container" id="portalView">
+        
+        <div class="top-nav">
+            <button class="nav-btn" onclick="goBack()">⬅ Reset View</button>
+            <button class="nav-btn" onclick="location.reload()">Log Out ⏻</button>
+        </div>
+
         <img src="BLACK-TK.png" alt="Logo" class="logo">
         <h1 id="welcomeTitle">Welcome</h1>
 
-        <div class="search-container">
-            <input type="text" id="globalSearch" class="search-box" placeholder="Search techniques..." onkeyup="filterAll()">
-        </div>
+        <input type="text" id="globalSearch" class="search-box" placeholder="Search techniques..." onkeyup="filterAll()">
 
         <div id="playerContainer">
             <div class="video-box"><div id="player"></div></div>
@@ -122,13 +149,8 @@
             </div>
             <div class="rank-group" id="group-orange">
                 <div class="belt-header" onclick="toggleGroup('list-orange')">🟠 Orange Belt <span class="arrow">▼</span></div>
-                <div id="list-orange" style="display:none; padding: 15px; color: #888; font-size: 12px;">Orange belt videos coming soon.</div>
+                <div id="list-orange" style="display:none; padding: 15px; color: #888; font-size: 11px;">Orange curriculum locked.</div>
             </div>
-        </div>
-
-        <div class="action-row">
-            <button class="nav-btn" onclick="goBack()">⬅ Reset View</button>
-            <button class="nav-btn" onclick="location.reload()">Log Out</button>
         </div>
     </div>
 
@@ -155,14 +177,7 @@
         let isPlaying = false;
         let progressTimer;
 
-        // Auto-Center Scroll Logic
-        function centerPlayer() {
-            const container = document.getElementById('playerContainer');
-            container.style.display = 'block';
-            container.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-
-        // Enter Key Listener
+        // Login Listeners
         [document.getElementById('emailInput'), document.getElementById('passInput')].forEach(input => {
             input.addEventListener('keypress', (e) => { if(e.key === 'Enter') doLogin(); });
         });
@@ -174,18 +189,16 @@
                 if (snap.exists()) {
                     document.getElementById('loginBox').style.display = 'none';
                     document.getElementById('portalView').style.display = 'block';
-                    document.getElementById('welcomeTitle').innerText = "WELCOME, " + snap.data().name.toUpperCase();
+                    document.getElementById('welcomeTitle').innerText = "HELLO, " + snap.data().name.split(' ')[0].toUpperCase();
                 }
             } catch (e) { alert("Login failed."); }
         }
         document.getElementById('loginBtn').addEventListener('click', doLogin);
 
-        // BACK BUTTON LOGIC
         window.goBack = () => {
             document.getElementById('globalSearch').value = "";
-            filterAll(); // Reset lists
+            filterAll();
             closePlayer();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
         window.filterAll = () => {
@@ -230,7 +243,9 @@
                     events: { 'onStateChange': (e) => { isPlaying = (e.data == 1); if(isPlaying) startBarUpdate(); } }
                 });
             }
-            centerPlayer();
+            const pc = document.getElementById('playerContainer');
+            pc.style.display = 'block';
+            pc.scrollIntoView({ behavior: 'smooth', block: 'center' });
         };
 
         function startBarUpdate() {
@@ -257,4 +272,3 @@
     </script>
 </body>
 </html>
-
