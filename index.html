@@ -23,6 +23,8 @@
         #seekBar::-webkit-slider-thumb { appearance: none; width: 16px; height: 16px; background: var(--gold); border-radius: 50%; border: 2px solid #000; }
 
         /* UI ELEMENTS */
+        .guide-box { background: #111; padding: 15px; border-radius: 8px; border: 1px solid #444; text-align: left; margin-bottom: 20px; font-size: 12px; line-height: 1.4; }
+        .guide-box b { color: var(--gold); display: block; margin-top: 5px; }
         .lvl-input { width: 60px !important; padding: 8px !important; background: #111; color: var(--gold); border: 1px solid #555; text-align: center; font-weight: bold; margin: 0 !important; border-radius: 4px; }
         .control-btn { background: var(--gold); color: #000; border: none; padding: 10px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; }
         .admin-tab { display: none; text-align: left; }
@@ -58,10 +60,7 @@
         </div>
 
         <div id="curriculumSection" style="display:none;">
-            <div class="video-wrapper">
-                <div id="ytPlayer"></div>
-            </div>
-            
+            <div class="video-wrapper"><div id="ytPlayer"></div></div>
             <div class="custom-controls">
                 <input type="range" id="seekBar" value="0" step="0.1">
                 <div class="control-row">
@@ -70,7 +69,6 @@
                     <button class="control-btn" onclick="seek(10)">+10s</button>
                 </div>
             </div>
-            
             <div id="beltLibrary">
                 <div id="belt-1" style="display:none;">
                     <div class="belt-header" onclick="toggleGate('yellow-techs')">🟡 Yellow Belt <span>▼</span></div>
@@ -79,48 +77,53 @@
                         <button class="tech-btn" onclick="loadVideo('JIFwfcykAY8')">1. Japanese Sword (A/B)</button>
                         <button class="tech-btn" onclick="loadVideo('RoSuLCLOKuU')">2. Chinese Sword (A/B)</button>
                         <button class="tech-btn" onclick="loadVideo('NjXYf4QOZnU')">3. Delayed Sword</button>
-                        <button class="tech-btn" onclick="loadVideo('SaCwJIsQWE8')">4. Knee of Vengeance</button>
-                        <button class="tech-btn" onclick="loadVideo('xNzobYNSQ4Y')">5. Fang of the Cobra (A/B)</button>
-                        <button class="tech-btn" onclick="loadVideo('ZJNmDVtXnBY')">6. Twisting Talon (A/B)</button>
-                        <button class="tech-btn" onclick="loadVideo('u0ceVbYXUXQ')">7. Returning Dragon</button>
-                        <button class="tech-btn" onclick="loadVideo('E44w7Eh73xs')">8. Breaking the Sword</button>
-                        <button class="tech-btn" onclick="loadVideo('yvrhFEiuHKc')">9. Kenpo Shield (A/B)</button>
-                        <button class="tech-btn" onclick="loadVideo('i-vyUr_6xZU')">10. Evasion</button>
-                    </div>
-                </div>
-
-                <div id="belt-2" style="display:none;">
-                    <div class="belt-header" onclick="toggleGate('orange-techs')">🟠 Orange Belt <span>▼</span></div>
-                    <div id="orange-techs" style="display:none;">
-                        <button class="tech-btn" onclick="loadVideo('34h_COkntes')">1. Sumo</button>
-                        <button class="tech-btn" onclick="loadVideo('34h_COkntes')">2. Attacking the Circle</button>
                     </div>
                 </div>
             </div>
         </div>
 
         <div id="adminDashboard" style="display:none;">
-            <h3>Student Roster</h3>
-            <input type="text" id="rosterSearch" placeholder="🔍 Search records..." onkeyup="searchRoster()">
-            <div id="rosterTableArea"></div>
+            <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom:15px;">
+                <h3 style="margin:0;">Student Roster</h3>
+                <div style="display:flex; gap:8px;">
+                    <button class="control-btn" style="background:var(--green); color:white; display:none;" id="exportBtn" onclick="exportStudents()">💾 Export</button>
+                    <button class="control-btn" style="display:none;" id="addNewBtn" onclick="prepareAdd()">+ New</button>
+                </div>
+            </div>
+
+            <div id="studentForm" class="admin-tab">
+                <input type="hidden" id="editId">
+                <input type="text" id="fName" placeholder="Full Name">
+                <input type="text" id="fPhone" placeholder="Phone Number">
+                <input type="email" id="fEmail" placeholder="Email Address">
+                <textarea id="fComments" placeholder="Student Notes" style="height:80px;"></textarea>
+                <button class="control-btn" style="width:100%; margin-bottom:10px;" onclick="handleSave()">Save Student Record</button>
+                <button class="control-btn" style="width:100%; background:transparent; color:#888;" onclick="switchAdmin('listView')">Cancel</button>
+            </div>
+
+            <div id="listView" class="admin-tab" style="display:block;">
+                <input type="text" id="rosterSearch" placeholder="🔍 Search records..." onkeyup="searchRoster()">
+                <div id="rosterTableArea"></div>
+            </div>
         </div>
 
-<div id="staffDashboard" style="display:none;">
-    <h3>Staff Access</h3>
-    <div class="guide-box">
-        <b>LVL 0: White</b> | <b>LVL 1: Yellow</b> | <b>LVL 2: Orange</b> | <b>LVL 3: Purple</b> | <b>LVL 4: Blue</b> | <b>LVL 5: Green</b> | <b>LVL 6-8: Brown</b> | <b>LVL 9-13: Black</b><br><br>
-        <b>LVL 14: Instructor</b> Access to Student Roster (View) and Video Library.<br>
-        <b>LVL 15: Admin</b> Full access: Staff Permissions, Roster (Edit), and Library.
+        <div id="staffDashboard" style="display:none;">
+            <h3>Staff Access</h3>
+            <div class="guide-box">
+                <b>LVL 0: White</b> | <b>LVL 1: Yellow</b> | <b>LVL 2: Orange</b> | <b>LVL 3: Purple</b> | <b>LVL 4: Blue</b> | <b>LVL 5: Green</b> | <b>LVL 6-8: Brown</b> | <b>LVL 9-13: Black</b><br><br>
+                <b>LVL 14: Instructor</b> Access to Student Roster (View) and Video Library.<br>
+                <b>LVL 15: Admin</b> Full access: Staff Permissions, Roster (Edit), and Library.
+            </div>
+            <div id="staffTableArea"></div>
+        </div>
     </div>
-    <div id="staffTableArea"></div>
-</div>
 
     <script src="https://www.youtube.com/iframe_api"></script>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, collection, onSnapshot, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, collection, onSnapshot, updateDoc, addDoc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = { 
             apiKey: "AIzaSyC35Ubf6GxyDi3JEiKWaYgVFkYGknMZrcw",
@@ -134,11 +137,8 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        let ytPlayer;
-        let progressInterval;
-        let currentUserRank = 0;
+        let ytPlayer, progressInterval, currentUserRank = 0, studentsList = [];
 
-        // YOUTUBE READY
         window.onYouTubeIframeAPIReady = () => {
             ytPlayer = new YT.Player('ytPlayer', {
                 height: '100%', width: '100%', videoId: '',
@@ -149,14 +149,118 @@
 
         function onPlayerStateChange(event) {
             const btn = document.getElementById('playPauseBtn');
-            if (event.data === YT.PlayerState.PLAYING) {
-                btn.innerText = "Pause";
-                startTracking();
-            } else {
-                btn.innerText = "Play";
-                clearInterval(progressInterval);
-            }
+            if (event.data === YT.PlayerState.PLAYING) { btn.innerText = "Pause"; startTracking(); } 
+            else { btn.innerText = "Play"; clearInterval(progressInterval); }
         }
+
+        window.loadVideo = (id) => { if (ytPlayer && ytPlayer.loadVideoById) ytPlayer.loadVideoById(id); };
+        window.togglePlay = () => { const state = ytPlayer.getPlayerState(); state === 1 ? ytPlayer.pauseVideo() : ytPlayer.playVideo(); };
+        window.seek = (s) => ytPlayer.seekTo(ytPlayer.getCurrentTime() + s, true);
+
+        // RESTORED ROSTER LOGIC
+        const syncRoster = () => {
+            onSnapshot(query(collection(db, "students"), orderBy("fullName")), (snap) => {
+                let html = `<table>`;
+                studentsList = [];
+                snap.forEach(docSnap => {
+                    const s = docSnap.data(); studentsList.push(s);
+                    const id = docSnap.id;
+                    const editBtn = currentUserRank >= 15 ? `<button class="control-btn" onclick="event.stopPropagation(); editStudent('${id}', ${JSON.stringify(s).replace(/"/g, '&quot;')})">EDIT</button>` : '';
+                    html += `<tr class="sr-row" onclick="toggleDetail('${id}')">
+                        <td><b>${s.fullName}</b><br><span style="font-size:11px; color:#888;">${s.phone || ""}</span></td>
+                        <td style="text-align:right;">${editBtn}</td>
+                    </tr>
+                    <tr id="det-${id}" style="display:none;"><td colspan="2"><div style="font-size:12px; color:#bbb; background:#222; padding:10px; border-radius:4px;">
+                        <b>Email:</b> ${s.email}<br><b>Notes:</b> ${s.comments}
+                    </div></td></tr>`;
+                });
+                document.getElementById('rosterTableArea').innerHTML = html + "</table>";
+            });
+        };
+
+        window.handleSave = async () => {
+            const id = document.getElementById('editId').value;
+            const data = {
+                fullName: document.getElementById('fName').value,
+                phone: document.getElementById('fPhone').value,
+                email: document.getElementById('fEmail').value,
+                comments: document.getElementById('fComments').value,
+                updatedAt: serverTimestamp()
+            };
+            if (id) await updateDoc(doc(db, "students", id), data);
+            else await addDoc(collection(db, "students"), data);
+            switchAdmin('listView');
+        };
+
+        window.exportStudents = () => {
+            let csv = "Name,Phone,Email,Comments\n";
+            studentsList.forEach(s => csv += `"${s.fullName}","${s.phone}","${s.email}","${s.comments}"\n`);
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = 'Tracy_Roster.csv'; a.click();
+        };
+
+        window.prepareAdd = () => { document.getElementById('editId').value = ""; ['fName', 'fPhone', 'fEmail', 'fComments'].forEach(i => document.getElementById(i).value = ""); switchAdmin('studentForm'); };
+        window.editStudent = (id, s) => { document.getElementById('editId').value = id; document.getElementById('fName').value = s.fullName; document.getElementById('fPhone').value = s.phone; document.getElementById('fEmail').value = s.email; document.getElementById('fComments').value = s.comments; switchAdmin('studentForm'); };
+        window.switchAdmin = (id) => { document.querySelectorAll('.admin-tab').forEach(t => t.style.display = 'none'); document.getElementById(id).style.display = 'block'; };
+        window.toggleDetail = (id) => { const el = document.getElementById(`det-${id}`); el.style.display = el.style.display === "none" ? "table-row" : "none"; };
+        window.searchRoster = () => { const q = document.getElementById('rosterSearch').value.toLowerCase(); document.querySelectorAll('.sr-row').forEach(r => r.style.display = r.innerText.toLowerCase().includes(q) ? "" : "none"); };
+
+        // LOGIN & PERMISSIONS
+        document.getElementById('loginBtn').onclick = async () => {
+            try {
+                const cred = await signInWithEmailAndPassword(auth, document.getElementById('emailInput').value, document.getElementById('passInput').value);
+                const snap = await getDoc(doc(db, "users", cred.user.uid));
+                if (snap.exists()) {
+                    currentUserRank = snap.data().rankLevel;
+                    document.getElementById('loginBox').style.display = 'none';
+                    document.getElementById('portalView').style.display = 'block';
+                    
+                    if (currentUserRank >= 14) document.getElementById('rosterBtn').style.display = 'block';
+                    if (currentUserRank >= 15) {
+                        document.getElementById('staffBtn').style.display = 'block';
+                        document.getElementById('addNewBtn').style.display = 'block';
+                        document.getElementById('exportBtn').style.display = 'block';
+                    }
+
+                    for(let i=0; i<=currentUserRank && i<=13; i++) {
+                        if(document.getElementById(`belt-${i}`)) document.getElementById(`belt-${i}`).style.display = 'block';
+                    }
+                }
+            } catch (e) { alert("Login failed"); }
+        };
+
+        window.openSection = (id) => {
+            document.querySelectorAll('#portalView > div:not(:first-child)').forEach(d => d.style.display = 'none');
+            document.getElementById(id).style.display = 'block';
+            if (id === 'adminDashboard') syncRoster();
+            if (id === 'staffDashboard') syncStaff();
+        };
+
+        window.showMainMenu = () => {
+            document.querySelectorAll('#portalView > div:not(:first-child)').forEach(d => d.style.display = 'none');
+            document.getElementById('mainMenu').style.display = 'block';
+        };
+
+        window.toggleGate = (id) => { const el = document.getElementById(id); el.style.display = el.style.display === "none" ? "block" : "none"; };
+
+        const syncStaff = () => {
+            onSnapshot(collection(db, "users"), (snap) => {
+                let html = `<table><tr><th>NAME</th><th>LVL</th><th></th></tr>`;
+                snap.forEach(docSnap => {
+                    const u = docSnap.data();
+                    html += `<tr><td>${u.name || "User"}</td><td><input type="number" class="lvl-input" id="lvl-${docSnap.id}" value="${u.rankLevel || 0}"></td>
+                    <td style="text-align:right;"><button class="control-btn" onclick="updateRank('${docSnap.id}')">✔</button></td></tr>`;
+                });
+                document.getElementById('staffTableArea').innerHTML = html + "</table>";
+            });
+        };
+
+        window.updateRank = async (id) => {
+            await updateDoc(doc(db, "users", id), { rankLevel: parseInt(document.getElementById(`lvl-${id}`).value) });
+            alert("Level Updated");
+        };
 
         function startTracking() {
             clearInterval(progressInterval);
@@ -168,101 +272,6 @@
                 }
             }, 500);
         }
-
-        // --- GLOBAL FUNCTIONS ---
-        window.loadVideo = (id) => {
-            if (ytPlayer && ytPlayer.loadVideoById) {
-                ytPlayer.loadVideoById(id);
-            } else {
-                console.error("Player not ready");
-            }
-        };
-
-        window.togglePlay = () => {
-            const state = ytPlayer.getPlayerState();
-            state === 1 ? ytPlayer.pauseVideo() : ytPlayer.playVideo();
-        };
-
-        window.seek = (seconds) => {
-            const currentTime = ytPlayer.getCurrentTime();
-            ytPlayer.seekTo(currentTime + seconds, true);
-        };
-
-        window.toggleGate = (id) => {
-            const el = document.getElementById(id);
-            el.style.display = el.style.display === "none" ? "block" : "none";
-        };
-
-        window.showMainMenu = () => {
-            document.querySelectorAll('#portalView > div:not(:first-child)').forEach(d => d.style.display = 'none');
-            document.getElementById('mainMenu').style.display = 'block';
-        };
-
-        window.openSection = (id) => {
-            document.querySelectorAll('#portalView > div:not(:first-child)').forEach(d => d.style.display = 'none');
-            document.getElementById(id).style.display = 'block';
-            if (id === 'adminDashboard') syncRoster();
-            if (id === 'staffDashboard') syncStaff();
-        };
-
-        window.searchRoster = () => {
-            const q = document.getElementById('rosterSearch').value.toLowerCase();
-            document.querySelectorAll('.sr-row').forEach(r => {
-                r.style.display = r.innerText.toLowerCase().includes(q) ? "" : "none";
-            });
-        };
-
-        // --- FIREBASE SYNC ---
-        const syncStaff = () => {
-            onSnapshot(collection(db, "users"), (snap) => {
-                let html = `<table><tr><th>NAME</th><th style="text-align:center;">LVL</th><th></th></tr>`;
-                snap.forEach(docSnap => {
-                    const u = docSnap.data();
-                    html += `<tr>
-                        <td>${u.name || "User"}</td>
-                        <td style="text-align:center;"><input type="number" class="lvl-input" id="lvl-${docSnap.id}" value="${u.rankLevel || 0}"></td>
-                        <td style="text-align:right;"><button class="control-btn" onclick="updateRank('${docSnap.id}')">✔</button></td>
-                    </tr>`;
-                });
-                document.getElementById('staffTableArea').innerHTML = html + "</table>";
-            });
-        };
-
-        window.updateRank = async (id) => {
-            const newVal = parseInt(document.getElementById(`lvl-${id}`).value);
-            await updateDoc(doc(db, "users", id), { rankLevel: newVal });
-            alert("Updated!");
-        };
-
-        const syncRoster = () => {
-            onSnapshot(query(collection(db, "students"), orderBy("fullName")), (snap) => {
-                let html = `<table>`;
-                snap.forEach(docSnap => {
-                    const s = docSnap.data();
-                    html += `<tr class="sr-row"><td><b>${s.fullName}</b><br><span style="font-size:11px; color:#888;">${s.phone || ""}</span></td></tr>`;
-                });
-                document.getElementById('rosterTableArea').innerHTML = html + "</table>";
-            });
-        };
-
-        document.getElementById('loginBtn').onclick = async () => {
-            try {
-                const cred = await signInWithEmailAndPassword(auth, document.getElementById('emailInput').value, document.getElementById('passInput').value);
-                const snap = await getDoc(doc(db, "users", cred.user.uid));
-                if (snap.exists()) {
-                    currentUserRank = snap.data().rankLevel;
-                    document.getElementById('loginBox').style.display = 'none';
-                    document.getElementById('portalView').style.display = 'block';
-                    
-                    if (currentUserRank >= 14) document.getElementById('rosterBtn').style.display = 'block';
-                    if (currentUserRank >= 15) document.getElementById('staffBtn').style.display = 'block';
-
-                    for(let i=0; i<=currentUserRank && i<=13; i++) {
-                        if(document.getElementById(`belt-${i}`)) document.getElementById(`belt-${i}`).style.display = 'block';
-                    }
-                }
-            } catch (e) { alert("Login failed"); }
-        };
 
         document.getElementById('seekBar').oninput = function() {
             const total = ytPlayer.getDuration();
