@@ -173,7 +173,7 @@
                 let html = `<table><tr><th>Staff</th><th>Lvl</th><th>Update</th></tr>`;
                 snap.forEach(docSnap => {
                     const u = docSnap.data();
-                    html += `<tr><td>${u.fullName || u.email}</td>
+                    html += `<tr><td>${u.name || u.email}</td>
                     <td><input type="number" id="lvl-${docSnap.id}" value="${u.rankLevel || 0}" style="width:50px; padding:5px;"></td>
                     <td><button onclick="updateRank('${docSnap.id}')" style="background:var(--gold); padding:8px; border-radius:4px; color:black;">✔</button></td></tr>`;
                 });
@@ -295,3 +295,4 @@
     </script>
 </body>
 </html>
+
