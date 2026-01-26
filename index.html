@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Tracy's Karate - Master Portal</title>
+    <title>Tracy's Karate - Master Portal V2</title>
     <style>
         :root { --gold: #ffcc00; --bg: #1a1a1a; --card: #2b2b2b; --input-bg: #1e1e1e; --green: #2ecc71; --red: #e74c3c; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg); color: white; margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; box-sizing: border-box; }
@@ -123,9 +123,7 @@
         <div id="staffDashboard" style="display:none;">
             <h3>Staff Access</h3>
             <div class="guide-box">
-                <b>LVL 0: White</b> | <b>LVL 1: Yellow</b> | <b>LVL 2: Orange</b> | <b>LVL 3: Purple</b> | <b>LVL 4: Blue</b> | <b>LVL 5: Green</b> | <b>LVL 6-8: Brown</b> | <b>LVL 9-13: Black</b><br><br>
-                <b>LVL 14 Instructor:</b> View Roster + Library<br>
-                <b>LVL 15 Admin:</b> Full Edit/Add/Export + Permissions
+                <b>LVL 0: White</b> | <b>LVL 1: Yellow</b> | <b>LVL 2: Orange</b> | <b>LVL 15: Admin</b>
             </div>
             <div id="staffTableArea"></div>
         </div>
@@ -136,10 +134,8 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, collection, onSnapshot, updateDoc, addDoc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore as getDB } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, collection, onSnapshot, updateDoc, addDoc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // Manually re-mapping because of module scope
         const firebaseConfig = { 
             apiKey: "AIzaSyC35Ubf6GxyDi3JEiKWaYgVFkYGknMZrcw",
             authDomain: "tracy-s-karate-portal.firebaseapp.com",
@@ -150,11 +146,10 @@
         };
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        const db = getDB(app);
+        const db = getFirestore(app);
 
         let ytPlayer, currentUserRank = 0, studentsList = [];
 
-        // YT PLAYER INIT
         window.onYouTubeIframeAPIReady = () => {
             ytPlayer = new YT.Player('ytPlayer', {
                 height: '100%', width: '100%', videoId: '19Ktd4FfDGg',
@@ -163,28 +158,18 @@
             });
         };
 
-        // EXPOSED VIDEO FUNCTIONS
         window.loadVideo = (id) => { if(ytPlayer && ytPlayer.loadVideoById) ytPlayer.loadVideoById(id); };
-        window.togglePlay = () => { const s = ytPlayer.getPlayerState(); s === 1 ? ytPlayer.pauseVideo() : ytPlayer.playVideo(); };
-        window.seek = (s) => ytPlayer.seekTo(ytPlayer.getCurrentTime() + s, true);
+        window.togglePlay = () => { if(ytPlayer && ytPlayer.getPlayerState) { ytPlayer.getPlayerState() === 1 ? ytPlayer.pauseVideo() : ytPlayer.playVideo(); } };
+        window.seek = (s) => { if(ytPlayer && ytPlayer.seekTo) ytPlayer.seekTo(ytPlayer.getCurrentTime() + s, true); };
         
         window.searchVideos = () => {
             const q = document.getElementById('videoSearch').value.toLowerCase();
-            const techButtons = document.querySelectorAll('.tech-btn');
-            techButtons.forEach(btn => {
-                // Only search within the video curriculum buttons, not the menu buttons
-                if(btn.closest('#videoContainer')) {
-                    const isMatch = btn.innerText.toLowerCase().includes(q);
-                    btn.style.display = isMatch ? "block" : "none";
-                }
+            document.querySelectorAll('#videoContainer .tech-btn').forEach(btn => {
+                btn.style.display = btn.innerText.toLowerCase().includes(q) ? "block" : "none";
             });
-            // Auto-open belts if searching
-            document.querySelectorAll('.tech-list').forEach(list => {
-                if(q.length > 1) list.style.display = 'block';
-            });
+            if(q.length > 1) document.querySelectorAll('.tech-list').forEach(l => l.style.display = 'block');
         };
 
-        // UI NAVIGATION
         window.toggleGate = (id) => { const el = document.getElementById(id); el.style.display = (el.style.display === "none") ? "block" : "none"; };
         window.showMainMenu = () => { document.querySelectorAll('#portalView > div:not(:first-child)').forEach(d => d.style.display='none'); document.getElementById('mainMenu').style.display='block'; };
         window.openSection = (id) => { 
@@ -194,7 +179,6 @@
             if(id === 'staffDashboard') syncStaff();
         };
 
-        // ADMIN ROSTER
         const syncRoster = () => {
             onSnapshot(query(collection(db, "students"), orderBy("fullName")), (snap) => {
                 let html = `<table>`; studentsList = [];
@@ -223,11 +207,9 @@
         };
         window.exportStudents = () => {
             let csv = "Name,Phone,Email\n"; studentsList.forEach(s => csv += `"${s.fullName}","${s.phone}","${s.email}"\n`);
-            const blob = new Blob([csv], {type:'text/csv'}); const url = URL.createObjectURL(blob);
-            const a = document.createElement('a'); a.href=url; a.download='Roster.csv'; a.click();
+            const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'})); a.download='Roster.csv'; a.click();
         };
 
-        // STAFF
         const syncStaff = () => {
             onSnapshot(collection(db, "users"), (snap) => {
                 let html = `<table><tr><th>NAME</th><th>LVL</th><th></th></tr>`;
@@ -241,7 +223,6 @@
         };
         window.updateRank = async (id) => { await updateDoc(doc(db, "users", id), { rankLevel: parseInt(document.getElementById(`lvl-${id}`).value) }); alert("Updated"); };
 
-        // LOGIN
         document.getElementById('loginBtn').onclick = async () => {
             try {
                 const cred = await signInWithEmailAndPassword(auth, document.getElementById('emailInput').value, document.getElementById('passInput').value);
@@ -258,7 +239,7 @@
         };
 
         setInterval(() => { if(ytPlayer && ytPlayer.getCurrentTime) document.getElementById('seekBar').value = (ytPlayer.getCurrentTime() / ytPlayer.getDuration()) * 100; }, 500);
-        document.getElementById('seekBar').oninput = function() { ytPlayer.seekTo(ytPlayer.getDuration() * (this.value / 100), true); };
+        document.getElementById('seekBar').oninput = function() { if(ytPlayer) ytPlayer.seekTo(ytPlayer.getDuration() * (this.value / 100), true); };
     </script>
 </body>
 </html>
