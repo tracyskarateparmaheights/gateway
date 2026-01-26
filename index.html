@@ -6,34 +6,39 @@
     <title>Tracy's Karate - Student Portal</title>
     <style>
         body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #1a1a1a; color: white; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; margin: 0; padding: 20px 10px; box-sizing: border-box; }
-        .container { background: #2b2b2b; padding: 30px 20px; border-radius: 12px; border-top: 6px solid #ffcc00; box-shadow: 0 15px 35px rgba(0,0,0,0.6); text-align: center; width: 100%; max-width: 500px; }
+        .container { background: #2b2b2b; padding: 30px 20px; border-radius: 12px; border-top: 6px solid #ffcc00; box-shadow: 0 15px 35px rgba(0,0,0,0.6); text-align: center; width: 100%; max-width: 500px; position: relative; }
         
         h1 { color: #ffcc00; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; font-size: 20px; }
         
-        /* Rank Sections */
-        .rank-section { display: none; text-align: left; margin-top: 20px; }
-        .section-title { color: #ffcc00; font-size: 14px; text-transform: uppercase; border-bottom: 1px solid #444; padding-bottom: 5px; margin-bottom: 10px; }
+        /* Navigation & Views */
+        #beltMenuView, .rank-detail-view { display: none; }
+        .back-btn { background: #444; color: #ffcc00; padding: 8px 12px; border-radius: 4px; cursor: pointer; display: inline-block; margin-bottom: 20px; font-size: 12px; font-weight: bold; text-transform: uppercase; border: 1px solid #555; }
 
-        /* Individual Video Buttons */
-        .video-btn { background: #333; color: #fff; padding: 12px 15px; margin: 8px 0; border-left: 4px solid #ffcc00; border-radius: 4px; font-weight: 600; cursor: pointer; display: block; font-size: 14px; transition: 0.2s; }
-        .video-btn:hover { background: #444; color: #ffcc00; }
+        /* Parent Belt Buttons */
+        .belt-item { background: #333; color: #fff; padding: 20px; margin: 12px 0; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: 0.2s; border-left: 8px solid transparent; }
+        .belt-item:hover { background: #3d3d3d; }
 
-        /* SECURE PLAYER & SHIELDS */
-        #playerContainer { display: none; margin-bottom: 25px; position: sticky; top: 0; z-index: 100; background: #2b2b2b; padding-bottom: 10px; }
-        .close-player { background: #444; color: #ffcc00; font-size: 11px; padding: 10px 15px; border-radius: 4px; cursor: pointer; margin-bottom: 12px; display: inline-block; font-weight: bold; border: 1px solid #555; }
+        /* Technique Buttons */
+        .tech-btn { background: #222; color: #eee; padding: 15px; margin: 8px 0; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; border: 1px solid #444; transition: 0.2s; }
+        .tech-btn:hover { border-color: #ffcc00; color: #ffcc00; }
 
+        /* VIDEO PLAYER & MAXIMUM SECURITY SHIELD */
+        #playerContainer { display: none; margin-bottom: 25px; position: relative; width: 100%; }
         .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; border: 2px solid #ffcc00; background: #000; }
         
-        /* CLICK SHIELDS */
-        .blocker { position: absolute; background: transparent; z-index: 20; pointer-events: auto; }
-        .block-top { top: 0; left: 0; width: 100%; height: 50px; } 
-        .block-logo { bottom: 0; right: 0; width: 100px; height: 50px; } 
+        /* The Absolute Shield: Blocks EVERYTHING except the middle area */
+        .video-shield { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 20; }
+        .shield-piece { position: absolute; background: transparent; pointer-events: auto; }
+        .s-top { top: 0; width: 100%; height: 25%; } /* Blocks Title/Share */
+        .s-bottom { bottom: 0; width: 100%; height: 20%; } /* Blocks YT Logo/Controls */
+        .s-left { top: 25%; left: 0; width: 20%; height: 55%; } /* Blocks Sidebar exit */
+        .s-right { top: 25%; right: 0; width: 20%; height: 55%; } /* Blocks Sidebar exit */
 
         iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
         
         input { width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #444; border-radius: 6px; background: #333; color: white; font-size: 16px; box-sizing: border-box; }
         button#loginBtn { width: 100%; padding: 15px; background: #ffcc00; color: #1a1a1a; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
-        .logout-btn { background: #444; color: white; margin-top: 30px; width: 100%; padding: 12px; border: none; border-radius: 6px; cursor: pointer; }
+        .logout-btn { background: transparent; color: #888; margin-top: 30px; border: none; cursor: pointer; text-decoration: underline; font-size: 13px; }
     </style>
 </head>
 <body>
@@ -49,24 +54,36 @@
         <h1 id="welcomeTitle">Welcome</h1>
 
         <div id="playerContainer">
-            <div class="close-player" onclick="closeVideo()">✖ Close Video</div>
+            <div class="back-btn" onclick="closeVideo()">✖ Close Video</div>
             <div class="video-wrapper">
-                <div class="blocker block-top"></div>
-                <div class="blocker block-logo"></div>
-                <iframe id="videoPlayer" src="" frameborder="0" allowfullscreen></iframe>
+                <div class="shield-piece s-top"></div>
+                <div class="shield-piece s-bottom"></div>
+                <div class="shield-piece s-left"></div>
+                <div class="shield-piece s-right"></div>
+                <iframe id="videoPlayer" src="" frameborder="0" allow="autoplay" allowfullscreen></iframe>
             </div>
         </div>
 
-        <div id="rank-yellow" class="rank-section">
-            <div class="section-title">Yellow Belt Techniques</div>
-            <div class="video-btn" onclick="playVid('19Ktd4FfDGg')">Yellow History</div>
-            <div class="video-btn" onclick="playVid('JIFwfcykAY8')">Japanese Sword</div>
-            <div class="video-btn" onclick="playVid('RoSuLCLOKuU')">Chinese Sword</div>
+        <div id="beltMenuView">
+            <p style="color:#888;">Select a Belt to View Material:</p>
+            <div class="belt-item" style="border-left-color: #fff;" onclick="showRankDetail('white')">⚪ White Belt (Basics) <span>▶</span></div>
+            <div class="belt-item" style="border-left-color: #ffcc00;" onclick="showRankDetail('yellow')">🟡 Yellow Belt <span>▶</span></div>
+            <div class="belt-item" style="border-left-color: #ff8c00;" onclick="showRankDetail('orange')">🟠 Orange Belt <span>▶</span></div>
         </div>
 
-        <div id="rank-orange" class="rank-section">
-            <div class="section-title">Orange Belt Techniques</div>
-            <div class="video-btn" onclick="playVid('VIDEO_ID_4')">Long 1</div>
+        <div id="rank-yellow-detail" class="rank-detail-view">
+            <div class="back-btn" onclick="goBackToBelts()">⬅ Back to Belts</div>
+            <h3>Yellow Belt Material</h3>
+            <div class="tech-btn" onclick="playVid('VIDEO_ID_HERE')">Yellow History</div>
+            <div class="tech-btn" onclick="playVid('VIDEO_ID_HERE')">Delayed Sword</div>
+            <div class="tech-btn" onclick="playVid('VIDEO_ID_HERE')">Alternating Maces</div>
+        </div>
+
+        <div id="rank-orange-detail" class="rank-detail-view">
+            <div class="back-btn" onclick="goBackToBelts()">⬅ Back to Belts</div>
+            <h3>Orange Belt Material</h3>
+            <div class="tech-btn" onclick="playVid('VIDEO_ID_HERE')">Clutching Feathers</div>
+            <div class="tech-btn" onclick="playVid('VIDEO_ID_HERE')">Triggered Salute</div>
         </div>
 
         <button class="logout-btn" onclick="location.reload()">Log Out</button>
@@ -90,35 +107,45 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        let userRank = "";
+
         async function doLogin() {
-            const email = document.getElementById('emailInput').value;
-            const pass = document.getElementById('passInput').value;
             try {
-                const cred = await signInWithEmailAndPassword(auth, email, pass);
+                const cred = await signInWithEmailAndPassword(auth, emailInput.value, passInput.value);
                 const snap = await getDoc(doc(db, "users", cred.user.uid));
                 if (snap.exists()) {
+                    userRank = snap.data().rank.toLowerCase();
                     document.getElementById('loginBox').style.display = 'none';
                     document.getElementById('videoContent').style.display = 'block';
-                    document.getElementById('welcomeTitle').innerText = snap.data().name.toUpperCase();
-                    
-                    const rank = snap.data().rank.toLowerCase();
-                    if(rank === 'instructor') {
-                        document.querySelectorAll('.rank-section').forEach(s => s.style.display = 'block');
-                    } else {
-                        document.getElementById('rank-' + rank).style.display = 'block';
-                    }
+                    document.getElementById('beltMenuView').style.display = 'block';
+                    document.getElementById('welcomeTitle').innerText = "WELCOME, " + snap.data().name.toUpperCase();
                 }
-            } catch (e) { alert("Login Failed"); }
+            } catch (e) { alert("Invalid Login"); }
         }
 
         document.getElementById('loginBtn').addEventListener('click', doLogin);
         document.getElementById('passInput').addEventListener('keypress', (e) => { if(e.key === 'Enter') doLogin(); });
 
+        window.showRankDetail = function(rank) {
+            // Check if student has permission for this belt
+            if (userRank !== 'instructor' && userRank !== rank) {
+                alert("This section is locked. Keep training!");
+                return;
+            }
+            document.getElementById('beltMenuView').style.display = 'none';
+            document.getElementById('rank-' + rank + '-detail').style.display = 'block';
+        };
+
+        window.goBackToBelts = function() {
+            document.querySelectorAll('.rank-detail-view').forEach(v => v.style.display = 'none');
+            document.getElementById('beltMenuView').style.display = 'block';
+            closeVideo();
+        };
+
         window.playVid = function(id) {
-            // Updated to load individual videos with auto-play
-            document.getElementById('videoPlayer').src = `https://www.youtube.com/embed/${id}?autoplay=1&modestbranding=1&rel=0&iv_load_policy=3&disablekb=1`;
+            const player = document.getElementById('videoPlayer');
+            player.src = `https://www.youtube.com/embed/${id}?autoplay=1&modestbranding=1&rel=0&controls=0&disablekb=1`;
             document.getElementById('playerContainer').style.display = 'block';
-            window.scrollTo({top: 0, behavior: 'smooth'});
         };
 
         window.closeVideo = function() {
