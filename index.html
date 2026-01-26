@@ -33,7 +33,7 @@
         th { color: var(--gold); border-bottom: 1px solid #444; padding: 8px; font-size: 11px; text-transform: uppercase; text-align: left; }
         td { padding: 12px 8px; border-bottom: 1px solid #222; vertical-align: top; font-size: 13px; }
         .detail-row { font-size: 11px; color: #aaa; background: #1e1e1e; line-height: 1.4; }
-        .status-badge { padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; text-transform: uppercase; }
+        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; text-transform: uppercase; cursor: pointer; border: none; }
         .status-paid { background: var(--green); color: #000; }
         .status-due { background: var(--red); color: #fff; }
     </style>
@@ -71,10 +71,10 @@
                 <input type="text" id="newStudentPhone" placeholder="Phone Number">
                 <input type="text" id="newStudentGuardian" placeholder="Guardian">
                 <input type="text" id="newStudentBelt" placeholder="Belt Rank">
-                <label style="font-size: 12px; color: var(--gold);">Tuition Paid?</label>
+                <label style="font-size: 12px; color: var(--gold);">Initial Tuition Status:</label>
                 <select id="newStudentTuition">
-                    <option value="true">Yes (Current)</option>
-                    <option value="false">No (Due)</option>
+                    <option value="true">Paid</option>
+                    <option value="false">Due</option>
                 </select>
                 <textarea id="newStudentNotes" placeholder="Notes" style="height:70px;"></textarea>
                 <button onclick="saveStudent()" style="width:100%; padding:15px; background:var(--gold); border-radius:8px; font-weight:bold; color:#000;">Save Record</button>
@@ -118,7 +118,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, collection, addDoc, getDocs, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, collection, addDoc, getDocs, deleteDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyC35Ubf6GxyDi3JEiKWaYgVFkYGknMZrcw",
@@ -191,7 +191,16 @@
                 alert("Saved!");
                 ['newStudentName', 'newStudentPhone', 'newStudentGuardian', 'newStudentBelt', 'newStudentNotes'].forEach(i => document.getElementById(i).value = "");
                 loadRoster();
-            } catch (e) { alert("Error: No Permission"); }
+            } catch (e) { alert("Error: Permission Denied"); }
+        };
+
+        window.toggleTuition = async (id, currentStatus) => {
+            if(userRank < 10) return; // Only Staff/Sensei can toggle
+            try {
+                const studentRef = doc(db, "students", id);
+                await updateDoc(studentRef, { tuitionStatus: !currentStatus });
+                loadRoster();
+            } catch (e) { alert("Update failed: " + e.message); }
         };
 
         window.loadRoster = async () => {
@@ -200,6 +209,7 @@
             let html = `<table><tr><th>Student</th><th>Belt</th><th>Status</th></tr>`;
             snap.forEach(docSnap => {
                 const s = docSnap.data();
+                const id = docSnap.id;
                 const testDate = s.lastTestDate ? new Date(s.lastTestDate.seconds * 1000).toLocaleDateString() : 'N/A';
                 const statusClass = s.tuitionStatus ? 'status-paid' : 'status-due';
                 const statusText = s.tuitionStatus ? 'Paid' : 'Due';
@@ -207,7 +217,7 @@
                 html += `<tr class="sr">
                             <td style="font-weight:bold;">${s.fullName}</td>
                             <td>${s.beltRank}</td>
-                            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                            <td><button onclick="toggleTuition('${id}', ${s.tuitionStatus})" class="status-badge ${statusClass}">${statusText}</button></td>
                          </tr>
                          <tr class="sr detail-row">
                             <td colspan="2">
@@ -217,7 +227,7 @@
                                 <b>Notes:</b> ${s.notes || '---'}
                             </td>
                             <td style="text-align:right; vertical-align:bottom;">
-                                ${userRank >= 15 ? `<button onclick="delEnt('${docSnap.id}')" style="background:#400; color:#fff; padding:5px; border-radius:4px;">Del</button>` : ''}
+                                ${userRank >= 15 ? `<button onclick="delEnt('${id}')" style="background:#400; color:#fff; padding:5px; border-radius:4px;">Del</button>` : ''}
                             </td>
                          </tr>`;
             });
@@ -233,7 +243,7 @@
             });
         };
 
-        window.delEnt = async (id) => { if(confirm("Delete record?")) { await deleteDoc(doc(db, "students", id)); loadRoster(); } };
+        window.delEnt = async (id) => { if(confirm("Delete student?")) { await deleteDoc(doc(db, "students", id)); loadRoster(); } };
 
         window.playVid = (id) => {
             document.getElementById('playerContainer').style.display = 'block';
