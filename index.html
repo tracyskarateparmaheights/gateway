@@ -36,7 +36,7 @@
 
     <div class="container" id="loginBox">
         <div class="logo-container">
-            <img src="Black_TK.png" class="logo-img" alt="Tracy Karate Logo" onerror="this.src='https://via.placeholder.com/180x100/2b2b2b/ffcc00?text=Tracy+Karate'">
+            <img src="https://raw.githubusercontent.com/tracyskarateparmaheights/gateway/main/BLACK-TK.png" class="logo-img" alt="Tracy Karate Logo" onerror="this.src='BLACK-TK.png'">
         </div>
         <h1>Dojo Portal</h1>
         <input type="email" id="emailInput" placeholder="Email">
@@ -47,7 +47,7 @@
     <div class="container" id="portalView" style="display:none;">
         <div style="display:flex; justify-content:space-between; align-items: center; margin-bottom:20px;">
             <button class="nav-btn" id="homeBtn" onclick="showMainMenu()" style="display:none;">🏠 Menu</button>
-            <img src="Black_TK.png" class="mini-logo" alt="Logo" onerror="this.style.visibility='hidden'">
+            <img src="https://raw.githubusercontent.com/tracyskarateparmaheights/gateway/main/BLACK-TK.png" class="mini-logo" alt="Logo">
             <button class="nav-btn" onclick="location.reload()" style="background:#822;">Log Out</button>
         </div>
 
@@ -88,7 +88,7 @@
         </div>
         
         <div id="curriculumSection" style="display:none;">
-            <h3>Videos</h3>
+            <h3>Video Library</h3>
             <div id="player"></div>
             
             <div class="belt-header" onclick="toggleGate('list-yellow', 1)">🟡 Yellow Belt <span>▼</span></div>
@@ -107,7 +107,7 @@
             </div>
 
             <div class="belt-header" onclick="toggleGate('list-orange', 2)">🟠 Orange Belt <span>▼</span></div>
-            <div id="list-orange" style="display:none; padding:10px;"><p style="color:#666;">Orange coming soon...</p></div>
+            <div id="list-orange" style="display:none; padding:10px;"><p style="color:#666;">Orange curriculum coming soon...</p></div>
         </div>
     </div>
 
@@ -130,7 +130,7 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
         let userRank = 0;
-        let studentsData = {}; // MEMORY CACHE FIX
+        let studentsData = {}; 
 
         document.getElementById('loginBtn').addEventListener('click', async () => {
             const email = document.getElementById('emailInput').value.trim();
@@ -183,17 +183,17 @@
         window.updateRank = async (uid) => {
             const val = parseInt(document.getElementById(`lvl-${uid}`).value);
             await updateDoc(doc(db, "users", uid), { rankLevel: val });
-            alert("Updated.");
+            alert("Permissions saved.");
         };
 
         window.loadRoster = async () => {
             const area = document.getElementById('rosterTableArea');
             const snap = await getDocs(query(collection(db, "students"), orderBy("fullName")));
             let html = `<table><tr><th>Name</th><th>Belt</th><th>Status</th></tr>`;
-            studentsData = {}; // Clear cache before reload
+            studentsData = {}; 
             snap.forEach(docSnap => {
                 const s = docSnap.data(), id = docSnap.id;
-                studentsData[id] = s; // CACHE DATA TO ID
+                studentsData[id] = s;
                 const statusClass = s.tuitionStatus ? 'status-paid' : 'status-due';
                 html += `
                 <tr class="sr-main">
@@ -240,7 +240,6 @@
             switchAdminTab('studentForm'); 
         };
         
-        // STABLE EDIT: Grabs from cache using ID
         window.editStudent = (id) => {
             const s = studentsData[id];
             document.getElementById('editStudentId').value = id; 
