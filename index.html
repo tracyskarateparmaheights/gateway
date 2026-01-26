@@ -10,9 +10,7 @@
         
         .container { background: var(--card); padding: 30px 20px; border-radius: 12px; border-top: 5px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 100%; max-width: 480px; margin-top: 20px; }
         .logo-img { width: 180px; height: auto; margin-bottom: 10px; }
-        
-        /* Login Title Styling */
-        .login-title { color: var(--gold); font-size: 24px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 25px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+        .login-title { color: var(--gold); font-size: 24px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 25px; }
 
         /* VIDEO AREA */
         .video-wrapper { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 8px; overflow: hidden; margin-bottom: 10px; border: 1px solid #444; }
@@ -20,18 +18,21 @@
         
         .custom-controls { background: #333; padding: 12px; border-radius: 8px; margin-bottom: 15px; }
         .control-row { display: flex; justify-content: center; gap: 12px; align-items: center; margin-top: 8px; }
-        .control-btn { background: var(--gold); color: #000; border: none; padding: 10px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; transition: 0.3s; }
-        .control-btn:disabled { background: #555; cursor: not-allowed; }
+        .control-btn { background: var(--gold); color: #000; border: none; padding: 10px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; }
+        .control-btn:disabled { background: #555; opacity: 0.7; }
         
         #seekBar { width: 100%; height: 6px; appearance: none; background: #555; border-radius: 5px; cursor: pointer; outline: none; }
         #seekBar::-webkit-slider-thumb { appearance: none; width: 16px; height: 16px; background: var(--gold); border-radius: 50%; border: 2px solid #000; }
 
-        /* ROSTER & STAFF */
+        /* TABLES & ROSTER */
         .admin-tab { display: none; text-align: left; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th { color: var(--gold); font-size: 11px; text-transform: uppercase; border-bottom: 1px solid #444; padding-bottom: 8px; text-align: left; }
-        td { padding: 12px 5px; border-bottom: 1px solid #333; font-size: 13px; text-align: left; vertical-align: top; }
+        td { padding: 12px 5px; border-bottom: 1px solid #333; font-size: 14px; text-align: left; vertical-align: middle; }
         
+        /* FIX: STAFF LVL INPUT BOX */
+        .lvl-input { width: 65px !important; padding: 10px !important; background: #111; color: var(--gold); border: 1px solid #555; text-align: center; font-weight: bold; margin-bottom: 0 !important; }
+
         .roster-detail { font-size: 12px; color: #bbb; padding: 10px; background: #222; border-radius: 4px; margin: 5px 0; }
         .belt-header { background: #3d3d3d; padding: 15px; margin-top: 10px; border-radius: 8px; color: var(--gold); cursor: pointer; display: flex; justify-content: space-between; font-weight: bold; }
         .tech-btn { background: #222; color: #eee; padding: 14px; margin: 5px 0; border-radius: 6px; border-left: 4px solid var(--gold); width: 100%; cursor: pointer; display: block; text-align: left; font-size: 13px; }
@@ -43,7 +44,7 @@
 
     <div class="container" id="loginBox">
         <img src="https://raw.githubusercontent.com/tracyskarateparmaheights/gateway/main/BLACK-TK.png" class="logo-img">
-        <div class="login-title">Tracy's Karate Portal</div>
+        <div class="login-title">Tracy's Karate - Master Portal</div>
         <input type="email" id="emailInput" placeholder="Email">
         <input type="password" id="passInput" placeholder="Password">
         <button id="loginBtn" class="control-btn" style="width:100%; padding:18px;">Sign In</button>
@@ -62,9 +63,7 @@
         </div>
 
         <div id="curriculumSection" style="display:none;">
-            <div class="video-wrapper">
-                <div id="ytPlayer"></div>
-            </div>
+            <div class="video-wrapper"><div id="ytPlayer"></div></div>
             <div class="custom-controls">
                 <input type="range" id="seekBar" value="0" step="0.1">
                 <div class="control-row">
@@ -73,22 +72,19 @@
                     <button class="control-btn" onclick="seek(10)">+10s</button>
                 </div>
             </div>
-            
-            <div id="list-yellow">
-                <div class="belt-header" onclick="toggleGate('yellow-techs')">🟡 Yellow Belt <span>▼</span></div>
-                <div id="yellow-techs" style="display:none;">
-                    <button class="tech-btn" onclick="changeVid('19Ktd4FfDGg')">Yellow History</button>
-                    <button class="tech-btn" onclick="changeVid('JIFwfcykAY8')">Japanese Sword</button>
-                    <button class="tech-btn" onclick="changeVid('RoSuLCLOKuU')">Chinese Sword</button>
-                    <button class="tech-btn" onclick="changeVid('NjXYf4QOZnU')">Delayed Sword</button>
-                    <button class="tech-btn" onclick="changeVid('SaCwJIsQWE8')">Knee of Vengence</button>
-                    <button class="tech-btn" onclick="changeVid('xNzobYNSQ4Y')">Fang of the Cobra</button>
-                    <button class="tech-btn" onclick="changeVid('ZJNmDVtXnBY')">Twisted Talon</button>
-                    <button class="tech-btn" onclick="changeVid('u0ceVbYXUXQ')">Returning Dragon</button>
-                    <button class="tech-btn" onclick="changeVid('yvrhFEiuHKc')">Kenpo Shield</button>
-                    <button class="tech-btn" onclick="changeVid('i-vyUr_6xZU')">Evasion</button>
-                    <button class="tech-btn" onclick="changeVid('E44w7Eh73xs')">Breaking the Sword</button>
-                </div>
+            <div class="belt-header" onclick="toggleGate('yellow-techs')">🟡 Yellow Belt <span>▼</span></div>
+            <div id="yellow-techs" style="display:none;">
+                <button class="tech-btn" onclick="changeVid('19Ktd4FfDGg')">Yellow History</button>
+                <button class="tech-btn" onclick="changeVid('JIFwfcykAY8')">Japanese Sword</button>
+                <button class="tech-btn" onclick="changeVid('RoSuLCLOKuU')">Chinese Sword</button>
+                <button class="tech-btn" onclick="changeVid('NjXYf4QOZnU')">Delayed Sword</button>
+                <button class="tech-btn" onclick="changeVid('SaCwJIsQWE8')">Knee of Vengence</button>
+                <button class="tech-btn" onclick="changeVid('xNzobYNSQ4Y')">Fang of the Cobra</button>
+                <button class="tech-btn" onclick="changeVid('ZJNmDVtXnBY')">Twisted Talon</button>
+                <button class="tech-btn" onclick="changeVid('u0ceVbYXUXQ')">Returning Dragon</button>
+                <button class="tech-btn" onclick="changeVid('yvrhFEiuHKc')">Kenpo Shield</button>
+                <button class="tech-btn" onclick="changeVid('i-vyUr_6xZU')">Evasion</button>
+                <button class="tech-btn" onclick="changeVid('E44w7Eh73xs')">Breaking the Sword</button>
             </div>
         </div>
 
@@ -140,19 +136,15 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        let player, progressTimer, studentsData = {};
+        let player, progressTimer, studentsData = {}, isReady = false;
 
-        // VIDEO ENGINE
+        // VIDEO ENGINE - WITH AUTO-FAILSAFE
         window.onYouTubeIframeAPIReady = () => {
             player = new YT.Player('ytPlayer', {
                 videoId: '19Ktd4FfDGg',
                 playerVars: { 'controls': 0, 'disablekb': 1, 'enablejsapi': 1, 'rel': 0, 'playsinline': 1 },
                 events: { 
-                    'onReady': () => {
-                        const playBtn = document.getElementById('playPauseBtn');
-                        playBtn.disabled = false;
-                        playBtn.innerText = "Play";
-                    },
+                    'onReady': () => { activatePlayer(); },
                     'onStateChange': (e) => {
                         const btn = document.getElementById('playPauseBtn');
                         if (e.data === 1) { 
@@ -165,7 +157,16 @@
                     }
                 }
             });
+            // Failsafe: Force enable button after 3 seconds if onReady doesn't fire
+            setTimeout(() => { if(!isReady) activatePlayer(); }, 3000);
         };
+
+        function activatePlayer() {
+            isReady = true;
+            const btn = document.getElementById('playPauseBtn');
+            btn.disabled = false;
+            btn.innerText = "Play";
+        }
 
         window.togglePlay = () => player.getPlayerState() === 1 ? player.pauseVideo() : player.playVideo();
         window.seek = (s) => player.seekTo(player.getCurrentTime() + s, true);
@@ -186,24 +187,16 @@
                         <td>${s.phone || ''}</td>
                         <td><button class="control-btn" style="padding:5px;" onclick="event.stopPropagation(); editStudent('${id}')">EDIT</button></td>
                     </tr>
-                    <tr id="det-${id}" style="display:none;"><td colspan="3">
-                        <div class="roster-detail">
-                            <b>Guardian:</b> ${s.parentName || 'N/A'}<br>
-                            <b>Email:</b> ${s.email || 'N/A'}<br>
-                            <b>Address:</b> ${s.address || ''}, ${s.cityZip || ''}<br>
-                            <b>Source:</b> ${s.source || ''}<br>
-                            <b>Comments:</b> ${s.comments || ''}
-                        </div>
-                    </td></tr>`;
+                    <tr id="det-${id}" style="display:none;"><td colspan="3"><div class="roster-detail">
+                        <b>Guardian:</b> ${s.parentName || 'N/A'}<br><b>Email:</b> ${s.email || 'N/A'}<br>
+                        <b>Address:</b> ${s.address || ''}, ${s.cityZip || ''}<br><b>Source:</b> ${s.source || ''}<br><b>Comments:</b> ${s.comments || ''}
+                    </div></td></tr>`;
                 });
                 document.getElementById('rosterTableArea').innerHTML = html + "</table>";
             });
         };
 
-        window.toggleDetail = (id) => {
-            const el = document.getElementById(`det-${id}`);
-            el.style.display = el.style.display === "none" ? "table-row" : "none";
-        };
+        window.toggleDetail = (id) => { const el = document.getElementById(`det-${id}`); el.style.display = el.style.display === "none" ? "table-row" : "none"; };
 
         window.editStudent = (id) => {
             const s = studentsData[id];
@@ -222,14 +215,10 @@
         window.handleSave = async () => {
             const id = document.getElementById('editId').value;
             const data = {
-                fullName: document.getElementById('fName').value,
-                parentName: document.getElementById('fParent').value,
-                phone: document.getElementById('fPhone').value,
-                email: document.getElementById('fEmail').value,
-                address: document.getElementById('fAddress').value,
-                cityZip: document.getElementById('fCity').value,
-                source: document.getElementById('fSource').value,
-                comments: document.getElementById('fComments').value,
+                fullName: document.getElementById('fName').value, parentName: document.getElementById('fParent').value,
+                phone: document.getElementById('fPhone').value, email: document.getElementById('fEmail').value,
+                address: document.getElementById('fAddress').value, cityZip: document.getElementById('fCity').value,
+                source: document.getElementById('fSource').value, comments: document.getElementById('fComments').value,
                 updated: serverTimestamp()
             };
             if(id) await updateDoc(doc(db, "students", id), data);
@@ -253,13 +242,13 @@
             document.querySelectorAll('.sr-row').forEach(r => r.style.display = r.innerText.toLowerCase().includes(q) ? "" : "none");
         };
 
-        // STAFF
+        // STAFF LOGIC (FIXED INPUT SIZING)
         window.syncStaff = () => {
             onSnapshot(collection(db, "users"), (snap) => {
-                let html = `<table><tr><th>Name</th><th>LVL</th><th></th></tr>`;
+                let html = `<table><tr><th>NAME</th><th style="text-align:center">LVL</th><th></th></tr>`;
                 snap.forEach(docSnap => {
                     const u = docSnap.data();
-                    html += `<tr><td>${u.name || "User"}</td><td><input type="number" style="width:50px" id="lvl-${docSnap.id}" value="${u.rankLevel || 0}"></td>
+                    html += `<tr><td>${u.name || "User"}</td><td style="text-align:center"><input type="number" class="lvl-input" id="lvl-${docSnap.id}" value="${u.rankLevel || 0}"></td>
                     <td><button class="control-btn" onclick="updateRank('${docSnap.id}')">✔</button></td></tr>`;
                 });
                 document.getElementById('staffTableArea').innerHTML = html + "</table>";
@@ -270,7 +259,7 @@
             alert("Updated");
         };
 
-        // LOGIN
+        // LOGIN/NAV
         document.getElementById('loginBtn').onclick = async () => {
             try {
                 const cred = await signInWithEmailAndPassword(auth, document.getElementById('emailInput').value, document.getElementById('passInput').value);
