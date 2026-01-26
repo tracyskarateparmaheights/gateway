@@ -8,35 +8,34 @@
         body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #1a1a1a; color: white; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; margin: 0; padding: 20px 10px; box-sizing: border-box; }
         .container { background: #2b2b2b; padding: 30px 20px; border-radius: 12px; border-top: 6px solid #ffcc00; box-shadow: 0 15px 35px rgba(0,0,0,0.6); text-align: center; width: 100%; max-width: 500px; position: relative; }
         
+        /* Restored Logo Styles */
+        .logo-container { margin-bottom: 10px; }
+        .logo { width: 70px; height: auto; border-radius: 5px; }
         h1 { color: #ffcc00; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; font-size: 20px; }
         
-        /* Navigation & Views */
         #beltMenuView, .rank-detail-view { display: none; }
         .back-btn { background: #444; color: #ffcc00; padding: 8px 12px; border-radius: 4px; cursor: pointer; display: inline-block; margin-bottom: 20px; font-size: 12px; font-weight: bold; text-transform: uppercase; border: 1px solid #555; }
 
-        /* Parent Belt Buttons */
-        .belt-item { background: #333; color: #fff; padding: 20px; margin: 12px 0; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: 0.2s; border-left: 8px solid transparent; }
-        .belt-item:hover { background: #3d3d3d; }
+        .belt-item { background: #333; color: #fff; padding: 20px; margin: 12px 0; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: space-between; border-left: 8px solid transparent; }
+        .tech-btn { background: #222; color: #eee; padding: 15px; margin: 8px 0; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; border: 1px solid #444; }
 
-        /* Technique Buttons */
-        .tech-btn { background: #222; color: #eee; padding: 15px; margin: 8px 0; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; border: 1px solid #444; transition: 0.2s; }
-        .tech-btn:hover { border-color: #ffcc00; color: #ffcc00; }
-
-        /* VIDEO PLAYER & MAXIMUM SECURITY SHIELD */
+        /* MAXIMUM SECURITY PLAYER */
         #playerContainer { display: none; margin-bottom: 25px; position: relative; width: 100%; }
         .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; border: 2px solid #ffcc00; background: #000; }
         
-        /* The Absolute Shield: Blocks EVERYTHING except the middle area */
-        .video-shield { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 20; }
-        .shield-piece { position: absolute; background: transparent; pointer-events: auto; }
-        .s-top { top: 0; width: 100%; height: 25%; } /* Blocks Title/Share */
-        .s-bottom { bottom: 0; width: 100%; height: 20%; } /* Blocks YT Logo/Controls */
-        .s-left { top: 25%; left: 0; width: 20%; height: 55%; } /* Blocks Sidebar exit */
-        .s-right { top: 25%; right: 0; width: 20%; height: 55%; } /* Blocks Sidebar exit */
+        /* THE TOTAL SHIELD: This blocks 100% of clicks to YouTube */
+        .video-shield { 
+            position: absolute; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            z-index: 50; 
+            background: rgba(0,0,0,0.01); /* Invisible but present */
+            cursor: default;
+        }
 
         iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
         
-        input { width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #444; border-radius: 6px; background: #333; color: white; font-size: 16px; box-sizing: border-box; }
+        input { width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #444; border-radius: 6px; background: #333; color: white; box-sizing: border-box; }
         button#loginBtn { width: 100%; padding: 15px; background: #ffcc00; color: #1a1a1a; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
         .logout-btn { background: transparent; color: #888; margin-top: 30px; border: none; cursor: pointer; text-decoration: underline; font-size: 13px; }
     </style>
@@ -44,46 +43,42 @@
 <body>
 
     <div class="container" id="loginBox">
-        <h1>Material Access</h1>
+        <div class="logo-container">
+            <img src="BLACK-TK.png" alt="Tracy's Logo" class="logo">
+        </div>
+        <h1>Dojo Access</h1>
         <input type="email" id="emailInput" placeholder="Email" inputmode="email">
         <input type="password" id="passInput" placeholder="Password">
         <button id="loginBtn">Sign In</button>
     </div>
 
     <div class="container" id="videoContent" style="display:none;">
+        <div class="logo-container">
+            <img src="BLACK-TK.png" alt="Tracy's Logo" class="logo">
+        </div>
         <h1 id="welcomeTitle">Welcome</h1>
 
         <div id="playerContainer">
             <div class="back-btn" onclick="closeVideo()">✖ Close Video</div>
             <div class="video-wrapper">
-                <div class="shield-piece s-top"></div>
-                <div class="shield-piece s-bottom"></div>
-                <div class="shield-piece s-left"></div>
-                <div class="shield-piece s-right"></div>
+                <div class="video-shield"></div>
                 <iframe id="videoPlayer" src="" frameborder="0" allow="autoplay" allowfullscreen></iframe>
             </div>
+            <p style="font-size: 11px; color: #888; margin-top: 8px;">Controls disabled for security.</p>
         </div>
 
         <div id="beltMenuView">
-            <p style="color:#888;">Select a Belt to View Material:</p>
-            <div class="belt-item" style="border-left-color: #fff;" onclick="showRankDetail('white')">⚪ White Belt (Basics) <span>▶</span></div>
+            <p style="color:#888;">Select a Belt:</p>
+            <div class="belt-item" style="border-left-color: #fff;" onclick="showRankDetail('white')">⚪ Basics <span>▶</span></div>
             <div class="belt-item" style="border-left-color: #ffcc00;" onclick="showRankDetail('yellow')">🟡 Yellow Belt <span>▶</span></div>
             <div class="belt-item" style="border-left-color: #ff8c00;" onclick="showRankDetail('orange')">🟠 Orange Belt <span>▶</span></div>
         </div>
 
         <div id="rank-yellow-detail" class="rank-detail-view">
-            <div class="back-btn" onclick="goBackToBelts()">⬅ Back to Belts</div>
-            <h3>Yellow Belt Material</h3>
-            <div class="tech-btn" onclick="playVid('19Ktd4FfDGg')">Yellow History</div>
-            <div class="tech-btn" onclick="playVid('JIFwfcykAY8')">Japanese Sword</div>
-            <div class="tech-btn" onclick="playVid('RoSuLCLOKuU')">Chinese Sword</div>
-        </div>
-
-        <div id="rank-orange-detail" class="rank-detail-view">
-            <div class="back-btn" onclick="goBackToBelts()">⬅ Back to Belts</div>
-            <h3>Orange Belt Material</h3>
-            <div class="tech-btn" onclick="playVid('VIDEO_ID_HERE')">Clutching Feathers</div>
-            <div class="tech-btn" onclick="playVid('VIDEO_ID_HERE')">Triggered Salute</div>
+            <div class="back-btn" onclick="goBackToBelts()">⬅ Back</div>
+            <h3>Yellow Belt</h3>
+            <div class="tech-btn" onclick="playVid('dQw4w9WgXcQ')">Yellow History</div>
+            <div class="tech-btn" onclick="playVid('dQw4w9WgXcQ')">Delayed Sword</div>
         </div>
 
         <button class="logout-btn" onclick="location.reload()">Log Out</button>
@@ -127,9 +122,8 @@
         document.getElementById('passInput').addEventListener('keypress', (e) => { if(e.key === 'Enter') doLogin(); });
 
         window.showRankDetail = function(rank) {
-            // Check if student has permission for this belt
             if (userRank !== 'instructor' && userRank !== rank) {
-                alert("This section is locked. Keep training!");
+                alert("This section is locked.");
                 return;
             }
             document.getElementById('beltMenuView').style.display = 'none';
@@ -144,8 +138,10 @@
 
         window.playVid = function(id) {
             const player = document.getElementById('videoPlayer');
-            player.src = `https://www.youtube.com/embed/${id}?autoplay=1&modestbranding=1&rel=0&controls=0&disablekb=1`;
+            // We use controls=0 to remove the bar and autoplay=1 so they don't have to click the shielded player
+            player.src = `https://www.youtube.com/embed/${id}?autoplay=1&controls=0&modestbranding=1&rel=0&disablekb=1&iv_load_policy=3`;
             document.getElementById('playerContainer').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
         window.closeVideo = function() {
@@ -155,4 +151,3 @@
     </script>
 </body>
 </html>
-
