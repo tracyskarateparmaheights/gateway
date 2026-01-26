@@ -16,11 +16,10 @@
         .video-link { display: none; background: #333; color: #fff; padding: 18px; margin: 12px 0; text-decoration: none; border-left: 5px solid #ffcc00; border-radius: 4px; transition: 0.3s; font-weight: 600; cursor: pointer; }
         .video-link:hover { background: #444; padding-left: 25px; color: #ffcc00; }
         
-        /* PLAYER CONTAINER */
+        /* PLAYER CONTAINER & SECURE SHIELDS */
         #playerContainer { display: none; margin-bottom: 25px; position: relative; }
         .close-player { background: #444; color: #ffcc00; font-size: 11px; padding: 8px 15px; border-radius: 4px; cursor: pointer; margin-bottom: 12px; display: inline-block; font-weight: bold; border: 1px solid #555; text-transform: uppercase; }
 
-        /* THE VIDEO WRAPPER */
         .video-wrapper { 
             position: relative; 
             padding-bottom: 56.25%; 
@@ -31,21 +30,10 @@
             background: #000; 
         }
 
-        /* THE SHIELD LAYER: Blocks YouTube Logo and Share buttons */
-        .video-shield {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 10;
-            background: transparent;
-            pointer-events: none; /* Allows clicks to pass through by default... */
-        }
-
-        /* SPECIFIC BLOCKERS: These elements actually stop the clicks */
-        .block-top { position: absolute; top: 0; width: 100%; height: 60px; pointer-events: auto; z-index: 11; }
-        .block-bottom-right { position: absolute; bottom: 0; right: 0; width: 120px; height: 50px; pointer-events: auto; z-index: 11; }
+        /* INVISIBLE CLICK INTERCEPTORS */
+        .blocker { position: absolute; background: transparent; z-index: 20; pointer-events: auto; }
+        .block-top { top: 0; left: 0; width: 100%; height: 60px; } /* Blocks Share/Title */
+        .block-logo { bottom: 0; right: 0; width: 30%; height: 60px; } /* Blocks YouTube Logo & Watch on YT */
 
         .video-wrapper iframe { 
             position: absolute; 
@@ -69,6 +57,7 @@
             <img src="BLACK-TK.png" alt="Logo" class="logo">
             <h1>Material Access</h1>
         </div>
+        <p>Tracy's Karate Parma Heights</p>
         <input type="email" id="emailInput" placeholder="Email Address">
         <input type="password" id="passInput" placeholder="Password">
         <button id="loginBtn">Enter Dojo</button>
@@ -84,8 +73,8 @@
         <div id="playerContainer">
             <div class="close-player" onclick="closeVideo()">✖ Close Video</div>
             <div class="video-wrapper">
-                <div class="block-top"></div>
-                <div class="block-bottom-right"></div>
+                <div class="blocker block-top"></div>
+                <div class="blocker block-logo"></div>
                 
                 <iframe id="videoPlayer" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
@@ -118,15 +107,27 @@
 
         const loginBtn = document.getElementById('loginBtn');
         const errorMsg = document.getElementById('error');
+        const passInput = document.getElementById('passInput');
 
-        loginBtn.addEventListener('click', async () => {
+        // FUNCTION TO HANDLE LOGIN
+        async function handleLogin() {
             const email = document.getElementById('emailInput').value;
-            const pass = document.getElementById('passInput').value;
+            const pass = passInput.value;
             try {
                 const userCredential = await signInWithEmailAndPassword(auth, email, pass);
                 const userDoc = await getDoc(doc(db, "users", userCredential.user.uid));
                 if (userDoc.exists()) showPortal(userDoc.data());
             } catch (e) { errorMsg.style.display = 'block'; }
+        }
+
+        // CLICK LISTENER
+        loginBtn.addEventListener('click', handleLogin);
+
+        // "ENTER" KEY LISTENER
+        [document.getElementById('emailInput'), passInput].forEach(input => {
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleLogin();
+            });
         });
 
         function showPortal(userData) {
@@ -146,8 +147,8 @@
         window.loadVideo = function(playlistId) {
             const player = document.getElementById('videoPlayer');
             const container = document.getElementById('playerContainer');
-            // Adding specific YouTube parameters to clean up UI
-            player.src = `https://www.youtube.com/embed/videoseries?list=${playlistId}&modestbranding=1&rel=0&iv_load_policy=3&controls=1&disablekb=1`;
+            // Enhanced privacy parameters
+            player.src = `https://www.youtube.com/embed/videoseries?list=${playlistId}&modestbranding=1&rel=0&iv_load_policy=3&controls=1&disablekb=1&showinfo=0`;
             container.style.display = 'block';
             container.scrollIntoView({ behavior: 'smooth' });
         };
