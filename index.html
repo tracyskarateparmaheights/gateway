@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Tracy's Karate - Student Portal</title>
+    <title>Tracy's Karate - Material Portal</title>
     <style>
         :root { --gold: #ffcc00; --bg: #1a1a1a; --card: #2b2b2b; }
         body { font-family: 'Segoe UI', Arial, sans-serif; background-color: var(--bg); color: white; margin: 0; padding: 20px 10px; display: flex; justify-content: center; }
@@ -12,6 +12,21 @@
         .logo { width: 75px; height: auto; margin-bottom: 10px; }
         h1 { color: var(--gold); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; font-size: 20px; }
         
+        /* SEARCH BAR STYLING */
+        .search-box {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: 1px solid #444;
+            background: #333;
+            color: white;
+            font-size: 16px;
+            box-sizing: border-box;
+            outline: none;
+        }
+        .search-box:focus { border-color: var(--gold); }
+
         /* THE MASKED PLAYER WINDOW */
         #playerContainer { display: none; margin-bottom: 25px; text-align: center; }
         .video-box { 
@@ -24,7 +39,6 @@
             border-radius: 8px;
         }
         
-        /* Shifting the YouTube frame to hide UI elements */
         #player {
             position: absolute;
             top: -65px; 
@@ -49,10 +63,9 @@
         /* CUSTOM CONTROLS */
         .custom-controls { display: flex; justify-content: space-between; gap: 8px; }
         .control-btn { background: #444; color: var(--gold); padding: 12px 5px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold; flex: 1; border: 1px solid #555; text-transform: uppercase; -webkit-tap-highlight-color: transparent; }
-        .control-btn:active { background: #555; }
 
         /* BUTTONS & LISTS */
-        .tech-btn { background: #222; color: #eee; padding: 15px; margin: 8px 0; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; border: 1px solid #444; border-left: 5px solid var(--gold); }
+        .tech-btn { background: #222; color: #eee; padding: 15px; margin: 8px 0; border-radius: 4px; cursor: pointer; text-align: left; font-size: 14px; border: 1px solid #444; border-left: 5px solid var(--gold); display: block; }
         .back-btn { background: transparent; color: var(--gold); border: 1px solid var(--gold); padding: 8px 15px; border-radius: 4px; cursor: pointer; margin-bottom: 15px; display: inline-block; font-size: 12px; }
         
         #beltMenuView, .rank-detail-view { display: none; }
@@ -64,7 +77,7 @@
 
     <div class="container" id="loginBox">
         <img src="BLACK-TK.png" alt="Logo" class="logo">
-        <h1>Dojo Access</h1>
+        <h1>Material Access</h1>
         <input type="email" id="emailInput" placeholder="Email" inputmode="email">
         <input type="password" id="passInput" placeholder="Password">
         <button id="loginBtn">Sign In</button>
@@ -78,15 +91,10 @@
             <div class="video-box">
                 <div id="player"></div>
             </div>
-            
             <div class="progress-container">
                 <input type="range" id="progressBar" value="0" min="0" max="100" step="0.1">
-                <div class="time-labels">
-                    <span id="currentTime">0:00</span>
-                    <span id="totalDuration">0:00</span>
-                </div>
+                <div class="time-labels"><span id="currentTime">0:00</span><span id="totalDuration">0:00</span></div>
             </div>
-
             <div class="custom-controls">
                 <div class="control-btn" onclick="rewind()">⏪ -10s</div>
                 <div class="control-btn" onclick="togglePlay()" id="playPauseBtn">⏸ Pause</div>
@@ -96,23 +104,28 @@
         </div>
 
         <div id="beltMenuView">
-            <p style="color:#888;">Select your rank to begin:</p>
-            <div class="tech-btn" onclick="showRankDetail('yellow')">🟡 Yellow Belt Material</div>
+            <p style="color:#888;">Select the Material to Review</p>
+            <div class="tech-btn" onclick="showRankDetail('yellow')">🟡 Yellow Belt</div>
         </div>
 
         <div id="rank-yellow-detail" class="rank-detail-view">
-            <div class="back-btn" onclick="goBackToBelts()">⬅ Back to Belts</div>
-            <div class="tech-btn" onclick="loadVideo('19Ktd4FfDGg')">Yellow History</div>
-            <div class="tech-btn" onclick="loadVideo('JIFwfcykAY8')">Japanese Sword</div>
-            <div class="tech-btn" onclick="loadVideo('RoSuLCLOKuU')">Chinese Sword</div>
-            <div class="tech-btn" onclick="loadVideo('NjXYf4QOZnU')">Delayed Sword</div>
-            <div class="tech-btn" onclick="loadVideo('SaCwJIsQWE8')">Knee of Vengence</div>
-            <div class="tech-btn" onclick="loadVideo('xNzobYNSQ4Y')">Fang of the Cobra</div>
-            <div class="tech-btn" onclick="loadVideo('ZJNmDVtXnBY')">Twisted Talon</div>
-            <div class="tech-btn" onclick="loadVideo('u0ceVbYXUXQ')">Returning Dragon</div>
-            <div class="tech-btn" onclick="loadVideo('yvrhFEiuHKc')">Kenpo Shield</div>
-            <div class="tech-btn" onclick="loadVideo('i-vyUr_6xZU')">Evasion</div>
-            <div class="tech-btn" onclick="loadVideo('E44w7Eh73xs')">Breaking the Sword</div>
+            <div class="back-btn" onclick="goBackToBelts()">⬅ Back</div>
+            
+            <input type="text" id="techSearch" class="search-box" placeholder="Search techniques..." onkeyup="filterTechniques()">
+
+            <div id="techList">
+                <div class="tech-btn" onclick="loadVideo('19Ktd4FfDGg')">Yellow History</div>
+                <div class="tech-btn" onclick="loadVideo('JIFwfcykAY8')">Japanese Sword</div>
+                <div class="tech-btn" onclick="loadVideo('RoSuLCLOKuU')">Chinese Sword</div>
+                <div class="tech-btn" onclick="loadVideo('NjXYf4QOZnU')">Delayed Sword</div>
+                <div class="tech-btn" onclick="loadVideo('SaCwJIsQWE8')">Knee of Vengence</div>
+                <div class="tech-btn" onclick="loadVideo('xNzobYNSQ4Y')">Fang of the Cobra</div>
+                <div class="tech-btn" onclick="loadVideo('ZJNmDVtXnBY')">Twisted Talon</div>
+                <div class="tech-btn" onclick="loadVideo('u0ceVbYXUXQ')">Returning Dragon</div>
+                <div class="tech-btn" onclick="loadVideo('yvrhFEiuHKc')">Kenpo Shield</div>
+                <div class="tech-btn" onclick="loadVideo('i-vyUr_6xZU')">Evasion</div>
+                <div class="tech-btn" onclick="loadVideo('E44w7Eh73xs')">Breaking the Sword</div>
+            </div>
         </div>
     </div>
 
@@ -136,7 +149,6 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // GLOBALS
         window.player = null;
         let isPlaying = false;
         let progressTimer;
@@ -144,7 +156,6 @@
         const currentTimeText = document.getElementById('currentTime');
         const durationText = document.getElementById('totalDuration');
 
-        // LOGIN LOGIC
         async function doLogin() {
             try {
                 const cred = await signInWithEmailAndPassword(auth, emailInput.value, passInput.value);
@@ -159,18 +170,26 @@
         }
         document.getElementById('loginBtn').addEventListener('click', doLogin);
 
-        // NAVIGATION
         window.showRankDetail = (rank) => {
             document.getElementById('beltMenuView').style.display = 'none';
             document.getElementById('rank-' + rank + '-detail').style.display = 'block';
         };
+
         window.goBackToBelts = () => {
             document.querySelectorAll('.rank-detail-view').forEach(v => v.style.display = 'none');
             document.getElementById('beltMenuView').style.display = 'block';
             closePlayer();
         };
 
-        // PLAYER LOGIC
+        // SEARCH FUNCTION
+        window.filterTechniques = () => {
+            const input = document.getElementById('techSearch').value.toLowerCase();
+            const btns = document.getElementById('techList').getElementsByClassName('tech-btn');
+            for (let btn of btns) {
+                btn.style.display = btn.innerText.toLowerCase().includes(input) ? "block" : "none";
+            }
+        };
+
         window.loadVideo = (id) => {
             if (window.player) {
                 window.player.loadVideoById(id);
@@ -197,7 +216,6 @@
             }
         }
 
-        // SCRUBBING LOGIC
         function formatTime(s) {
             let m = Math.floor(s / 60);
             let sec = Math.floor(s % 60);
@@ -223,11 +241,7 @@
             }
         });
 
-        window.togglePlay = () => {
-            if (isPlaying) window.player.pauseVideo();
-            else window.player.playVideo();
-        };
-
+        window.togglePlay = () => { if (isPlaying) window.player.pauseVideo(); else window.player.playVideo(); };
         window.rewind = () => window.player.seekTo(window.player.getCurrentTime() - 10);
         window.fastForward = () => window.player.seekTo(window.player.getCurrentTime() + 10);
         window.closePlayer = () => {
