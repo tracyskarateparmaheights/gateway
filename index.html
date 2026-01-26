@@ -7,12 +7,9 @@
     <style>
         :root { --gold: #ffcc00; --bg: #1a1a1a; --card: #2b2b2b; --input-bg: #1e1e1e; --green: #2ecc71; --red: #e74c3c; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg); color: white; margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; box-sizing: border-box; }
-        
-        /* Logo Styles */
         .logo-container { margin-bottom: 20px; }
         .logo-img { width: 180px; height: auto; border-radius: 8px; filter: drop-shadow(0 0 10px rgba(0,0,0,0.7)); }
-        .mini-logo { height: 45px; width: auto; vertical-align: middle; border-radius: 4px; }
-
+        .mini-logo { height: 45px; width: auto; vertical-align: middle; }
         .container { background: var(--card); padding: 30px 20px; border-radius: 12px; border-top: 5px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 100%; max-width: 450px; margin-top: 20px; }
         h1, h2, h3 { color: var(--gold); text-transform: uppercase; letter-spacing: 1.5px; margin: 10px 0; }
         input, select, textarea { width: 100%; padding: 16px; margin-bottom: 12px; border-radius: 8px; border: 1px solid #444; background: var(--input-bg); color: white; font-size: 16px; box-sizing: border-box; outline: none; }
@@ -36,7 +33,7 @@
 
     <div class="container" id="loginBox">
         <div class="logo-container">
-            <img src="https://raw.githubusercontent.com/tracyskarateparmaheights/gateway/main/BLACK-TK.png" class="logo-img" alt="Tracy Karate Logo" onerror="this.src='BLACK-TK.png'">
+            <img src="https://raw.githubusercontent.com/tracyskarateparmaheights/gateway/main/BLACK-TK.png" class="logo-img" alt="Logo" onerror="this.src='BLACK-TK.png'">
         </div>
         <h1>Dojo Portal</h1>
         <input type="email" id="emailInput" placeholder="Email">
@@ -68,19 +65,17 @@
                 <button class="nav-btn" onclick="prepareAdd()">+ Add Student</button>
                 <button class="nav-btn" onclick="exportRoster()" style="background:#2e7d32;">📥 Export</button>
             </div>
-            
             <div id="studentForm" class="admin-tab">
                 <input type="hidden" id="editStudentId">
                 <input type="text" id="sName" placeholder="Full Name">
                 <input type="text" id="sPhone" placeholder="Phone">
                 <input type="text" id="sGuardian" placeholder="Guardian">
                 <input type="text" id="sBelt" placeholder="Belt Rank">
-                <select id="sTuition"><option value="true">Paid / Active</option><option value="false">Due / Inactive</option></select>
+                <select id="sTuition"><option value="true">Paid</option><option value="false">Due</option></select>
                 <textarea id="sNotes" placeholder="Notes..."></textarea>
                 <button onclick="handleSave()" style="width:100%; padding:15px; background:var(--gold); font-weight:bold; color:#000; border-radius:8px;">Save Changes</button>
                 <button onclick="switchAdminTab('listView')" style="width:100%; margin-top:10px; background:transparent; color:#888;">Cancel</button>
             </div>
-
             <div id="listView" class="admin-tab" style="display:block;">
                 <input type="text" id="rosterSearch" placeholder="🔍 Search Students..." onkeyup="searchRoster()">
                 <div id="rosterTableArea"></div>
@@ -90,7 +85,6 @@
         <div id="curriculumSection" style="display:none;">
             <h3>Video Library</h3>
             <div id="player"></div>
-            
             <div class="belt-header" onclick="toggleGate('list-yellow', 1)">🟡 Yellow Belt <span>▼</span></div>
             <div id="list-yellow" style="display:none; padding:10px;">
                 <div class="tech-btn" onclick="playVid('19Ktd4FfDGg')">Yellow History</div>
@@ -105,9 +99,6 @@
                 <div class="tech-btn" onclick="playVid('i-vyUr_6xZU')">Evasion</div>
                 <div class="tech-btn" onclick="playVid('E44w7Eh73xs')">Breaking the Sword</div>
             </div>
-
-            <div class="belt-header" onclick="toggleGate('list-orange', 2)">🟠 Orange Belt <span>▼</span></div>
-            <div id="list-orange" style="display:none; padding:10px;"><p style="color:#666;">Orange curriculum coming soon...</p></div>
         </div>
     </div>
 
@@ -115,7 +106,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, collection, addDoc, getDocs, deleteDoc, updateDoc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, collection, addDoc, getDocs, updateDoc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyC35Ubf6GxyDi3JEiKWaYgVFkYGknMZrcw",
@@ -130,28 +121,37 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
         let userRank = 0;
-        let studentsData = {}; 
+        let studentsData = {};
 
         document.getElementById('loginBtn').addEventListener('click', async () => {
             const email = document.getElementById('emailInput').value.trim();
             const pass = document.getElementById('passInput').value;
             try {
                 const cred = await signInWithEmailAndPassword(auth, email, pass);
+                console.log("Logged in as:", cred.user.uid);
                 const snap = await getDoc(doc(db, "users", cred.user.uid));
+                
                 if (snap.exists()) {
                     userRank = snap.data().rankLevel || 0;
+                    console.log("User Rank:", userRank);
                     document.getElementById('loginBox').style.display = 'none';
                     document.getElementById('portalView').style.display = 'block';
                     document.getElementById('staffMenuBtn').style.display = userRank >= 15 ? 'block' : 'none';
                     document.getElementById('dbMenuBtn').style.display = userRank >= 10 ? 'block' : 'none';
                     document.getElementById('curMenuBtn').style.display = userRank >= 1 ? 'block' : 'none';
                     document.getElementById('adminControls').style.display = userRank >= 15 ? 'flex' : 'none';
+                } else {
+                    alert("Account found but no permissions set. Contact Admin.");
                 }
-            } catch (err) { alert("Login failed."); }
+            } catch (err) { 
+                console.error(err);
+                alert("Login failed: " + err.message); 
+            }
         });
 
         window.openSection = (id) => {
             document.getElementById('mainMenu').style.display = 'none';
+            document.querySelectorAll('#portalView > div:not(:first-child)').forEach(d => d.style.display = 'none');
             document.getElementById(id).style.display = 'block';
             document.getElementById('homeBtn').style.display = 'block';
             if(id === 'staffDashboard') loadStaff();
@@ -164,61 +164,107 @@
             document.getElementById('mainMenu').style.display = 'block';
         };
 
+        // STAFF PERMISSIONS FIX
         window.loadStaff = async () => {
             const area = document.getElementById('staffTableArea');
-            area.innerHTML = "Syncing users...";
+            area.innerHTML = "Accessing Users Collection...";
             try {
                 const snap = await getDocs(collection(db, "users"));
-                let html = `<table><tr><th>User</th><th>Lvl</th><th>✔</th></tr>`;
+                let html = `<table><tr><th>Staff</th><th>Lvl</th><th>Update</th></tr>`;
                 snap.forEach(docSnap => {
                     const u = docSnap.data();
-                    html += `<tr><td>${u.fullName || u.email || 'User'}</td>
-                    <td><input type="number" id="lvl-${docSnap.id}" value="${u.rankLevel || 0}" style="width:45px;"></td>
-                    <td><button onclick="updateRank('${docSnap.id}')" style="background:var(--gold); padding:5px; border-radius:4px;">✔</button></td></tr>`;
+                    html += `<tr><td>${u.fullName || u.email}</td>
+                    <td><input type="number" id="lvl-${docSnap.id}" value="${u.rankLevel || 0}" style="width:50px; padding:5px;"></td>
+                    <td><button onclick="updateRank('${docSnap.id}')" style="background:var(--gold); padding:8px; border-radius:4px; color:black;">✔</button></td></tr>`;
                 });
                 area.innerHTML = html + "</table>";
-            } catch (e) { area.innerHTML = "Permissions Error."; }
+            } catch (e) { 
+                console.error("Staff Error:", e);
+                area.innerHTML = `<p style="color:red;">Permission Error: Check Firestore Rules for 'users' collection.</p>`; 
+            }
         };
 
         window.updateRank = async (uid) => {
-            const val = parseInt(document.getElementById(`lvl-${uid}`).value);
-            await updateDoc(doc(db, "users", uid), { rankLevel: val });
-            alert("Permissions saved.");
+            try {
+                const val = parseInt(document.getElementById(`lvl-${uid}`).value);
+                await updateDoc(doc(db, "users", uid), { rankLevel: val });
+                alert("Rank Updated Successfully");
+            } catch (e) { alert("Error: " + e.message); }
         };
 
+        // ROSTER EDIT FIX
         window.loadRoster = async () => {
             const area = document.getElementById('rosterTableArea');
-            const snap = await getDocs(query(collection(db, "students"), orderBy("fullName")));
-            let html = `<table><tr><th>Name</th><th>Belt</th><th>Status</th></tr>`;
-            studentsData = {}; 
-            snap.forEach(docSnap => {
-                const s = docSnap.data(), id = docSnap.id;
-                studentsData[id] = s;
-                const statusClass = s.tuitionStatus ? 'status-paid' : 'status-due';
-                html += `
-                <tr class="sr-main">
-                    <td><b>${s.fullName}</b></td>
-                    <td>${s.beltRank}</td>
-                    <td><span class="status-badge ${statusClass}">${s.tuitionStatus?'Paid':'Due'}</span></td>
-                </tr>
-                <tr class="sr-detail">
-                    <td colspan="2" style="font-size:11px; color:#aaa;">Ph: ${s.phone}<br>Notes: ${s.notes || '--'}</td>
-                    <td style="text-align:right;">
-                        ${userRank >= 15 ? `<button onclick="editStudent('${id}')" style="background:#444; color:var(--gold); padding:6px; border-radius:4px;">Edit</button>` : ''}
-                    </td>
-                </tr>`;
-            });
-            area.innerHTML = html + "</table>";
+            area.innerHTML = "Loading Students...";
+            try {
+                const snap = await getDocs(query(collection(db, "students"), orderBy("fullName")));
+                let html = `<table><tr><th>Name</th><th>Belt</th><th>Status</th></tr>`;
+                studentsData = {}; // CLEAR LOCAL CACHE
+                
+                snap.forEach(docSnap => {
+                    const s = docSnap.data();
+                    const id = docSnap.id;
+                    studentsData[id] = s; // STORE IN CACHE
+                    
+                    const statusClass = s.tuitionStatus ? 'status-paid' : 'status-due';
+                    html += `
+                    <tr class="sr-main">
+                        <td><b>${s.fullName}</b></td>
+                        <td>${s.beltRank}</td>
+                        <td><span class="status-badge ${statusClass}">${s.tuitionStatus?'Paid':'Due'}</span></td>
+                    </tr>
+                    <tr class="sr-detail">
+                        <td colspan="2" style="font-size:11px; color:#aaa;">Ph: ${s.phone}<br>Notes: ${s.notes || '--'}</td>
+                        <td style="text-align:right;">
+                            ${userRank >= 15 ? `<button onclick="editStudent('${id}')" style="background:#555; color:var(--gold); padding:8px 12px; border-radius:4px; font-weight:bold;">EDIT</button>` : ''}
+                        </td>
+                    </tr>`;
+                });
+                area.innerHTML = html + "</table>";
+            } catch (e) { area.innerHTML = "Error loading roster."; }
+        };
+
+        window.editStudent = (id) => {
+            console.log("Editing student ID:", id);
+            const s = studentsData[id];
+            if(!s) return alert("Student data not found in cache.");
+            
+            document.getElementById('editStudentId').value = id; 
+            document.getElementById('sName').value = s.fullName || ""; 
+            document.getElementById('sPhone').value = s.phone || ""; 
+            document.getElementById('sGuardian').value = s.guardian || ""; 
+            document.getElementById('sBelt').value = s.beltRank || ""; 
+            document.getElementById('sTuition').value = String(s.tuitionStatus); 
+            document.getElementById('sNotes').value = s.notes || ""; 
+            
+            switchAdminTab('studentForm'); 
+        };
+
+        window.handleSave = async () => {
+            const id = document.getElementById('editStudentId').value;
+            const data = { 
+                fullName: document.getElementById('sName').value, 
+                phone: document.getElementById('sPhone').value, 
+                guardian: document.getElementById('sGuardian').value, 
+                beltRank: document.getElementById('sBelt').value, 
+                tuitionStatus: document.getElementById('sTuition').value === 'true', 
+                notes: document.getElementById('sNotes').value, 
+                lastUpdate: serverTimestamp() 
+            };
+            try {
+                if(id) await updateDoc(doc(db, "students", id), data); 
+                else await addDoc(collection(db, "students"), data);
+                alert("Saved!");
+                loadRoster(); switchAdminTab('listView');
+            } catch (e) { alert("Save Error: " + e.message); }
         };
 
         window.searchRoster = () => {
             const q = document.getElementById('rosterSearch').value.toLowerCase();
-            const mains = document.querySelectorAll('.sr-main');
-            const details = document.querySelectorAll('.sr-detail');
-            mains.forEach((m, i) => {
+            document.querySelectorAll('.sr-main').forEach((m, i) => {
                 const match = m.innerText.toLowerCase().includes(q);
                 m.style.display = match ? "" : "none";
-                details[i].style.display = match ? "" : "none";
+                document.querySelectorAll('.sr-detail')[i].style.display = match ? "" : "none";
             });
         };
 
@@ -238,34 +284,6 @@
             document.getElementById('editStudentId').value = ""; 
             ['sName', 'sPhone', 'sGuardian', 'sBelt', 'sNotes'].forEach(f => document.getElementById(f).value = ""); 
             switchAdminTab('studentForm'); 
-        };
-        
-        window.editStudent = (id) => {
-            const s = studentsData[id];
-            document.getElementById('editStudentId').value = id; 
-            document.getElementById('sName').value = s.fullName; 
-            document.getElementById('sPhone').value = s.phone; 
-            document.getElementById('sGuardian').value = s.guardian || ""; 
-            document.getElementById('sBelt').value = s.beltRank; 
-            document.getElementById('sTuition').value = s.tuitionStatus.toString(); 
-            document.getElementById('sNotes').value = s.notes || ""; 
-            switchAdminTab('studentForm'); 
-        };
-
-        window.handleSave = async () => {
-            const id = document.getElementById('editStudentId').value;
-            const data = { 
-                fullName: document.getElementById('sName').value, 
-                phone: document.getElementById('sPhone').value, 
-                guardian: document.getElementById('sGuardian').value, 
-                beltRank: document.getElementById('sBelt').value, 
-                tuitionStatus: document.getElementById('sTuition').value === 'true', 
-                notes: document.getElementById('sNotes').value, 
-                lastUpdate: serverTimestamp() 
-            };
-            if(id) await updateDoc(doc(db, "students", id), data); 
-            else await addDoc(collection(db, "students"), data);
-            loadRoster(); switchAdminTab('listView');
         };
 
         window.exportRoster = async () => {
