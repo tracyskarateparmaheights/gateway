@@ -2,27 +2,27 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tracy's Karate - Instructor & Student Portal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tracy's Karate - Student Portal</title>
     <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #1a1a1a; color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px 0; }
-        .container { background: #2b2b2b; padding: 40px; border-radius: 12px; border-top: 6px solid #ffcc00; box-shadow: 0 15px 35px rgba(0,0,0,0.6); text-align: center; width: 90%; max-width: 500px; }
+        /* General Styles */
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #1a1a1a; color: white; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; margin: 0; padding: 20px 10px; box-sizing: border-box; }
+        .container { background: #2b2b2b; padding: 30px 20px; border-radius: 12px; border-top: 6px solid #ffcc00; box-shadow: 0 15px 35px rgba(0,0,0,0.6); text-align: center; width: 100%; max-width: 500px; }
         
         .header-container { display: flex; align-items: center; justify-content: center; margin-bottom: 20px; gap: 15px; }
-        .logo { width: 60px; height: auto; border-radius: 4px; }
-        h1 { color: #ffcc00; text-transform: uppercase; letter-spacing: 2px; margin: 0; font-size: 22px; }
+        .logo { width: 50px; height: auto; }
+        h1 { color: #ffcc00; text-transform: uppercase; letter-spacing: 1px; margin: 0; font-size: 20px; }
         
         #videoContent { display: none; text-align: left; }
-        .video-link { display: none; background: #333; color: #fff; padding: 18px; margin: 12px 0; text-decoration: none; border-left: 5px solid #ffcc00; border-radius: 4px; transition: 0.3s; font-weight: 600; cursor: pointer; }
-        .video-link:hover { background: #444; padding-left: 25px; color: #ffcc00; }
+        .video-link { display: none; background: #333; color: #fff; padding: 18px; margin: 12px 0; border-left: 5px solid #ffcc00; border-radius: 4px; font-weight: 600; cursor: pointer; -webkit-tap-highlight-color: transparent; }
         
-        /* PLAYER CONTAINER & SECURE SHIELDS */
-        #playerContainer { display: none; margin-bottom: 25px; position: relative; }
-        .close-player { background: #444; color: #ffcc00; font-size: 11px; padding: 8px 15px; border-radius: 4px; cursor: pointer; margin-bottom: 12px; display: inline-block; font-weight: bold; border: 1px solid #555; text-transform: uppercase; }
+        /* SECURE PLAYER & MOBILE SHIELDS */
+        #playerContainer { display: none; margin-bottom: 25px; position: relative; width: 100%; }
+        .close-player { background: #444; color: #ffcc00; font-size: 11px; padding: 10px 15px; border-radius: 4px; cursor: pointer; margin-bottom: 12px; display: inline-block; font-weight: bold; border: 1px solid #555; text-transform: uppercase; }
 
         .video-wrapper { 
             position: relative; 
-            padding-bottom: 56.25%; 
+            padding-bottom: 56.25%; /* 16:9 ratio */
             height: 0; 
             overflow: hidden; 
             border-radius: 8px; 
@@ -30,24 +30,24 @@
             background: #000; 
         }
 
-        /* INVISIBLE CLICK INTERCEPTORS */
+        /* INVISIBLE CLICK INTERCEPTORS (Optimized for Touch) */
         .blocker { position: absolute; background: transparent; z-index: 20; pointer-events: auto; }
-        .block-top { top: 0; left: 0; width: 100%; height: 60px; } /* Blocks Share/Title */
-        .block-logo { bottom: 0; right: 0; width: 30%; height: 60px; } /* Blocks YouTube Logo & Watch on YT */
+        .block-top { top: 0; left: 0; width: 100%; height: 50px; } /* Blocks Share/Title */
+        .block-logo { bottom: 0; right: 0; width: 80px; height: 45px; } /* Specifically covers YT logo */
 
-        .video-wrapper iframe { 
-            position: absolute; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            z-index: 5;
-        }
+        .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
         
-        input { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid #444; border-radius: 6px; background: #333; color: white; box-sizing: border-box; }
-        button { width: 100%; padding: 14px; background: #ffcc00; color: #1a1a1a; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        /* Input & Buttons */
+        input { width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #444; border-radius: 6px; background: #333; color: white; font-size: 16px; box-sizing: border-box; }
+        button { width: 100%; padding: 15px; background: #ffcc00; color: #1a1a1a; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 16px; margin-top: 10px; -webkit-tap-highlight-color: transparent; }
         #error { color: #ff4d4d; font-size: 14px; margin-top: 15px; display: none; }
-        .logout-btn { background: #444; color: white; margin-top: 30px; font-size: 14px; }
+        .logout-btn { background: #444; color: white; margin-top: 30px; }
+
+        /* Small Screen Adjustments */
+        @media (max-width: 400px) {
+            h1 { font-size: 18px; }
+            .container { padding: 20px 15px; }
+        }
     </style>
 </head>
 <body>
@@ -55,19 +55,18 @@
     <div class="container" id="loginBox">
         <div class="header-container">
             <img src="BLACK-TK.png" alt="Logo" class="logo">
-            <h1>Material Access</h1>
+            <h1>Dojo Access</h1>
         </div>
-        <p>Tracy's Karate Parma Heights</p>
-        <input type="email" id="emailInput" placeholder="Email Address">
+        <input type="email" id="emailInput" placeholder="Email Address" inputmode="email">
         <input type="password" id="passInput" placeholder="Password">
-        <button id="loginBtn">Enter Dojo</button>
+        <button id="loginBtn">Sign In</button>
         <div id="error">Invalid login credentials.</div>
     </div>
 
     <div class="container" id="videoContent">
         <div class="header-container">
             <img src="BLACK-TK.png" alt="Logo" class="logo">
-            <h1 id="welcomeTitle">Training Library</h1>
+            <h1 id="welcomeTitle">Library</h1>
         </div>
 
         <div id="playerContainer">
@@ -75,12 +74,11 @@
             <div class="video-wrapper">
                 <div class="blocker block-top"></div>
                 <div class="blocker block-logo"></div>
-                
                 <iframe id="videoPlayer" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
         </div>
 
-        <p>Your Curriculum:</p>
+        <p>Curriculum:</p>
         <div onclick="loadVideo('PLudsFr1QJtbLfLddHmojVO4fen7GlvEVQ')" id="rank-basics" class="video-link" style="border-left-color: #ffffff;">⚫ Basics & Fundamentals</div>
         <div onclick="loadVideo('PLudsFr1QJtbK1MkX-oILTeyyq7BBxRO0G')" id="rank-yellow" class="video-link" style="border-left-color: #ffff00;">🟡 Yellow Belt Material</div>
 
@@ -106,51 +104,43 @@
         const db = getFirestore(app);
 
         const loginBtn = document.getElementById('loginBtn');
-        const errorMsg = document.getElementById('error');
+        const emailInput = document.getElementById('emailInput');
         const passInput = document.getElementById('passInput');
+        const errorMsg = document.getElementById('error');
 
-        // FUNCTION TO HANDLE LOGIN
         async function handleLogin() {
-            const email = document.getElementById('emailInput').value;
-            const pass = passInput.value;
             try {
-                const userCredential = await signInWithEmailAndPassword(auth, email, pass);
+                const userCredential = await signInWithEmailAndPassword(auth, emailInput.value, passInput.value);
                 const userDoc = await getDoc(doc(db, "users", userCredential.user.uid));
                 if (userDoc.exists()) showPortal(userDoc.data());
             } catch (e) { errorMsg.style.display = 'block'; }
         }
 
-        // CLICK LISTENER
         loginBtn.addEventListener('click', handleLogin);
 
-        // "ENTER" KEY LISTENER
-        [document.getElementById('emailInput'), passInput].forEach(input => {
-            input.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') handleLogin();
-            });
+        // Enter Key Support for Mobile Keyboards
+        [emailInput, passInput].forEach(input => {
+            input.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleLogin(); });
         });
 
         function showPortal(userData) {
             document.getElementById('loginBox').style.display = 'none';
             document.getElementById('videoContent').style.display = 'block';
-            document.getElementById('welcomeTitle').innerText = "WELCOME, " + (userData.name || "STUDENT").toUpperCase();
+            document.getElementById('welcomeTitle').innerText = (userData.name || "STUDENT").toUpperCase();
             document.getElementById('rank-basics').style.display = 'block';
             const userRank = (userData.rank || '').toLowerCase();
             if (userRank === 'instructor') {
                 document.querySelectorAll('.video-link').forEach(link => link.style.display = 'block');
             } else if (userRank) {
-                const specificRank = document.getElementById('rank-' + userRank);
-                if (specificRank) specificRank.style.display = 'block';
+                const target = document.getElementById('rank-' + userRank);
+                if (target) target.style.display = 'block';
             }
         }
 
-        window.loadVideo = function(playlistId) {
-            const player = document.getElementById('videoPlayer');
-            const container = document.getElementById('playerContainer');
-            // Enhanced privacy parameters
-            player.src = `https://www.youtube.com/embed/videoseries?list=${playlistId}&modestbranding=1&rel=0&iv_load_policy=3&controls=1&disablekb=1&showinfo=0`;
-            container.style.display = 'block';
-            container.scrollIntoView({ behavior: 'smooth' });
+        window.loadVideo = function(id) {
+            document.getElementById('videoPlayer').src = `https://www.youtube.com/embed/videoseries?list=${id}&modestbranding=1&rel=0&iv_load_policy=3&controls=1&disablekb=1`;
+            document.getElementById('playerContainer').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
         window.closeVideo = function() {
