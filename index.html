@@ -12,7 +12,7 @@
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     
     <style>
-        :root { --gold: #ffcc00; --bg: #1a1a1a; --card: #2b2b2b; --input-bg: #1e1e1e; }
+        :root { --gold: #ffcc00; --bg: #1a1a1a; --card: #2b2b2b; --input-bg: #1e1e1e; --green: #2ecc71; --red: #e74c3c; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg); color: white; margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; box-sizing: border-box; }
         .container { background: var(--card); padding: 30px 20px; border-radius: 12px; border-top: 5px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 100%; max-width: 450px; margin-top: 20px; }
         .logo { width: 70px; height: auto; margin-bottom: 10px; }
@@ -31,9 +31,11 @@
         .admin-tab { display: none; padding: 15px; background: #111; border-radius: 8px; text-align: left; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th { color: var(--gold); border-bottom: 1px solid #444; padding: 8px; font-size: 11px; text-transform: uppercase; text-align: left; }
-        td { padding: 12px 8px; border-bottom: 1px solid #222; vertical-align: top; font-size: 14px; }
-        .detail-row { font-size: 11px; color: #aaa; background: #1e1e1e; }
-        a.tel-link { color: var(--gold); text-decoration: none; font-weight: bold; }
+        td { padding: 12px 8px; border-bottom: 1px solid #222; vertical-align: top; font-size: 13px; }
+        .detail-row { font-size: 11px; color: #aaa; background: #1e1e1e; line-height: 1.4; }
+        .status-badge { padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; text-transform: uppercase; }
+        .status-paid { background: var(--green); color: #000; }
+        .status-due { background: var(--red); color: #fff; }
     </style>
 </head>
 <body>
@@ -53,7 +55,7 @@
         </div>
 
         <div id="mainMenu">
-            <h2 id="welcomeMsg">Portal Access</h2>
+            <h2>Portal Access</h2>
             <button id="dbMenuBtn" class="menu-card" onclick="openSection('adminDashboard')">👥 Student Database</button>
             <button id="curMenuBtn" class="menu-card" onclick="openSection('curriculumSection')">🥋 Instructor Material</button>
         </div>
@@ -69,12 +71,17 @@
                 <input type="text" id="newStudentPhone" placeholder="Phone Number">
                 <input type="text" id="newStudentGuardian" placeholder="Guardian">
                 <input type="text" id="newStudentBelt" placeholder="Belt Rank">
+                <label style="font-size: 12px; color: var(--gold);">Tuition Paid?</label>
+                <select id="newStudentTuition">
+                    <option value="true">Yes (Current)</option>
+                    <option value="false">No (Due)</option>
+                </select>
                 <textarea id="newStudentNotes" placeholder="Notes" style="height:70px;"></textarea>
                 <button onclick="saveStudent()" style="width:100%; padding:15px; background:var(--gold); border-radius:8px; font-weight:bold; color:#000;">Save Record</button>
             </div>
             <div id="listView" class="admin-tab">
                 <input type="text" id="rosterSearch" placeholder="🔍 Search roster..." onkeyup="searchRoster()">
-                <div id="rosterTableArea" style="max-height: 400px; overflow-y: auto;"></div>
+                <div id="rosterTableArea" style="max-height: 500px; overflow-y: auto;"></div>
             </div>
         </div>
 
@@ -128,7 +135,6 @@
 
         let userRank = 0, isPlaying = false, scrubberInterval;
 
-        // AUTH & PERMISSION LOGIC
         const eField = document.getElementById('emailInput'), pField = document.getElementById('passInput');
         [eField, pField].forEach(f => f.addEventListener('keypress', (e) => { if(e.key === 'Enter') doLogin(); }));
         document.getElementById('loginBtn').addEventListener('click', doLogin);
@@ -137,37 +143,18 @@
             try {
                 const cred = await signInWithEmailAndPassword(auth, eField.value, pField.value);
                 const snap = await getDoc(doc(db, "users", cred.user.uid));
-                
                 if (snap.exists()) {
                     userRank = snap.data().rankLevel || 0;
                     document.getElementById('loginBox').style.display = 'none';
                     document.getElementById('portalView').style.display = 'block';
-
-                    const dbBtn = document.getElementById('dbMenuBtn');
-                    const curBtn = document.getElementById('curMenuBtn');
-                    const addBtn = document.getElementById('addNewStudentBtn');
-
-                    // Level 15: Sensei (Full Access)
-                    if (userRank >= 15) {
-                        dbBtn.style.display = 'block';
-                        curBtn.style.display = 'block';
-                    } 
-                    // Level 10: Staff (DB Read-only)
-                    else if (userRank === 10) {
-                        dbBtn.style.display = 'block';
-                        curBtn.style.display = 'none';
-                        addBtn.style.display = 'none'; // Hide "Add New" for Staff
-                    } 
-                    // Level 1-9: Instructor (Curriculum only)
-                    else if (userRank >= 1 && userRank < 10) {
-                        dbBtn.style.display = 'none';
-                        curBtn.style.display = 'block';
-                    }
+                    const dbBtn = document.getElementById('dbMenuBtn'), curBtn = document.getElementById('curMenuBtn'), addBtn = document.getElementById('addNewStudentBtn');
+                    if (userRank >= 15) { dbBtn.style.display = 'block'; curBtn.style.display = 'block'; }
+                    else if (userRank === 10) { dbBtn.style.display = 'block'; curBtn.style.display = 'none'; addBtn.style.display = 'none'; }
+                    else if (userRank >= 1 && userRank < 10) { dbBtn.style.display = 'none'; curBtn.style.display = 'block'; }
                 }
             } catch (err) { alert("Access Denied."); }
         }
 
-        // NAVIGATION
         window.showMainMenu = () => {
             document.getElementById('mainMenu').style.display = 'block';
             document.getElementById('adminDashboard').style.display = 'none';
@@ -183,7 +170,6 @@
             if(id === 'adminDashboard') { switchAdminTab('listView'); loadRoster(); }
         };
 
-        // DATABASE LOGIC
         window.switchAdminTab = (id) => {
             document.querySelectorAll('.admin-tab').forEach(t => t.style.display = 'none');
             document.getElementById(id).style.display = 'block';
@@ -195,8 +181,8 @@
                 phone: document.getElementById('newStudentPhone').value,
                 guardian: document.getElementById('newStudentGuardian').value,
                 beltRank: document.getElementById('newStudentBelt').value,
+                tuitionStatus: document.getElementById('newStudentTuition').value === 'true',
                 notes: document.getElementById('newStudentNotes').value,
-                tuitionStatus: true,
                 lastTestDate: serverTimestamp()
             };
             if(!data.fullName) return alert("Name Required");
@@ -205,19 +191,35 @@
                 alert("Saved!");
                 ['newStudentName', 'newStudentPhone', 'newStudentGuardian', 'newStudentBelt', 'newStudentNotes'].forEach(i => document.getElementById(i).value = "");
                 loadRoster();
-            } catch (e) { alert("Admin Access Required to Save."); }
+            } catch (e) { alert("Error: No Permission"); }
         };
 
         window.loadRoster = async () => {
             const area = document.getElementById('rosterTableArea');
             const snap = await getDocs(collection(db, "students"));
-            let html = `<table><tr><th>Name</th><th>Rank</th><th>Action</th></tr>`;
+            let html = `<table><tr><th>Student</th><th>Belt</th><th>Status</th></tr>`;
             snap.forEach(docSnap => {
                 const s = docSnap.data();
-                const call = s.phone ? `<a href="tel:${s.phone}" class="tel-link">📞 Call</a>` : 'N/A';
-                html += `<tr class="sr"><td style="font-weight:bold;">${s.fullName}</td><td>${s.beltRank}</td><td>${call}</td></tr>
-                         <tr class="sr detail-row"><td colspan="2">G: ${s.guardian}<br>N: ${s.notes}</td>
-                         <td style="text-align:right;">${userRank >= 15 ? `<button onclick="delEnt('${docSnap.id}')" style="background:#400; color:#fff; padding:3px;">Del</button>` : ''}</td></tr>`;
+                const testDate = s.lastTestDate ? new Date(s.lastTestDate.seconds * 1000).toLocaleDateString() : 'N/A';
+                const statusClass = s.tuitionStatus ? 'status-paid' : 'status-due';
+                const statusText = s.tuitionStatus ? 'Paid' : 'Due';
+                
+                html += `<tr class="sr">
+                            <td style="font-weight:bold;">${s.fullName}</td>
+                            <td>${s.beltRank}</td>
+                            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                         </tr>
+                         <tr class="sr detail-row">
+                            <td colspan="2">
+                                <b>Phone:</b> ${s.phone || 'N/A'}<br>
+                                <b>Guardian:</b> ${s.guardian || 'N/A'}<br>
+                                <b>Last Test:</b> ${testDate}<br>
+                                <b>Notes:</b> ${s.notes || '---'}
+                            </td>
+                            <td style="text-align:right; vertical-align:bottom;">
+                                ${userRank >= 15 ? `<button onclick="delEnt('${docSnap.id}')" style="background:#400; color:#fff; padding:5px; border-radius:4px;">Del</button>` : ''}
+                            </td>
+                         </tr>`;
             });
             area.innerHTML = html + "</table>";
         };
@@ -231,9 +233,8 @@
             });
         };
 
-        window.delEnt = async (id) => { if(confirm("Delete student?")) { await deleteDoc(doc(db, "students", id)); loadRoster(); } };
+        window.delEnt = async (id) => { if(confirm("Delete record?")) { await deleteDoc(doc(db, "students", id)); loadRoster(); } };
 
-        // VIDEO PLAYER
         window.playVid = (id) => {
             document.getElementById('playerContainer').style.display = 'block';
             if (window.player && window.player.loadVideoById) window.player.loadVideoById(id);
