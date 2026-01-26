@@ -27,10 +27,40 @@
         .video-link { display: none; background: #333; color: #fff; padding: 18px; margin: 12px 0; text-decoration: none; border-left: 5px solid #ffcc00; border-radius: 4px; transition: 0.3s; font-weight: 600; cursor: pointer; }
         .video-link:hover { background: #444; padding-left: 25px; color: #ffcc00; }
         
+        /* Video Container & Shield */
         #playerContainer { display: none; margin-bottom: 25px; }
         .close-player { background: #444; color: #ffcc00; font-size: 11px; padding: 8px 15px; border-radius: 4px; cursor: pointer; margin-bottom: 12px; display: inline-block; font-weight: bold; border: 1px solid #555; text-transform: uppercase; }
-        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; border: 2px solid #ffcc00; background: #000; }
-        .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        
+        .video-wrapper { 
+            position: relative; 
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0; 
+            overflow: hidden; 
+            border-radius: 8px; 
+            border: 2px solid #ffcc00; 
+            background: #000; 
+        }
+
+        /* THE SHIELD: Blocks clicks on Share/Watch Later in top corners */
+        .video-shield {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 55px; /* Adjust height to cover the specific buttons */
+            z-index: 10;
+            background: transparent;
+            cursor: default;
+        }
+
+        .video-wrapper iframe { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            z-index: 5;
+        }
         
         .logout-btn { background: #444; color: white; margin-top: 30px; font-size: 14px; }
     </style>
@@ -43,7 +73,9 @@
             <h1>Material Access</h1>
         </div>
         <p>Tracy's Karate Parma Heights</p>
-        <div class="notice"><strong>STUDENT NOTICE:</strong> Use the list icon in the top-right of the video to browse techniques.</div>
+        <div class="notice">
+            <strong>SECURITY NOTICE:</strong> Content sharing is disabled. Access is logged by user ID.
+        </div>
         <input type="email" id="emailInput" placeholder="Email Address">
         <input type="password" id="passInput" placeholder="Password">
         <button id="loginBtn">Enter Dojo</button>
@@ -59,6 +91,7 @@
         <div id="playerContainer">
             <div class="close-player" onclick="closeVideo()">✖ Close Video</div>
             <div class="video-wrapper">
+                <div class="video-shield"></div>
                 <iframe id="videoPlayer" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
         </div>
@@ -67,6 +100,9 @@
 
         <div onclick="loadVideo('PLudsFr1QJtbLfLddHmojVO4fen7GlvEVQ')" id="rank-basics" class="video-link" style="border-left-color: #ffffff;">⚫ Basics & Fundamentals</div>
         <div onclick="loadVideo('PLudsFr1QJtbK1MkX-oILTeyyq7BBxRO0G')" id="rank-yellow" class="video-link" style="border-left-color: #ffff00;">🟡 Yellow Belt Material</div>
+        <div onclick="loadVideo('YOUR_ORANGE_ID')" id="rank-orange" class="video-link" style="border-left-color: #ff8c00;">🟠 Orange Belt Material</div>
+        <div onclick="loadVideo('YOUR_PURPLE_ID')" id="rank-purple" class="video-link" style="border-left-color: #800080;">🟣 Purple Belt Material</div>
+
         <button class="logout-btn" onclick="location.reload()">Log Out</button>
     </div>
 
@@ -75,6 +111,7 @@
         import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+        // Your exact Firebase config
         const firebaseConfig = {
             apiKey: "AIzaSyC35Ubf6GxyDi3JEiKWaYgVFkYGknMZrcw",
             authDomain: "tracy-s-karate-portal.firebaseapp.com",
@@ -94,13 +131,15 @@
         loginBtn.addEventListener('click', async () => {
             const email = document.getElementById('emailInput').value;
             const pass = document.getElementById('passInput').value;
+
             try {
                 const userCredential = await signInWithEmailAndPassword(auth, email, pass);
                 const userDoc = await getDoc(doc(db, "users", userCredential.user.uid));
+                
                 if (userDoc.exists()) {
                     showPortal(userDoc.data());
                 } else {
-                    alert("No rank assigned. Contact Sensei.");
+                    alert("Account found, but no rank assigned in Firestore. Document ID must match UID.");
                 }
             } catch (e) {
                 errorMsg.style.display = 'block';
@@ -111,8 +150,10 @@
             document.getElementById('loginBox').style.display = 'none';
             document.getElementById('videoContent').style.display = 'block';
             document.getElementById('welcomeTitle').innerText = "WELCOME, " + (userData.name || "STUDENT").toUpperCase();
+
             document.getElementById('rank-basics').style.display = 'block';
             const userRank = userData.rank ? userData.rank.toLowerCase() : '';
+
             if (userRank === 'instructor') {
                 document.querySelectorAll('.video-link').forEach(link => link.style.display = 'block');
             } else if (userRank) {
@@ -125,10 +166,11 @@
             const player = document.getElementById('videoPlayer');
             const container = document.getElementById('playerContainer');
             
-            // modestbranding=1 hides the YouTube logo
-            // rel=0 prevents recommended videos from other channels
-            // showinfo=0 (deprecated but still helpful) 
-            player.src = `https://www.youtube.com/embed/videoseries?list=${playlistId}&rel=0&modestbranding=1&controls=1`;
+            // Parameters:
+            // modestbranding=1 (removes logo)
+            // rel=0 (related videos from same channel only)
+            // iv_load_policy=3 (hides annotations)
+            player.src = `https://www.youtube.com/embed/videoseries?list=${playlistId}&modestbranding=1&rel=0&iv_load_policy=3&controls=1`;
             
             container.style.display = 'block';
             container.scrollIntoView({ behavior: 'smooth' });
