@@ -65,16 +65,10 @@
             <button class="tech-btn" style="padding:25px; text-align:center; font-size:18px; display:none;" id="staffBtn" onclick="openSection('staffDashboard')">🛡️ Staff Access</button>
         </div>
 
-        <div id="curriculumSection" style="display:none;">
-            <div class="video-wrapper"><div id="ytPlayer"></div></div>
-            <div class="custom-controls">
-                <input type="range" id="seekBar" value="0" step="0.1">
-                <div class="control-row">
-                    <button class="control-btn" onclick="seek(-10)">-10s</button>
-                    <button class="control-btn" id="playPauseBtn" onclick="togglePlay()">Play</button>
-                    <button class="control-btn" onclick="seek(10)">+10s</button>
-                </div>
-            </div>
+<div id="curriculumSection" style="display:none;">
+    <div class="video-wrapper">
+        <div id="ytPlayer"></div>
+    </div>
             <input type="text" id="videoSearch" placeholder="🔍 Search techniques..." onkeyup="searchVideos()" style="margin-bottom:15px;">
             <div id="videoContainer">
                 <div id="belt-1" class="belt-group" style="display:none;">
@@ -165,7 +159,7 @@
         window.initPlayer = (id = '19Ktd4FfDGg') => {
             ytPlayer = new YT.Player('ytPlayer', {
                 height: '100%', width: '100%', videoId: id,
-                playerVars: { 'controls': 0, 'rel': 0, 'modestbranding': 1, 'playsinline': 1, 'autoplay': 0 },
+                playerVars: { 'controls': 1, 'rel': 0, 'modestbranding': 1, 'playsinline': 1, 'autoplay': 0 },
                 events: {
                     'onReady': () => { playerIsReady = true; },
                     'onStateChange': (e) => { document.getElementById('playPauseBtn').innerText = (e.data === 1) ? "Pause" : "Play"; }
@@ -291,6 +285,7 @@
     </script>
 </body>
 </html>
+
 
 
 
