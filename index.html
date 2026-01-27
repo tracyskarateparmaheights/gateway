@@ -12,15 +12,9 @@
         .logo-img { width: 180px; height: auto; margin-bottom: 10px; }
         
         /* VIDEO AREA */
-        .video-wrapper { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 8px; overflow: hidden; margin-bottom: 10px; border: 1px solid #444; }
+        .video-wrapper { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 8px; overflow: hidden; margin-bottom: 20px; border: 1px solid #444; }
         #ytPlayer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
         
-        .custom-controls { background: #333; padding: 12px; border-radius: 8px; margin-bottom: 15px; position: relative; z-index: 10; }
-        .control-row { display: flex; justify-content: center; gap: 12px; align-items: center; margin-top: 8px; }
-        
-        #seekBar { width: 100%; height: 6px; appearance: none; background: #555; border-radius: 5px; cursor: pointer; outline: none; }
-        #seekBar::-webkit-slider-thumb { appearance: none; width: 16px; height: 16px; background: var(--gold); border-radius: 50%; border: 2px solid #000; }
-
         /* UI ELEMENTS */
         .guide-box { background: #111; padding: 15px; border-radius: 8px; border: 1px solid #444; text-align: left; margin-bottom: 20px; font-size: 12px; line-height: 1.4; }
         .lvl-input { width: 60px; padding: 8px; background: #111; color: var(--gold); border: 1px solid #555; text-align: center; font-weight: bold; border-radius: 4px; }
@@ -37,7 +31,7 @@
 </head>
 <body>
 
-<div class="container" id="loginBox">
+    <div class="container" id="loginBox">
         <img src="https://raw.githubusercontent.com/tracyskarateparmaheights/gateway/main/BLACK-TK.png" class="logo-img">
         
         <h2 style="color: var(--gold); margin: 10px 0 20px 0; font-size: 22px; line-height: 1.2;">
@@ -65,10 +59,10 @@
             <button class="tech-btn" style="padding:25px; text-align:center; font-size:18px; display:none;" id="staffBtn" onclick="openSection('staffDashboard')">🛡️ Staff Access</button>
         </div>
 
-<div id="curriculumSection" style="display:none;">
-    <div class="video-wrapper">
-        <div id="ytPlayer"></div>
-    </div>
+        <div id="curriculumSection" style="display:none;">
+            <div class="video-wrapper">
+                <div id="ytPlayer"></div>
+            </div>
             <input type="text" id="videoSearch" placeholder="🔍 Search techniques..." onkeyup="searchVideos()" style="margin-bottom:15px;">
             <div id="videoContainer">
                 <div id="belt-1" class="belt-group" style="display:none;">
@@ -120,18 +114,19 @@
             </div>
         </div>
 
-       <div id="staffDashboard" style="display:none;">
-    <h3>Staff Access</h3>
-    <div class="guide-box">
-        <p><b>Content Access:</b><br>
-        LVL 0-5: White-Green | LVL 6-8: Brown 3-1 | LVL 9-13: Black 1-Black 5</p>
-        <hr style="border: 0; border-top: 1px solid #444; margin: 10px 0;">
-        <p><b>Permission Levels:</b><br>
-        <b>LVL 14:</b> View Student Roster<br>
-        <b>LVL 15:</b> Full Admin (Add/Edit Students, Export Data, Manage Staff)</p>
+        <div id="staffDashboard" style="display:none;">
+            <h3>Staff Access</h3>
+            <div class="guide-box">
+                <p><b>Content Access:</b><br>
+                LVL 0-5: White-Green | LVL 6-8: Brown 3-1 | LVL 9-13: Black 1-Black 5</p>
+                <hr style="border: 0; border-top: 1px solid #444; margin: 10px 0;">
+                <p><b>Permission Levels:</b><br>
+                <b>LVL 14:</b> View Student Roster<br>
+                <b>LVL 15:</b> Full Admin (Add/Edit Students, Export Data, Manage Staff)</p>
+            </div>
+            <div id="staffTableArea"></div>
+        </div>
     </div>
-    <div id="staffTableArea"></div>
-</div>
 
     <script src="https://www.youtube.com/iframe_api"></script>
 
@@ -155,21 +150,20 @@
         let ytPlayer, currentUserRank = 0, studentsList = [];
         let playerIsReady = false;
 
-        // PLAYER INITIALIZER
+        // PLAYER INITIALIZER - Now with controls enabled (controls: 1)
         window.initPlayer = (id = '19Ktd4FfDGg') => {
             ytPlayer = new YT.Player('ytPlayer', {
                 height: '100%', width: '100%', videoId: id,
                 playerVars: { 'controls': 1, 'rel': 0, 'modestbranding': 1, 'playsinline': 1, 'autoplay': 0 },
                 events: {
-                    'onReady': () => { playerIsReady = true; },
-                    'onStateChange': (e) => { document.getElementById('playPauseBtn').innerText = (e.data === 1) ? "Pause" : "Play"; }
+                    'onReady': () => { playerIsReady = true; }
                 }
             });
         };
 
         window.onYouTubeIframeAPIReady = () => window.initPlayer();
 
-        // NEW: STOP AND HOME
+        // NAV LOGIC
         window.stopAndHome = () => {
             if(playerIsReady && ytPlayer && ytPlayer.stopVideo) {
                 ytPlayer.stopVideo();
@@ -177,7 +171,6 @@
             window.showMainMenu();
         };
 
-        // LOADING LOGIC
         window.loadVideo = (id) => {
             if (playerIsReady && ytPlayer && ytPlayer.loadVideoById) {
                 ytPlayer.loadVideoById(id);
@@ -188,13 +181,6 @@
             }
         };
 
-        window.togglePlay = () => {
-            if(!playerIsReady) return;
-            ytPlayer.getPlayerState() === 1 ? ytPlayer.pauseVideo() : ytPlayer.playVideo();
-        };
-
-        window.seek = (s) => { if(playerIsReady) ytPlayer.seekTo(ytPlayer.getCurrentTime() + s, true); };
-        
         window.searchVideos = () => {
             const q = document.getElementById('videoSearch').value.toLowerCase();
             document.querySelectorAll('#videoContainer .tech-btn').forEach(btn => {
@@ -211,7 +197,6 @@
 
         window.openSection = (id) => { 
             document.querySelectorAll('#portalView > div:not(:first-child)').forEach(d => d.style.display='none'); 
-            // Pause video when switching to Admin or Staff
             if (id !== 'curriculumSection' && playerIsReady && ytPlayer.pauseVideo) ytPlayer.pauseVideo();
             document.getElementById(id).style.display='block';
             if(id === 'adminDashboard') syncRoster();
@@ -279,13 +264,6 @@
                 }
             } catch(e) { alert("Login failed"); }
         };
-
-        setInterval(() => { if(playerIsReady && ytPlayer.getCurrentTime) document.getElementById('seekBar').value = (ytPlayer.getCurrentTime() / ytPlayer.getDuration()) * 100; }, 500);
-        document.getElementById('seekBar').oninput = function() { if(playerIsReady) ytPlayer.seekTo(ytPlayer.getDuration() * (this.value / 100), true); };
     </script>
 </body>
 </html>
-
-
-
-
