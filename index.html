@@ -102,10 +102,14 @@
             </div>
             <div id="studentForm" class="admin-tab">
                 <input type="hidden" id="editId">
-                <input type="text" id="fName" placeholder="Full Name">
-                <input type="text" id="fPhone" placeholder="Phone">
-                <input type="email" id="fEmail" placeholder="Email">
-                <textarea id="fComments" placeholder="Notes" style="height:100px;"></textarea>
+                <input type="text" id="fName" placeholder="Student Name">
+                <input type="text" id="fParent" placeholder="Parent/Guardian (if minor)">
+                <input type="text" id="fPhone" placeholder="Phone Number">
+                <input type="email" id="fEmail" placeholder="Email Address">
+                <input type="text" id="fAddress" placeholder="Mailing Address">
+                <input type="text" id="fCityZip" placeholder="City/Zip">
+                <textarea id="fSource" placeholder="How did you hear about us?" style="height:60px;"></textarea>
+                <textarea id="fComments" placeholder="General Notes/Comments" style="height:80px;"></textarea>
                 <button class="control-btn" style="width:100%;" onclick="handleSave()">Save Record</button>
                 <button class="control-btn" style="width:100%; background:none; color:#888;" onclick="switchAdmin('listView')">Cancel</button>
             </div>
@@ -151,7 +155,6 @@
         let ytPlayer, currentUserRank = 0, studentsList = [];
         let playerIsReady = false;
 
-        // PLAYER INITIALIZER - Now with controls enabled (controls: 1)
         window.initPlayer = (id = '19Ktd4FfDGg') => {
             ytPlayer = new YT.Player('ytPlayer', {
                 height: '100%', width: '100%', videoId: id,
@@ -164,7 +167,6 @@
 
         window.onYouTubeIframeAPIReady = () => window.initPlayer();
 
-        // NAV LOGIC
         window.stopAndHome = () => {
             if(playerIsReady && ytPlayer && ytPlayer.stopVideo) {
                 ytPlayer.stopVideo();
@@ -209,12 +211,19 @@
             onSnapshot(query(collection(db, "students"), orderBy("fullName")), (snap) => {
                 let html = `<table>`; studentsList = [];
                 snap.forEach(docSnap => {
-                    const s = docSnap.data(); const id = docSnap.id; studentsList.push(s);
+                    const s = docSnap.data(); const id = docSnap.id; 
+                    studentsList.push({id, ...s});
                     html += `<tr class="sr-row" onclick="window.toggleDetail('${id}')">
                         <td><b>${s.fullName}</b><br><small>${s.phone || ''}</small></td>
-                        <td style="text-align:right;">${currentUserRank >= 15 ? `<button class="control-btn" onclick="event.stopPropagation(); window.editStudent('${id}', ${JSON.stringify(s).replace(/"/g, '&quot;')})">EDIT</button>` : ''}</td>
+                        <td style="text-align:right;">${currentUserRank >= 15 ? `<button class="control-btn" onclick="event.stopPropagation(); window.editStudent('${id}')">EDIT</button>` : ''}</td>
                     </tr>
-                    <tr id="det-${id}" style="display:none;"><td colspan="2" style="background:#222; padding:10px; font-size:12px;">Email: ${s.email}<br>Notes: ${s.comments}</td></tr>`;
+                    <tr id="det-${id}" style="display:none;"><td colspan="2" style="background:#222; padding:15px; font-size:13px; text-align:left; line-height:1.6;">
+                        ${s.parentGuardian ? `<b>Parent:</b> ${s.parentGuardian}<br>` : ''}
+                        <b>Email:</b> ${s.email}<br>
+                        <b>Address:</b> ${s.mailingAddress || ''}, ${s.cityZip || ''}<br>
+                        <b>Source:</b> ${s.source || 'N/A'}<br>
+                        <b>Notes:</b> ${s.comments}
+                    </td></tr>`;
                 });
                 document.getElementById('rosterTableArea').innerHTML = html + "</table>";
             });
@@ -222,19 +231,49 @@
 
         window.toggleDetail = (id) => { const el = document.getElementById(`det-${id}`); el.style.display = el.style.display === "none" ? "table-row" : "none"; };
         window.searchRoster = () => { const q = document.getElementById('rosterSearch').value.toLowerCase(); document.querySelectorAll('.sr-row').forEach(r => r.style.display = r.innerText.toLowerCase().includes(q) ? "" : "none"); };
-        window.prepareAdd = () => { document.getElementById('editId').value = ""; ['fName','fPhone','fEmail','fComments'].forEach(i => document.getElementById(i).value=""); window.switchAdmin('studentForm'); };
-        window.editStudent = (id, s) => { document.getElementById('editId').value = id; document.getElementById('fName').value = s.fullName; document.getElementById('fPhone').value = s.phone; document.getElementById('fEmail').value = s.email; document.getElementById('fComments').value = s.comments; window.switchAdmin('studentForm'); };
+        
+        window.prepareAdd = () => { 
+            document.getElementById('editId').value = ""; 
+            ['fName','fParent','fPhone','fEmail','fAddress','fCityZip','fSource','fComments'].forEach(i => document.getElementById(i).value=""); 
+            window.switchAdmin('studentForm'); 
+        };
+
+        window.editStudent = (id) => { 
+            const s = studentsList.find(item => item.id === id);
+            document.getElementById('editId').value = id; 
+            document.getElementById('fName').value = s.fullName || ''; 
+            document.getElementById('fParent').value = s.parentGuardian || ''; 
+            document.getElementById('fPhone').value = s.phone || ''; 
+            document.getElementById('fEmail').value = s.email || ''; 
+            document.getElementById('fAddress').value = s.mailingAddress || ''; 
+            document.getElementById('fCityZip').value = s.cityZip || ''; 
+            document.getElementById('fSource').value = s.source || ''; 
+            document.getElementById('fComments').value = s.comments || ''; 
+            window.switchAdmin('studentForm'); 
+        };
+
         window.switchAdmin = (id) => { document.querySelectorAll('.admin-tab').forEach(t => t.style.display='none'); document.getElementById(id).style.display='block'; };
         
         window.handleSave = async () => {
             const id = document.getElementById('editId').value;
-            const data = { fullName: document.getElementById('fName').value, phone: document.getElementById('fPhone').value, email: document.getElementById('fEmail').value, comments: document.getElementById('fComments').value, updatedAt: serverTimestamp() };
+            const data = { 
+                fullName: document.getElementById('fName').value, 
+                parentGuardian: document.getElementById('fParent').value,
+                phone: document.getElementById('fPhone').value, 
+                email: document.getElementById('fEmail').value, 
+                mailingAddress: document.getElementById('fAddress').value,
+                cityZip: document.getElementById('fCityZip').value,
+                source: document.getElementById('fSource').value,
+                comments: document.getElementById('fComments').value, 
+                updatedAt: serverTimestamp() 
+            };
             if(id) await updateDoc(doc(db, "students", id), data); else await addDoc(collection(db, "students"), data);
             window.switchAdmin('listView');
         };
 
         window.exportStudents = () => {
-            let csv = "Name,Phone,Email\n"; studentsList.forEach(s => csv += `"${s.fullName}","${s.phone}","${s.email}"\n`);
+            let csv = "Name,Parent,Phone,Email,Address,CityZip,Source\n"; 
+            studentsList.forEach(s => csv += `"${s.fullName}","${s.parentGuardian || ''}","${s.phone}","${s.email}","${s.mailingAddress || ''}","${s.cityZip || ''}","${s.source || ''}"\n`);
             const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'})); a.download='Roster.csv'; a.click();
         };
 
@@ -268,4 +307,3 @@
     </script>
 </body>
 </html>
-
