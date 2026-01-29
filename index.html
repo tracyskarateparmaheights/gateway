@@ -228,6 +228,8 @@
                         ${s.parentGuardian ? `<b>Parent:</b> ${s.parentGuardian}<br>` : ''}
                         <b>Email:</b> ${s.email}<br>
                         <b>Address:</b> ${s.mailingAddress || ''}, ${s.cityZip || ''}<br>
+                        <b>Rank:</b> ${s.currentRank || 'N/A'}<br>
+                        <b>Last Test:</b> ${s.lastTestDate || 'N/A'}<br>
                         <b>Source:</b> ${s.source || 'N/A'}<br>
                         <b>Notes:</b> ${s.comments}<br><br>
                         ${currentUserRank >= 15 ? `<button class="control-btn" style="background:var(--red); color:white; width:100%;" onclick="window.deleteStudent('${id}', '${s.fullName.replace(/'/g, "\\'")}')">DELETE RECORD</button>` : ''}
