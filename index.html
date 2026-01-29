@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Tracy's Karate - Master Portal</title>
+    
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/tracyskarateparmaheights/gateway/main/BLACK-TK.png">
+    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/tracyskarateparmaheights/gateway/main/BLACK-TK.png">
+
     <style>
         :root { --gold: #ffcc00; --bg: #1a1a1a; --card: #2b2b2b; --input-bg: #1e1e1e; --green: #2ecc71; --red: #e74c3c; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg); color: white; margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; box-sizing: border-box; }
@@ -347,7 +351,7 @@
         };
         window.updateRank = async (id) => { await updateDoc(doc(db, "users", id), { rankLevel: parseInt(document.getElementById(`lvl-${id}`).value) }); alert("Updated"); };
 
-        document.getElementById('loginBtn').onclick = async () => {
+        const handleAuth = async () => {
             try {
                 const cred = await signInWithEmailAndPassword(auth, document.getElementById('emailInput').value, document.getElementById('passInput').value);
                 const snap = await getDoc(doc(db, "users", cred.user.uid));
@@ -366,6 +370,17 @@
                 }
             } catch(e) { alert("Login failed"); }
         };
+
+        // Click event
+        document.getElementById('loginBtn').onclick = handleAuth;
+
+        // Enter key event
+        document.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && document.getElementById('loginBox').style.display !== 'none') {
+                handleAuth();
+            }
+        });
+
     </script>
 </body>
 </html>
