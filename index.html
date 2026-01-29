@@ -326,7 +326,7 @@
 
         window.exportStudents = () => {
             let csv = "Name,Parent,Phone,Email,Address,CityZip,Source,Comments,CurrentRank,LastTestDate\n"; 
-            studentsList.forEach(s => csv += `"${s.fullName}","${s.parentGuardian || ''}","${s.phone}","${s.email}","${s.mailingAddress || ''}","${s.cityZip || ''}","${s.source || ''}","${s.comments || ''}"\n`),"${s.currentRank || ''}"\n`),"${s.lastTestDate || ''}"\n`);
+            studentsList.forEach(s => csv += `"${s.fullName}","${s.parentGuardian || ''}","${s.phone}","${s.email}","${s.mailingAddress || ''}","${s.cityZip || ''}","${s.source || ''}","${s.comments || ''}"\n`),"${s.currentRank || ''}"`,"${s.lastTestDate || ''}";
             const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'})); a.download='Roster.csv'; a.click();
         };
 
@@ -365,6 +365,7 @@
     </script>
 </body>
 </html>
+
 
 
 
