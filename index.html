@@ -265,6 +265,8 @@
                                 cityZip: row.CityZip || row.cityZip || "",
                                 source: row.Source || row.source || "",
                                 comments: row.Comments || row.comments || "",
+                                currentRank: row.CurrentRank || row.currentRank || "",
+                                lastTestDate: row.LastTestDate || row.lastTestDate || "",
                                 updatedAt: serverTimestamp()
                             });
                             count++;
@@ -281,7 +283,7 @@
         
         window.prepareAdd = () => { 
             document.getElementById('editId').value = ""; 
-            ['fName','fParent','fPhone','fEmail','fAddress','fCityZip','fSource','fComments'].forEach(i => document.getElementById(i).value=""); 
+            ['fName','fParent','fPhone','fEmail','fAddress','fCityZip','fSource','fComments','fCurrentRank','fLastTestDate'].forEach(i => document.getElementById(i).value=""); 
             window.switchAdmin('studentForm'); 
         };
 
@@ -295,7 +297,9 @@
             document.getElementById('fAddress').value = s.mailingAddress || ''; 
             document.getElementById('fCityZip').value = s.cityZip || ''; 
             document.getElementById('fSource').value = s.source || ''; 
-            document.getElementById('fComments').value = s.comments || ''; 
+            document.getElementById('fComments').value = s.comments || '';
+            document.getElementById('fCurrentRank').value = s.currentRank || '';
+            document.getElementById('fLastTestDate').value = s.lastTestDate || '';
             window.switchAdmin('studentForm'); 
         };
 
@@ -311,7 +315,9 @@
                 mailingAddress: document.getElementById('fAddress').value,
                 cityZip: document.getElementById('fCityZip').value,
                 source: document.getElementById('fSource').value,
-                comments: document.getElementById('fComments').value, 
+                comments: document.getElementById('fComments').value,
+                currentRank: document.getElementById('fCurrentRank').value,
+                lastTestDate: document.getElementById('fLastTestDate').value,
                 updatedAt: serverTimestamp() 
             };
             if(id) await updateDoc(doc(db, "students", id), data); else await addDoc(collection(db, "students"), data);
@@ -319,8 +325,8 @@
         };
 
         window.exportStudents = () => {
-            let csv = "Name,Parent,Phone,Email,Address,CityZip,Source,Comments\n"; 
-            studentsList.forEach(s => csv += `"${s.fullName}","${s.parentGuardian || ''}","${s.phone}","${s.email}","${s.mailingAddress || ''}","${s.cityZip || ''}","${s.source || ''}","${s.comments || ''}"\n`);
+            let csv = "Name,Parent,Phone,Email,Address,CityZip,Source,Comments,CurrentRank,LastTestDate\n"; 
+            studentsList.forEach(s => csv += `"${s.fullName}","${s.parentGuardian || ''}","${s.phone}","${s.email}","${s.mailingAddress || ''}","${s.cityZip || ''}","${s.source || ''}","${s.comments || ''}"\n`),"${s.currentRank || ''}"\n`),"${s.lastTestDate || ''}"\n`);
             const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'})); a.download='Roster.csv'; a.click();
         };
 
@@ -359,6 +365,7 @@
     </script>
 </body>
 </html>
+
 
 
 
