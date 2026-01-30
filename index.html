@@ -132,26 +132,26 @@
                     <div class="belt-header" style="border-left: 5px solid var(--yellow);" onclick="toggleGate('yellow-techs')">🟡 Yellow Belt <span>▼</span></div>
                     <div id="yellow-techs" class="tech-list" style="display:none;">
                         <button class="tech-btn" onclick="loadVideo('19Ktd4FfDGg')">Yellow Belt History</button>
-                        <button class="tech-btn" onclick="loadVideo('JIFwfcykAY8')">1. Japanese Sword (A/B)</button>
-                        <button class="tech-btn" onclick="loadVideo('RoSuLCLOKuU')">2. Chinese Sword (A/B)</button>
-                        <button class="tech-btn" onclick="loadVideo('NjXYf4QOZnU')">3. Delayed Sword</button>
-                        <button class="tech-btn" onclick="loadVideo('SaCwJIsQWE8')">4. Knee of Vengeance</button>
-                        <button class="tech-btn" onclick="loadVideo('xNzobYNSQ4Y')">5. Fang of the Cobra (A/B)</button>
-                        <button class="tech-btn" onclick="loadVideo('ZJNmDVtXnBY')">6. Twisting Talon (A/B)</button>
-                        <button class="tech-btn" onclick="loadVideo('u0ceVbYXUXQ')">7. Returning Dragon</button>
-                        <button class="tech-btn" onclick="loadVideo('E44w7Eh73xs')">8. Breaking the Sword</button>
-                        <button class="tech-btn" onclick="loadVideo('yvrhFEiuHKc')">9. Kenpo Shield (A/B)</button>
-                        <button class="tech-btn" onclick="loadVideo('i-vyUr_6xZU')">10. Evasion</button>
+                        <button class="tech-btn" onclick="loadVideo('JIFwfcykAY8')">Japanese Sword (A/B)</button>
+                        <button class="tech-btn" onclick="loadVideo('RoSuLCLOKuU')">Chinese Sword (A/B)</button>
+                        <button class="tech-btn" onclick="loadVideo('NjXYf4QOZnU')">Delayed Sword</button>
+                        <button class="tech-btn" onclick="loadVideo('SaCwJIsQWE8')">Knee of Vengeance</button>
+                        <button class="tech-btn" onclick="loadVideo('xNzobYNSQ4Y')">Fang of the Cobra (A/B)</button>
+                        <button class="tech-btn" onclick="loadVideo('ZJNmDVtXnBY')">Twisting Talon (A/B)</button>
+                        <button class="tech-btn" onclick="loadVideo('u0ceVbYXUXQ')">Returning Dragon</button>
+                        <button class="tech-btn" onclick="loadVideo('E44w7Eh73xs')">Breaking the Sword</button>
+                        <button class="tech-btn" onclick="loadVideo('yvrhFEiuHKc')">Kenpo Shield (A/B)</button>
+                        <button class="tech-btn" onclick="loadVideo('i-vyUr_6xZU')">Evasion</button>
                     </div>
                 </div>
 
                 <div id="belt-2" class="belt-group" style="display:none;">
                     <div class="belt-header" style="border-left: 5px solid var(--orange);" onclick="toggleGate('orange-techs')">🟠 Orange Belt <span>▼</span></div>
                     <div id="orange-techs" class="tech-list" style="display:none;">
-                        <button class="tech-btn" onclick="loadVideo('BXFDPT-vcwM')">1. Sumo</button>
-                        <button class="tech-btn" onclick="loadVideo('gFcHl0al_KE')">2. Japanese Strangle Hold</button>
-                        <button class="tech-btn" onclick="loadVideo('CPh9xshjPr4')">3. Blocking the Kick</button>
-                        <button class="tech-btn" onclick="loadVideo('Y2PvWFdZlOs')">4. Headlock</button>
+                        <button class="tech-btn" onclick="loadVideo('BXFDPT-vcwM')">Sumo</button>
+                        <button class="tech-btn" onclick="loadVideo('gFcHl0al_KE')">Japanese Strangle Hold</button>
+                        <button class="tech-btn" onclick="loadVideo('CPh9xshjPr4')">Blocking the Kick</button>
+                        <button class="tech-btn" onclick="loadVideo('Y2PvWFdZlOs')">Headlock</button>
                         <button class="tech-btn" onclick="loadVideo('6sIKT5BI-Ik')">Short Form 1</button>
                     </div>
                 </div>
@@ -276,6 +276,7 @@
                 <input type="text" id="rosterSearch" placeholder="🔍 Search records..." onkeyup="searchRoster()">
                 <div id="rosterTableArea"></div>
             </div>
+            <button class="control-btn" style="width:100%; margin-top:20px; background:#444; color:white;" onclick="window.showMainMenu()">Back to Menu</button>
         </div>
 
         <div id="staffDashboard" style="display:none;">
@@ -286,6 +287,7 @@
                 <p><b>Permission Levels:</b><br><b>LVL 14:</b> View Student Roster<br><b>LVL 15:</b> Full Admin</p>
             </div>
             <div id="staffTableArea"></div>
+            <button class="control-btn" style="width:100%; margin-top:20px; background:#444; color:white;" onclick="window.showMainMenu()">Back to Menu</button>
         </div>
     </div>
 
@@ -349,14 +351,26 @@
         };
         
         window.showMainMenu = () => { 
-            document.querySelectorAll('#portalView > div:not(:first-child)').forEach(d => d.style.display='none'); 
+            const sections = ['mainMenu', 'curriculumSection', 'adminDashboard', 'staffDashboard'];
+            sections.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = 'none';
+            });
             document.getElementById('mainMenu').style.display='block'; 
         };
 
         window.openSection = (id) => { 
-            document.querySelectorAll('#portalView > div:not(:first-child)').forEach(d => d.style.display='none'); 
-            if (id !== 'curriculumSection' && playerIsReady && ytPlayer.pauseVideo) ytPlayer.pauseVideo();
-            document.getElementById(id).style.display='block';
+            const sections = ['mainMenu', 'curriculumSection', 'adminDashboard', 'staffDashboard'];
+            sections.forEach(s => {
+                const el = document.getElementById(s);
+                if (el) el.style.display = 'none';
+            });
+
+            if (id !== 'curriculumSection' && playerIsReady && ytPlayer && ytPlayer.pauseVideo) ytPlayer.pauseVideo();
+            
+            const target = document.getElementById(id);
+            if (target) target.style.display='block';
+            
             if(id === 'adminDashboard') syncRoster();
             if(id === 'staffDashboard') syncStaff();
         };
@@ -421,7 +435,6 @@
                         document.getElementById('exportBtn').style.display = 'block'; 
                         document.getElementById('importBtn').style.display = 'block';
                     }
-                    // UNLOCK BELTS BASED ON LEVEL (Now starts from 0 for White Belt)
                     for(let i=0; i<=currentUserRank && i<=14; i++) { 
                         const b = document.getElementById(`belt-${i}`);
                         if(b) b.style.display = 'block'; 
@@ -439,5 +452,3 @@
     </script>
 </body>
 </html>
-
-
