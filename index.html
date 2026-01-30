@@ -20,6 +20,7 @@
         .video-wrapper { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 8px; overflow: hidden; margin-bottom: 20px; border: 1px solid #444; }
         #ytPlayer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
         
+        .guide-box { background: #111; padding: 15px; border-radius: 8px; border: 1px solid #444; text-align: left; margin-bottom: 20px; font-size: 12px; line-height: 1.4; }
         .control-btn { background: var(--gold); color: #000; border: none; padding: 10px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; }
         .admin-tab { display: none; text-align: left; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
@@ -28,10 +29,11 @@
         .belt-header { background: #3d3d3d; padding: 15px; margin-top: 10px; border-radius: 8px; color: var(--gold); cursor: pointer; display: flex; justify-content: space-between; font-weight: bold; }
         .tech-btn { background: #222; color: #eee; padding: 14px; margin: 5px 0; border-radius: 6px; border-left: 4px solid var(--gold); width: 100%; cursor: pointer; display: block; text-align: left; font-size: 13px; border:none; }
 
-        input, textarea { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #444; background: var(--input-bg); color: white; box-sizing: border-box; }
+        input, textarea, select { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #444; background: var(--input-bg); color: white; box-sizing: border-box; font-size: 14px; }
         
         .detail-view { background:#222; padding:15px; font-size:13px; text-align:left; line-height:1.6; border-radius: 8px; margin: 5px 0; border: 1px solid #444; }
         .detail-label { color: var(--gold); font-weight: bold; display: inline-block; width: 110px; }
+        .lvl-input { width: 60px; padding: 8px; background: #111; color: var(--gold); border: 1px solid #555; text-align: center; font-weight: bold; border-radius: 4px; }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 </head>
@@ -43,6 +45,10 @@
         <input type="email" id="emailInput" placeholder="Email">
         <input type="password" id="passInput" placeholder="Password">
         <button id="loginBtn" class="control-btn" style="width:100%; padding:18px;">Sign In</button>
+        <div style="margin-top: 25px; font-size: 10px; color: #888; opacity: 0.7; line-height: 1.5;">
+            Copyright 2026 by M.D.M. Studios Inc. All Rights Reserved.<br>
+            Developed by Directed Route LLC
+        </div>
     </div>
 
     <div class="nav-header" id="portalNav" style="display:none;">
@@ -133,81 +139,39 @@
                 </div>
             </div>
 
-            <div id="belt-1" class="belt-group" style="display:none;">
-                <div class="belt-header" style="border-left: 5px solid var(--yellow);" onclick="toggleGate('yellow-techs')">🟡 Yellow Belt <span>▼</span></div>
-                <div id="yellow-techs" class="tech-list" style="display:none;">
-                    <button class="tech-btn" onclick="loadVideo('19Ktd4FfDGg')">Yellow Belt History</button>
-                    <button class="tech-btn" onclick="loadVideo('JIFwfcykAY8')">Japanese Sword (A/B)</button>
-                    <button class="tech-btn" onclick="loadVideo('RoSuLCLOKuU')">Chinese Sword (A/B)</button>
-                    <button class="tech-btn" onclick="loadVideo('NjXYf4QOZnU')">Delayed Sword</button>
-                    <button class="tech-btn" onclick="loadVideo('SaCwJIsQWE8')">Knee of Vengeance</button>
-                    <button class="tech-btn" onclick="loadVideo('xNzobYNSQ4Y')">Fang of the Cobra (A/B)</button>
-                    <button class="tech-btn" onclick="loadVideo('ZJNmDVtXnBY')">Twisting Talon (A/B)</button>
-                    <button class="tech-btn" onclick="loadVideo('u0ceVbYXUXQ')">Returning Dragon</button>
-                    <button class="tech-btn" onclick="loadVideo('E44w7Eh73xs')">Breaking the Sword</button>
-                    <button class="tech-btn" onclick="loadVideo('yvrhFEiuHKc')">Kenpo Shield (A/B)</button>
-                    <button class="tech-btn" onclick="loadVideo('i-vyUr_6xZU')">Evasion</button>
-                </div>
-            </div>
-
-            <div id="belt-2" class="belt-group" style="display:none;">
-                <div class="belt-header" style="border-left: 5px solid var(--orange);" onclick="toggleGate('orange-techs')">🟠 Orange Belt <span>▼</span></div>
-                <div id="orange-techs" class="tech-list" style="display:none;">
-                    <button class="tech-btn" onclick="loadVideo('BXFDPT-vcwM')">Sumo</button>
-                    <button class="tech-btn" onclick="loadVideo('gFcHl0al_KE')">Japanese Strangle Hold</button>
-                    <button class="tech-btn" onclick="loadVideo('CPh9xshjPr4')">Blocking the Kick</button>
-                    <button class="tech-btn" onclick="loadVideo('Y2PvWFdZlOs')">Headlock</button>
-                    <button class="tech-btn" onclick="loadVideo('6sIKT5BI-Ik')">Short Form 1</button>
-                </div>
-            </div>
-
-            <div id="belt-3" class="belt-group" style="display:none;">
-                <div class="belt-header" style="border-left: 5px solid var(--purple);" onclick="toggleGate('purple-techs')">🟣 Purple Belt <span>▼</span></div>
-                <div id="purple-techs" class="tech-list" style="display:none;">
-                    <button class="tech-btn" onclick="loadVideo('k3m1tjunH00')">Short Form 2</button>
-                    <button class="tech-btn" onclick="loadVideo('FfZaYCiTbRc')">Long Form 1</button>
-                </div>
-            </div>
-
-            <div id="belt-4" class="belt-group" style="display:none;">
-                <div class="belt-header" style="border-left: 5px solid var(--blue);" onclick="toggleGate('blue-techs')">🔵 Blue Belt <span>▼</span></div>
-                <div id="blue-techs" class="tech-list" style="display:none;">
-                    <button class="tech-btn" onclick="loadVideo('oBLlZge46Mw')">Short Form 3</button>
-                    <button class="tech-btn" onclick="loadVideo('iD147twBQQs')">Long Form 2</button>
-                </div>
-            </div>
-
-            <div id="belt-5" class="belt-group" style="display:none;">
-                <div class="belt-header" style="border-left: 5px solid var(--green);" onclick="toggleGate('green-techs')">🟢 Green Belt <span>▼</span></div>
-                <div id="green-techs" class="tech-list" style="display:none;">
-                    <button class="tech-btn" onclick="loadVideo('5JSGpLU3vEY')">Long Form 3 - Al Tracy</button>
-                    <button class="tech-btn" onclick="loadVideo('mefG0vhuHlU')">Long 3 Breakdown (No Opponent)</button>
-                    <button class="tech-btn" onclick="loadVideo('SaProTWEraE')">Long 3 Breakdown (With Opponent)</button>
-                    <button class="tech-btn" onclick="loadVideo('dTusg37I17I')">Changes Made on Long 3</button>
-                </div>
-            </div>
-
+            <div id="belt-1" class="belt-group" style="display:none;"><div class="belt-header" style="border-left: 5px solid var(--yellow);" onclick="toggleGate('yellow-techs')">🟡 Yellow Belt <span>▼</span></div><div id="yellow-techs" class="tech-list" style="display:none;"><button class="tech-btn" onclick="loadVideo('19Ktd4FfDGg')">Yellow Belt History</button><button class="tech-btn" onclick="loadVideo('JIFwfcykAY8')">Japanese Sword (A/B)</button><button class="tech-btn" onclick="loadVideo('RoSuLCLOKuU')">Chinese Sword (A/B)</button><button class="tech-btn" onclick="loadVideo('NjXYf4QOZnU')">Delayed Sword</button><button class="tech-btn" onclick="loadVideo('SaCwJIsQWE8')">Knee of Vengeance</button><button class="tech-btn" onclick="loadVideo('xNzobYNSQ4Y')">Fang of the Cobra (A/B)</button><button class="tech-btn" onclick="loadVideo('ZJNmDVtXnBY')">Twisting Talon (A/B)</button><button class="tech-btn" onclick="loadVideo('u0ceVbYXUXQ')">Returning Dragon</button><button class="tech-btn" onclick="loadVideo('E44w7Eh73xs')">Breaking the Sword</button><button class="tech-btn" onclick="loadVideo('yvrhFEiuHKc')">Kenpo Shield (A/B)</button><button class="tech-btn" onclick="loadVideo('i-vyUr_6xZU')">Evasion</button></div></div>
+            <div id="belt-2" class="belt-group" style="display:none;"><div class="belt-header" style="border-left: 5px solid var(--orange);" onclick="toggleGate('orange-techs')">🟠 Orange Belt <span>▼</span></div><div id="orange-techs" class="tech-list" style="display:none;"><button class="tech-btn" onclick="loadVideo('BXFDPT-vcwM')">Sumo</button><button class="tech-btn" onclick="loadVideo('gFcHl0al_KE')">Japanese Strangle Hold</button><button class="tech-btn" onclick="loadVideo('CPh9xshjPr4')">Blocking the Kick</button><button class="tech-btn" onclick="loadVideo('Y2PvWFdZlOs')">Headlock</button><button class="tech-btn" onclick="loadVideo('6sIKT5BI-Ik')">Short Form 1</button></div></div>
+            <div id="belt-3" class="belt-group" style="display:none;"><div class="belt-header" style="border-left: 5px solid var(--purple);" onclick="toggleGate('purple-techs')">🟣 Purple Belt <span>▼</span></div><div id="purple-techs" class="tech-list" style="display:none;"><button class="tech-btn" onclick="loadVideo('k3m1tjunH00')">Short Form 2</button><button class="tech-btn" onclick="loadVideo('FfZaYCiTbRc')">Long Form 1</button></div></div>
+            <div id="belt-4" class="belt-group" style="display:none;"><div class="belt-header" style="border-left: 5px solid var(--blue);" onclick="toggleGate('blue-techs')">🔵 Blue Belt <span>▼</span></div><div id="blue-techs" class="tech-list" style="display:none;"><button class="tech-btn" onclick="loadVideo('oBLlZge46Mw')">Short Form 3</button><button class="tech-btn" onclick="loadVideo('iD147twBQQs')">Long Form 2</button></div></div>
+            <div id="belt-5" class="belt-group" style="display:none;"><div class="belt-header" style="border-left: 5px solid var(--green);" onclick="toggleGate('green-techs')">🟢 Green Belt <span>▼</span></div><div id="green-techs" class="tech-list" style="display:none;"><button class="tech-btn" onclick="loadVideo('5JSGpLU3vEY')">Long Form 3 - Al Tracy</button><button class="tech-btn" onclick="loadVideo('mefG0vhuHlU')">Long 3 Breakdown (No Opponent)</button><button class="tech-btn" onclick="loadVideo('SaProTWEraE')">Long 3 Breakdown (With Opponent)</button><button class="tech-btn" onclick="loadVideo('dTusg37I17I')">Changes Made on Long 3</button></div></div>
             <div id="belt-6" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('brown3-techs')">🟤 Brown Belt (3rd Degree) <span>▼</span></div><div id="brown3-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
-            <div id="belt-7" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('brown2-techs')">🟤 Brown Belt (2nd Degree) <span>▼</span></div><div id="brown2-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
-            <div id="belt-8" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('brown1-techs')">🟤 Brown Belt (1st Degree) <span>▼</span></div><div id="brown1-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
-            <div id="belt-9" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('black1-techs')">⚫ Black Belt (1st Degree) <span>▼</span></div><div id="black1-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
-            <div id="belt-10" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('black2-techs')">⚫ Black Belt (2nd Degree) <span>▼</span></div><div id="black2-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
-            <div id="belt-11" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('black3-techs')">⚫ Black Belt (3rd Degree) <span>▼</span></div><div id="black3-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
-            <div id="belt-12" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('black4-techs')">⚫ Black Belt (4th Degree) <span>▼</span></div><div id="black4-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
-            <div id="belt-13" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('black5-techs')">⚫ Black Belt (5th Degree) <span>▼</span></div><div id="black5-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
-            <div id="belt-14" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('black6-techs')">⚫ Black Belt (6th Degree) <span>▼</span></div><div id="black6-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
-        </div>
+            </div>
 
         <div id="adminDashboard" style="display:none;">
             <div id="studentForm" class="admin-tab">
                 <h3>Student Profile</h3>
                 <input type="hidden" id="editId">
+                
+                <select id="fStatus">
+                    <option value="Current">Status: Current</option>
+                    <option value="Inactive">Status: Inactive</option>
+                </select>
+
                 <input type="text" id="fName" placeholder="Student Name">
                 <input type="text" id="fParent" placeholder="Parent/Guardian (if minor)">
-                <input type="text" id="fPhone" placeholder="Phone Number">
+                <input type="text" id="fPhone" placeholder="Phone Number (Format: 5555555555)" oninput="window.formatPhone(this)">
                 <input type="email" id="fEmail" placeholder="Email Address">
                 <input type="text" id="fAddress" placeholder="Mailing Address">
                 <input type="text" id="fCityZip" placeholder="City/Zip">
+                
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="fTuition" placeholder="Tuition Amount ($)" onblur="window.formatCurrency(this)">
+                    <select id="fFrequency">
+                        <option value="Weekly">Weekly</option>
+                        <option value="Monthly">Monthly</option>
+                    </select>
+                </div>
+
                 <textarea id="fSource" placeholder="How did you hear about us?" style="height:60px;"></textarea>
                 <textarea id="fComments" placeholder="General Notes/Comments" style="height:80px;"></textarea>
                 <input type="text" id="fCurrentRank" placeholder="Current Rank">
@@ -223,6 +187,11 @@
 
         <div id="staffDashboard" style="display:none;">
             <h3>Staff Access</h3>
+            <div class="guide-box">
+                <p><b>Content Access:</b><br>LVL 0-5: White-Green | LVL 6-8: Brown 3-1 | LVL 9-13: Black 1-Black 6</p>
+                <hr style="border: 0; border-top: 1px solid #444; margin: 10px 0;">
+                <p><b>Permission Levels:</b><br><b>LVL 14:</b> View Student Roster<br><b>LVL 15:</b> Full Admin</p>
+            </div>
             <div id="staffTableArea"></div>
         </div>
     </div>
@@ -240,6 +209,20 @@
         const db = getFirestore(app);
 
         let ytPlayer, currentUserRank = 0, studentsList = [], playerIsReady = false;
+
+        window.formatPhone = (input) => {
+            let num = input.value.replace(/\D/g,'');
+            if (num.length > 10) num = num.substring(0,10);
+            if (num.length === 10) { input.value = `(${num.slice(0,3)}) ${num.slice(3,6)}-${num.slice(6,10)}`; } else { input.value = num; }
+        };
+
+        window.formatCurrency = (input) => {
+            let val = input.value.replace(/[^\d.]/g, '');
+            if (val) {
+                let formatted = parseFloat(val).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+                input.value = formatted;
+            }
+        };
 
         window.initPlayer = (id = '19Ktd4FfDGg') => { ytPlayer = new YT.Player('ytPlayer', { height: '100%', width: '100%', videoId: id, playerVars: { 'controls': 1, 'rel': 0, 'modestbranding': 1, 'playsinline': 1, 'autoplay': 0 }, events: { 'onReady': () => { playerIsReady = true; } } }); };
         window.onYouTubeIframeAPIReady = () => window.initPlayer();
@@ -264,19 +247,24 @@
         };
 
         window.prepareAdd = () => {
-            ['editId', 'fName', 'fParent', 'fPhone', 'fEmail', 'fAddress', 'fCityZip', 'fSource', 'fComments', 'fCurrentRank', 'fLastTestDate'].forEach(id => document.getElementById(id).value = "");
+            ['editId', 'fName', 'fParent', 'fPhone', 'fEmail', 'fAddress', 'fCityZip', 'fSource', 'fComments', 'fCurrentRank', 'fLastTestDate', 'fTuition'].forEach(id => document.getElementById(id).value = "");
+            document.getElementById('fStatus').value = "Current";
+            document.getElementById('fFrequency').value = "Weekly";
             window.switchAdmin('studentForm');
         };
 
         window.editStudent = (id) => {
             const s = studentsList.find(x => x.id === id); if(!s) return;
             document.getElementById('editId').value = id;
+            document.getElementById('fStatus').value = s.status || "Current";
             document.getElementById('fName').value = s.fullName || "";
             document.getElementById('fParent').value = s.parentName || "";
             document.getElementById('fPhone').value = s.phone || "";
             document.getElementById('fEmail').value = s.email || "";
             document.getElementById('fAddress').value = s.address || "";
             document.getElementById('fCityZip').value = s.cityZip || "";
+            document.getElementById('fTuition').value = s.tuition || "";
+            document.getElementById('fFrequency').value = s.paymentFrequency || "Weekly";
             document.getElementById('fSource').value = s.source || "";
             document.getElementById('fComments').value = s.comments || "";
             document.getElementById('fCurrentRank').value = s.currentRank || "";
@@ -284,14 +272,14 @@
             window.switchAdmin('studentForm');
         };
 
-        window.deleteStudent = async (id, name) => { if(confirm(`Delete ${name}?`)) await deleteDoc(doc(db, "students", id)); };
-
         window.handleSave = async () => {
             const id = document.getElementById('editId').value;
             const data = { 
+                status: document.getElementById('fStatus').value,
                 fullName: document.getElementById('fName').value, parentName: document.getElementById('fParent').value,
                 email: document.getElementById('fEmail').value, phone: document.getElementById('fPhone').value,
                 address: document.getElementById('fAddress').value, cityZip: document.getElementById('fCityZip').value,
+                tuition: document.getElementById('fTuition').value, paymentFrequency: document.getElementById('fFrequency').value,
                 source: document.getElementById('fSource').value, currentRank: document.getElementById('fCurrentRank').value,
                 lastTestDate: document.getElementById('fLastTestDate').value, comments: document.getElementById('fComments').value,
                 updatedAt: serverTimestamp() 
@@ -300,39 +288,25 @@
             window.switchAdmin('listView');
         };
 
-        window.exportStudents = () => {
-            const csv = Papa.unparse(studentsList.map(({id, updatedAt, ...rest}) => rest));
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a'); a.href = url; a.download = `Roster_${new Date().toLocaleDateString()}.csv`; a.click();
-        };
-
-        window.handleBulkImport = (event) => {
-            const file = event.target.files[0]; if(!file) return;
-            Papa.parse(file, { header: true, skipEmptyLines: true, complete: async (r) => {
-                const batch = writeBatch(db);
-                r.data.forEach(row => {
-                    const ref = doc(collection(db, "students"));
-                    batch.set(ref, { fullName: row.fullName||"", parentName: row.parentName||"", email: row.email||"", phone: row.phone||"", address: row.address||"", cityZip: row.cityZip||"", source: row.source||"", currentRank: row.currentRank||"", lastTestDate: row.lastTestDate||"", comments: row.comments||"", updatedAt: serverTimestamp() });
-                });
-                await batch.commit(); alert("Imported!");
-            }});
-        };
+        window.deleteStudent = async (id, name) => { if(confirm(`Delete ${name}?`)) await deleteDoc(doc(db, "students", id)); };
 
         const syncRoster = () => {
             onSnapshot(query(collection(db, "students"), orderBy("fullName")), (snap) => {
                 let html = `<table>`; studentsList = [];
                 snap.forEach(docSnap => {
                     const s = docSnap.data(); const id = docSnap.id; studentsList.push({id, ...s});
+                    const statusColor = s.status === "Inactive" ? "#e74c3c" : "#2ecc71";
                     html += `<tr class="sr-row" onclick="window.toggleDetail('${id}')">
-                        <td><b>${s.fullName}</b><br><small>${s.phone || 'No Phone'}</small></td>
+                        <td><b style="color:${statusColor}">●</b> <b>${s.fullName}</b><br><small>${s.phone || 'No Phone'}</small></td>
                         <td style="text-align:right;">${currentUserRank >= 15 ? `<button class="control-btn" onclick="event.stopPropagation(); window.editStudent('${id}')">EDIT</button>` : ''}</td>
                     </tr>
                     <tr id="det-${id}" style="display:none;"><td colspan="2"><div class="detail-view">
+                        <div><span class="detail-label">Status:</span> ${s.status || 'Current'}</div>
                         <div><span class="detail-label">Parent:</span> ${s.parentName || '---'}</div>
                         <div><span class="detail-label">Email:</span> ${s.email || '---'}</div>
                         <div><span class="detail-label">Address:</span> ${s.address || '---'}</div>
                         <div><span class="detail-label">City/Zip:</span> ${s.cityZip || '---'}</div>
+                        <div><span class="detail-label">Tuition:</span> ${s.tuition || '---'} (${s.paymentFrequency || 'Weekly'})</div>
                         <div><span class="detail-label">Current Rank:</span> ${s.currentRank || '---'}</div>
                         <div><span class="detail-label">Last Test:</span> ${s.lastTestDate || '---'}</div>
                         <div><span class="detail-label">Source:</span> ${s.source || '---'}</div>
@@ -344,20 +318,11 @@
             });
         };
 
-        const syncStaff = () => {
-            onSnapshot(collection(db, "users"), (snap) => {
-                let html = `<table><tr><th>NAME</th><th>LVL</th><th></th></tr>`;
-                snap.forEach(docSnap => {
-                    const u = docSnap.data();
-                    html += `<tr><td>${u.name || 'User'}</td><td><input type="number" class="lvl-input" id="lvl-${docSnap.id}" value="${u.rankLevel || 0}"></td>
-                    <td style="text-align:right;"><button class="control-btn" onclick="window.updateRank('${docSnap.id}')">✔</button></td></tr>`;
-                });
-                document.getElementById('staffTableArea').innerHTML = html + "</table>";
-            });
-        };
-
-        window.updateRank = async (id) => { await updateDoc(doc(db, "users", id), { rankLevel: parseInt(document.getElementById(`lvl-${id}`).value) }); alert("Updated"); };
-
+        // Standard auth/nav functions preserved
+        window.switchAdmin = (id) => { document.querySelectorAll('.admin-tab').forEach(t => t.style.display='none'); document.getElementById(id).style.display='block'; };
+        window.toggleDetail = (id) => { const el = document.getElementById(`det-${id}`); el.style.display = el.style.display === "none" ? "table-row" : "none"; };
+        window.searchRoster = () => { const q = document.getElementById('rosterSearch').value.toLowerCase(); document.querySelectorAll('.sr-row').forEach(r => r.style.display = r.innerText.toLowerCase().includes(q) ? "" : "none"); };
+        
         const handleAuth = async () => {
             try {
                 const cred = await signInWithEmailAndPassword(auth, document.getElementById('emailInput').value, document.getElementById('passInput').value);
@@ -373,12 +338,7 @@
                 }
             } catch(e) { alert("Login failed"); }
         };
-
         document.getElementById('loginBtn').onclick = handleAuth;
-        document.addEventListener('keypress', (e) => { if (e.key === 'Enter' && document.getElementById('loginBox').style.display !== 'none') handleAuth(); });
-        window.toggleDetail = (id) => { const el = document.getElementById(`det-${id}`); el.style.display = el.style.display === "none" ? "table-row" : "none"; };
-        window.switchAdmin = (id) => { document.querySelectorAll('.admin-tab').forEach(t => t.style.display='none'); document.getElementById(id).style.display='block'; };
-        window.searchRoster = () => { const q = document.getElementById('rosterSearch').value.toLowerCase(); document.querySelectorAll('.sr-row').forEach(r => r.style.display = r.innerText.toLowerCase().includes(q) ? "" : "none"); };
     </script>
 </body>
 </html>
