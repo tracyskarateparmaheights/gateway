@@ -29,6 +29,9 @@
         .tech-btn { background: #222; color: #eee; padding: 14px; margin: 5px 0; border-radius: 6px; border-left: 4px solid var(--gold); width: 100%; cursor: pointer; display: block; text-align: left; font-size: 13px; border:none; }
 
         input, textarea { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #444; background: var(--input-bg); color: white; box-sizing: border-box; }
+        
+        /* Fixed Header Spacing */
+        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 </head>
@@ -182,93 +185,35 @@
                     </div>
                 </div>
 
-                <div id="belt-6" class="belt-group" style="display:none;">
-                    <div class="belt-header" style="border-left: 5px solid var(--brown);" onclick="toggleGate('brown3-techs')">🟤 Brown Belt (3rd Degree) <span>▼</span></div>
-                    <div id="brown3-techs" class="tech-list" style="display:none;">
-                        <button class="tech-btn" onclick="loadVideo('VIDEO_ID')">Technique Name</button>
-                    </div>
-                </div>
-
-                <div id="belt-7" class="belt-group" style="display:none;">
-                    <div class="belt-header" style="border-left: 5px solid var(--brown);" onclick="toggleGate('brown2-techs')">🟤 Brown Belt (2nd Degree) <span>▼</span></div>
-                    <div id="brown2-techs" class="tech-list" style="display:none;">
-                        <button class="tech-btn" onclick="loadVideo('VIDEO_ID')">Technique Name</button>
-                    </div>
-                </div>
-
-                <div id="belt-8" class="belt-group" style="display:none;">
-                    <div class="belt-header" style="border-left: 5px solid var(--brown);" onclick="toggleGate('brown1-techs')">🟤 Brown Belt (1st Degree) <span>▼</span></div>
-                    <div id="brown1-techs" class="tech-list" style="display:none;">
-                        <button class="tech-btn" onclick="loadVideo('VIDEO_ID')">Technique Name</button>
-                    </div>
-                </div>
-
-                <div id="belt-9" class="belt-group" style="display:none;">
-                    <div class="belt-header" style="border-left: 5px solid var(--black); background: #222;" onclick="toggleGate('black1-techs')">⚫ Black Belt (1st Degree) <span>▼</span></div>
-                    <div id="black1-techs" class="tech-list" style="display:none;">
-                        <button class="tech-btn" onclick="loadVideo('VIDEO_ID')">Technique Name</button>
-                    </div>
-                </div>
-
-                <div id="belt-10" class="belt-group" style="display:none;">
-                    <div class="belt-header" style="border-left: 5px solid var(--black); background: #222;" onclick="toggleGate('black2-techs')">⚫ Black Belt (2nd Degree) <span>▼</span></div>
-                    <div id="black2-techs" class="tech-list" style="display:none;">
-                        <button class="tech-btn" onclick="loadVideo('VIDEO_ID')">Technique Name</button>
-                    </div>
-                </div>
-
-                <div id="belt-11" class="belt-group" style="display:none;">
-                    <div class="belt-header" style="border-left: 5px solid var(--black); background: #222;" onclick="toggleGate('black3-techs')">⚫ Black Belt (3rd Degree) <span>▼</span></div>
-                    <div id="black3-techs" class="tech-list" style="display:none;">
-                        <button class="tech-btn" onclick="loadVideo('VIDEO_ID')">Technique Name</button>
-                    </div>
-                </div>
-
-                <div id="belt-12" class="belt-group" style="display:none;">
-                    <div class="belt-header" style="border-left: 5px solid var(--black); background: #222;" onclick="toggleGate('black4-techs')">⚫ Black Belt (4th Degree) <span>▼</span></div>
-                    <div id="black4-techs" class="tech-list" style="display:none;">
-                        <button class="tech-btn" onclick="loadVideo('VIDEO_ID')">Technique Name</button>
-                    </div>
-                </div>
-
-                <div id="belt-13" class="belt-group" style="display:none;">
-                    <div class="belt-header" style="border-left: 5px solid var(--black); background: #222;" onclick="toggleGate('black5-techs')">⚫ Black Belt (5th Degree) <span>▼</span></div>
-                    <div id="black5-techs" class="tech-list" style="display:none;">
-                        <button class="tech-btn" onclick="loadVideo('VIDEO_ID')">Technique Name</button>
-                    </div>
-                </div>
-
-                <div id="belt-14" class="belt-group" style="display:none;">
-                    <div class="belt-header" style="border-left: 5px solid var(--black); background: #222;" onclick="toggleGate('black6-techs')">⚫ Black Belt (6th Degree) <span>▼</span></div>
-                    <div id="black6-techs" class="tech-list" style="display:none;">
-                        <button class="tech-btn" onclick="loadVideo('VIDEO_ID')">Technique Name</button>
-                    </div>
-                </div>
+                <div id="belt-6" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('brown3-techs')">🟤 Brown Belt (3rd Degree) <span>▼</span></div><div id="brown3-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
+                <div id="belt-7" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('brown2-techs')">🟤 Brown Belt (2nd Degree) <span>▼</span></div><div id="brown2-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
+                <div id="belt-8" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('brown1-techs')">🟤 Brown Belt (1st Degree) <span>▼</span></div><div id="brown1-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
+                <div id="belt-9" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('black1-techs')">⚫ Black Belt (1st Degree) <span>▼</span></div><div id="black1-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
+                <div id="belt-10" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('black2-techs')">⚫ Black Belt (2nd Degree) <span>▼</span></div><div id="black2-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
+                <div id="belt-11" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('black3-techs')">⚫ Black Belt (3rd Degree) <span>▼</span></div><div id="black3-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
+                <div id="belt-12" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('black4-techs')">⚫ Black Belt (4th Degree) <span>▼</span></div><div id="black4-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
+                <div id="belt-13" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('black5-techs')">⚫ Black Belt (5th Degree) <span>▼</span></div><div id="black5-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
+                <div id="belt-14" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('black6-techs')">⚫ Black Belt (6th Degree) <span>▼</span></div><div id="black6-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
             </div>
         </div>
 
         <div id="adminDashboard" style="display:none;">
-            <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom:15px;">
+            <div class="admin-header">
                 <h3 style="margin:0;">Student Roster</h3>
                 <div style="display:flex; gap:8px;">
                     <input type="file" id="csvFileInput" accept=".csv" style="display:none;" onchange="window.handleBulkImport(event)">
                     <button class="control-btn" style="background:#444; color:white; display:none;" id="importBtn" onclick="document.getElementById('csvFileInput').click()">📥 Import</button>
                     <button class="control-btn" style="background:var(--green); color:white; display:none;" id="exportBtn" onclick="exportStudents()">💾 Export</button>
-                    <button class="control-btn" style="display:none;" id="addNewBtn" onclick="prepareAdd()">+ New</button>
+                    <button class="control-btn" style="display:none;" id="addNewBtn" onclick="window.prepareAdd()">+ New</button>
                 </div>
             </div>
             <div id="studentForm" class="admin-tab">
                 <input type="hidden" id="editId">
                 <input type="text" id="fName" placeholder="Student Name">
-                <input type="text" id="fParent" placeholder="Parent/Guardian (if minor)">
                 <input type="text" id="fPhone" placeholder="Phone Number">
                 <input type="email" id="fEmail" placeholder="Email Address">
-                <input type="text" id="fAddress" placeholder="Mailing Address">
-                <input type="text" id="fCityZip" placeholder="City/Zip">
-                <textarea id="fSource" placeholder="How did you hear about us?" style="height:60px;"></textarea>
                 <textarea id="fComments" placeholder="General Notes/Comments" style="height:80px;"></textarea>
                 <input type="text" id="fCurrentRank" placeholder="Current Rank">
-                <input type="date" id="fLastTestDate" placeholder="Last Test Date">
                 <button class="control-btn" style="width:100%;" onclick="handleSave()">Save Record</button>
                 <button class="control-btn" style="width:100%; background:none; color:#888;" onclick="switchAdmin('listView')">Cancel</button>
             </div>
@@ -340,7 +285,7 @@
 
         window.searchVideos = () => {
             const q = document.getElementById('videoSearch').value.toLowerCase();
-            document.querySelectorAll('#videoContainer .tech-btn').forEach(btn => {
+            document.querySelectorAll('#curriculumSection .tech-btn').forEach(btn => {
                 btn.style.display = btn.innerText.toLowerCase().includes(q) ? "block" : "none";
             });
         };
@@ -351,8 +296,7 @@
         };
         
         window.showMainMenu = () => { 
-            const sections = ['mainMenu', 'curriculumSection', 'adminDashboard', 'staffDashboard'];
-            sections.forEach(id => {
+            ['mainMenu', 'curriculumSection', 'adminDashboard', 'staffDashboard'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.style.display = 'none';
             });
@@ -360,19 +304,59 @@
         };
 
         window.openSection = (id) => { 
-            const sections = ['mainMenu', 'curriculumSection', 'adminDashboard', 'staffDashboard'];
-            sections.forEach(s => {
+            ['mainMenu', 'curriculumSection', 'adminDashboard', 'staffDashboard'].forEach(s => {
                 const el = document.getElementById(s);
                 if (el) el.style.display = 'none';
             });
-
             if (id !== 'curriculumSection' && playerIsReady && ytPlayer && ytPlayer.pauseVideo) ytPlayer.pauseVideo();
-            
             const target = document.getElementById(id);
             if (target) target.style.display='block';
-            
             if(id === 'adminDashboard') syncRoster();
             if(id === 'staffDashboard') syncStaff();
+        };
+
+        /* STUDENT RECORD LOGIC */
+        window.prepareAdd = () => {
+            document.getElementById('editId').value = "";
+            document.getElementById('fName').value = "";
+            document.getElementById('fPhone').value = "";
+            document.getElementById('fEmail').value = "";
+            document.getElementById('fComments').value = "";
+            document.getElementById('fCurrentRank').value = "";
+            window.switchAdmin('studentForm');
+        };
+
+        window.editStudent = (id) => {
+            const s = studentsList.find(x => x.id === id);
+            if(!s) return;
+            document.getElementById('editId').value = id;
+            document.getElementById('fName').value = s.fullName || "";
+            document.getElementById('fPhone').value = s.phone || "";
+            document.getElementById('fEmail').value = s.email || "";
+            document.getElementById('fComments').value = s.comments || "";
+            document.getElementById('fCurrentRank').value = s.currentRank || "";
+            window.switchAdmin('studentForm');
+        };
+
+        window.deleteStudent = async (id, name) => {
+            if(confirm(`Delete ${name}?`)) {
+                await deleteDoc(doc(db, "students", id));
+            }
+        };
+
+        window.handleSave = async () => {
+            const id = document.getElementById('editId').value;
+            const data = { 
+                fullName: document.getElementById('fName').value, 
+                email: document.getElementById('fEmail').value, 
+                phone: document.getElementById('fPhone').value,
+                currentRank: document.getElementById('fCurrentRank').value,
+                comments: document.getElementById('fComments').value,
+                updatedAt: serverTimestamp() 
+            };
+            if(id) await updateDoc(doc(db, "students", id), data); 
+            else await addDoc(collection(db, "students"), data);
+            window.switchAdmin('listView');
         };
 
         const syncRoster = () => {
@@ -394,19 +378,6 @@
             });
         };
 
-        window.handleSave = async () => {
-            const id = document.getElementById('editId').value;
-            const data = { 
-                fullName: document.getElementById('fName').value, 
-                email: document.getElementById('fEmail').value, 
-                currentRank: document.getElementById('fCurrentRank').value,
-                comments: document.getElementById('fComments').value,
-                updatedAt: serverTimestamp() 
-            };
-            if(id) await updateDoc(doc(db, "students", id), data); else await addDoc(collection(db, "students"), data);
-            window.switchAdmin('listView');
-        };
-
         const syncStaff = () => {
             onSnapshot(collection(db, "users"), (snap) => {
                 let html = `<table><tr><th>NAME</th><th>LVL</th><th></th></tr>`;
@@ -418,7 +389,11 @@
                 document.getElementById('staffTableArea').innerHTML = html + "</table>";
             });
         };
-        window.updateRank = async (id) => { await updateDoc(doc(db, "users", id), { rankLevel: parseInt(document.getElementById(`lvl-${id}`).value) }); alert("Updated"); };
+
+        window.updateRank = async (id) => { 
+            await updateDoc(doc(db, "users", id), { rankLevel: parseInt(document.getElementById(`lvl-${id}`).value) }); 
+            alert("Updated"); 
+        };
 
         const handleAuth = async () => {
             try {
@@ -432,8 +407,6 @@
                     if(currentUserRank >= 15) { 
                         document.getElementById('staffBtn').style.display = 'block'; 
                         document.getElementById('addNewBtn').style.display = 'block'; 
-                        document.getElementById('exportBtn').style.display = 'block'; 
-                        document.getElementById('importBtn').style.display = 'block';
                     }
                     for(let i=0; i<=currentUserRank && i<=14; i++) { 
                         const b = document.getElementById(`belt-${i}`);
