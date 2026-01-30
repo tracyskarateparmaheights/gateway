@@ -30,8 +30,8 @@
 
         input, textarea { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #444; background: var(--input-bg); color: white; box-sizing: border-box; }
         
-        /* Fixed Header Spacing */
-        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; text-align: left; }
+        .button-group { display: flex; gap: 8px; flex-wrap: wrap; }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 </head>
@@ -200,20 +200,25 @@
         <div id="adminDashboard" style="display:none;">
             <div class="admin-header">
                 <h3 style="margin:0;">Student Roster</h3>
-                <div style="display:flex; gap:8px;">
+                <div class="button-group">
                     <input type="file" id="csvFileInput" accept=".csv" style="display:none;" onchange="window.handleBulkImport(event)">
                     <button class="control-btn" style="background:#444; color:white; display:none;" id="importBtn" onclick="document.getElementById('csvFileInput').click()">📥 Import</button>
-                    <button class="control-btn" style="background:var(--green); color:white; display:none;" id="exportBtn" onclick="exportStudents()">💾 Export</button>
+                    <button class="control-btn" style="background:var(--green); color:white; display:none;" id="exportBtn" onclick="window.exportStudents()">💾 Export</button>
                     <button class="control-btn" style="display:none;" id="addNewBtn" onclick="window.prepareAdd()">+ New</button>
                 </div>
             </div>
             <div id="studentForm" class="admin-tab">
                 <input type="hidden" id="editId">
                 <input type="text" id="fName" placeholder="Student Name">
+                <input type="text" id="fParent" placeholder="Parent/Guardian (if minor)">
                 <input type="text" id="fPhone" placeholder="Phone Number">
                 <input type="email" id="fEmail" placeholder="Email Address">
+                <input type="text" id="fAddress" placeholder="Mailing Address">
+                <input type="text" id="fCityZip" placeholder="City/Zip">
+                <textarea id="fSource" placeholder="How did you hear about us?" style="height:60px;"></textarea>
                 <textarea id="fComments" placeholder="General Notes/Comments" style="height:80px;"></textarea>
                 <input type="text" id="fCurrentRank" placeholder="Current Rank">
+                <input type="date" id="fLastTestDate" placeholder="Last Test Date">
                 <button class="control-btn" style="width:100%;" onclick="handleSave()">Save Record</button>
                 <button class="control-btn" style="width:100%; background:none; color:#888;" onclick="switchAdmin('listView')">Cancel</button>
             </div>
@@ -241,7 +246,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, collection, onSnapshot, updateDoc, addDoc, query, orderBy, serverTimestamp, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, collection, onSnapshot, updateDoc, addDoc, query, orderBy, serverTimestamp, deleteDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = { 
             apiKey: "AIzaSyC35Ubf6GxyDi3JEiKWaYgVFkYGknMZrcw",
@@ -267,96 +272,99 @@
         };
 
         window.onYouTubeIframeAPIReady = () => window.initPlayer();
-
-        window.stopAndHome = () => {
-            if(playerIsReady && ytPlayer && ytPlayer.stopVideo) ytPlayer.stopVideo();
-            window.showMainMenu();
-        };
-
-        window.loadVideo = (id) => {
-            if (playerIsReady && ytPlayer && ytPlayer.loadVideoById) {
-                ytPlayer.loadVideoById(id);
-                ytPlayer.playVideo();
-            } else {
-                document.getElementById('ytPlayer').innerHTML = ""; 
-                window.initPlayer(id);
-            }
-        };
-
-        window.searchVideos = () => {
-            const q = document.getElementById('videoSearch').value.toLowerCase();
-            document.querySelectorAll('#curriculumSection .tech-btn').forEach(btn => {
-                btn.style.display = btn.innerText.toLowerCase().includes(q) ? "block" : "none";
-            });
-        };
-
-        window.toggleGate = (id) => { 
-            const el = document.getElementById(id); 
-            el.style.display = (el.style.display === "none") ? "block" : "none"; 
-        };
+        window.stopAndHome = () => { if(playerIsReady && ytPlayer && ytPlayer.stopVideo) ytPlayer.stopVideo(); window.showMainMenu(); };
+        window.loadVideo = (id) => { if (playerIsReady && ytPlayer && ytPlayer.loadVideoById) { ytPlayer.loadVideoById(id); ytPlayer.playVideo(); } else { document.getElementById('ytPlayer').innerHTML = ""; window.initPlayer(id); } };
+        window.searchVideos = () => { const q = document.getElementById('videoSearch').value.toLowerCase(); document.querySelectorAll('#curriculumSection .tech-btn').forEach(btn => { btn.style.display = btn.innerText.toLowerCase().includes(q) ? "block" : "none"; }); };
+        window.toggleGate = (id) => { const el = document.getElementById(id); el.style.display = (el.style.display === "none") ? "block" : "none"; };
+        window.showMainMenu = () => { ['mainMenu', 'curriculumSection', 'adminDashboard', 'staffDashboard'].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; }); document.getElementById('mainMenu').style.display='block'; };
         
-        window.showMainMenu = () => { 
-            ['mainMenu', 'curriculumSection', 'adminDashboard', 'staffDashboard'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.style.display = 'none';
-            });
-            document.getElementById('mainMenu').style.display='block'; 
-        };
-
         window.openSection = (id) => { 
-            ['mainMenu', 'curriculumSection', 'adminDashboard', 'staffDashboard'].forEach(s => {
-                const el = document.getElementById(s);
-                if (el) el.style.display = 'none';
-            });
+            ['mainMenu', 'curriculumSection', 'adminDashboard', 'staffDashboard'].forEach(s => { const el = document.getElementById(s); if (el) el.style.display = 'none'; });
             if (id !== 'curriculumSection' && playerIsReady && ytPlayer && ytPlayer.pauseVideo) ytPlayer.pauseVideo();
-            const target = document.getElementById(id);
-            if (target) target.style.display='block';
+            const target = document.getElementById(id); if (target) target.style.display='block';
             if(id === 'adminDashboard') syncRoster();
             if(id === 'staffDashboard') syncStaff();
         };
 
-        /* STUDENT RECORD LOGIC */
         window.prepareAdd = () => {
-            document.getElementById('editId').value = "";
-            document.getElementById('fName').value = "";
-            document.getElementById('fPhone').value = "";
-            document.getElementById('fEmail').value = "";
-            document.getElementById('fComments').value = "";
-            document.getElementById('fCurrentRank').value = "";
+            ['editId', 'fName', 'fParent', 'fPhone', 'fEmail', 'fAddress', 'fCityZip', 'fSource', 'fComments', 'fCurrentRank', 'fLastTestDate'].forEach(id => document.getElementById(id).value = "");
             window.switchAdmin('studentForm');
         };
 
         window.editStudent = (id) => {
-            const s = studentsList.find(x => x.id === id);
-            if(!s) return;
+            const s = studentsList.find(x => x.id === id); if(!s) return;
             document.getElementById('editId').value = id;
             document.getElementById('fName').value = s.fullName || "";
+            document.getElementById('fParent').value = s.parentName || "";
             document.getElementById('fPhone').value = s.phone || "";
             document.getElementById('fEmail').value = s.email || "";
+            document.getElementById('fAddress').value = s.address || "";
+            document.getElementById('fCityZip').value = s.cityZip || "";
+            document.getElementById('fSource').value = s.source || "";
             document.getElementById('fComments').value = s.comments || "";
             document.getElementById('fCurrentRank').value = s.currentRank || "";
+            document.getElementById('fLastTestDate').value = s.lastTestDate || "";
             window.switchAdmin('studentForm');
         };
 
-        window.deleteStudent = async (id, name) => {
-            if(confirm(`Delete ${name}?`)) {
-                await deleteDoc(doc(db, "students", id));
-            }
-        };
+        window.deleteStudent = async (id, name) => { if(confirm(`Delete ${name}?`)) await deleteDoc(doc(db, "students", id)); };
 
         window.handleSave = async () => {
             const id = document.getElementById('editId').value;
             const data = { 
                 fullName: document.getElementById('fName').value, 
+                parentName: document.getElementById('fParent').value,
                 email: document.getElementById('fEmail').value, 
                 phone: document.getElementById('fPhone').value,
+                address: document.getElementById('fAddress').value,
+                cityZip: document.getElementById('fCityZip').value,
+                source: document.getElementById('fSource').value,
                 currentRank: document.getElementById('fCurrentRank').value,
+                lastTestDate: document.getElementById('fLastTestDate').value,
                 comments: document.getElementById('fComments').value,
                 updatedAt: serverTimestamp() 
             };
-            if(id) await updateDoc(doc(db, "students", id), data); 
-            else await addDoc(collection(db, "students"), data);
+            if(id) await updateDoc(doc(db, "students", id), data); else await addDoc(collection(db, "students"), data);
             window.switchAdmin('listView');
+        };
+
+        window.exportStudents = () => {
+            const csv = Papa.unparse(studentsList.map(({id, updatedAt, ...rest}) => rest));
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = `Student_Roster_${new Date().toLocaleDateString()}.csv`;
+            a.click();
+        };
+
+        window.handleBulkImport = (event) => {
+            const file = event.target.files[0];
+            if(!file) return;
+            Papa.parse(file, {
+                header: true,
+                skipEmptyLines: true,
+                complete: async (results) => {
+                    const batch = writeBatch(db);
+                    results.data.forEach(row => {
+                        const newDocRef = doc(collection(db, "students"));
+                        batch.set(newDocRef, {
+                            fullName: row.fullName || "",
+                            parentName: row.parentName || "",
+                            email: row.email || "",
+                            phone: row.phone || "",
+                            address: row.address || "",
+                            cityZip: row.cityZip || "",
+                            source: row.source || "",
+                            currentRank: row.currentRank || "",
+                            lastTestDate: row.lastTestDate || "",
+                            comments: row.comments || "",
+                            updatedAt: serverTimestamp()
+                        });
+                    });
+                    await batch.commit();
+                    alert("Import Complete");
+                }
+            });
         };
 
         const syncRoster = () => {
@@ -390,10 +398,7 @@
             });
         };
 
-        window.updateRank = async (id) => { 
-            await updateDoc(doc(db, "users", id), { rankLevel: parseInt(document.getElementById(`lvl-${id}`).value) }); 
-            alert("Updated"); 
-        };
+        window.updateRank = async (id) => { await updateDoc(doc(db, "users", id), { rankLevel: parseInt(document.getElementById(`lvl-${id}`).value) }); alert("Updated"); };
 
         const handleAuth = async () => {
             try {
@@ -407,6 +412,8 @@
                     if(currentUserRank >= 15) { 
                         document.getElementById('staffBtn').style.display = 'block'; 
                         document.getElementById('addNewBtn').style.display = 'block'; 
+                        document.getElementById('exportBtn').style.display = 'block'; 
+                        document.getElementById('importBtn').style.display = 'block';
                     }
                     for(let i=0; i<=currentUserRank && i<=14; i++) { 
                         const b = document.getElementById(`belt-${i}`);
@@ -418,7 +425,6 @@
 
         document.getElementById('loginBtn').onclick = handleAuth;
         document.addEventListener('keypress', (e) => { if (e.key === 'Enter' && document.getElementById('loginBox').style.display !== 'none') handleAuth(); });
-        
         window.toggleDetail = (id) => { const el = document.getElementById(`det-${id}`); el.style.display = el.style.display === "none" ? "table-row" : "none"; };
         window.switchAdmin = (id) => { document.querySelectorAll('.admin-tab').forEach(t => t.style.display='none'); document.getElementById(id).style.display='block'; };
         window.searchRoster = () => { const q = document.getElementById('rosterSearch').value.toLowerCase(); document.querySelectorAll('.sr-row').forEach(r => r.style.display = r.innerText.toLowerCase().includes(q) ? "" : "none"); };
