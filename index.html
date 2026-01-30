@@ -410,20 +410,28 @@
         document.addEventListener('keypress', (e) => { if (e.key === 'Enter' && document.getElementById('loginBox').style.display !== 'none') handleAuth(); });
 
         window.exportStudents = () => {
-            const csv = Papa.unparse(studentsList.map(({id, updatedAt, ...rest}) => rest));
+            // Include the Firebase ID in export to allow matching for updates
+            const csv = Papa.unparse(studentsList.map(({updatedAt, ...rest}) => rest));
             const blob = new Blob([csv], { type: 'text/csv' });
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a'); a.href = url; a.download = `Roster_${new Date().toLocaleDateString()}.csv`; a.click();
         };
 
-window.handleBulkImport = (event) => {
+        window.handleBulkImport = (event) => {
             const file = event.target.files[0]; if(!file) return;
             Papa.parse(file, { header: true, skipEmptyLines: true, complete: async (r) => {
                 const batch = writeBatch(db);
                 r.data.forEach(row => {
-                    const ref = doc(collection(db, "students"));
-                    // Logic updated: If row.status is truthy, use it; otherwise, default to "Inactive"
+                    let ref;
+                    // If CSV has an 'id' column, update that record. Otherwise, add as new
+                    if (row.id && row.id.trim() !== "") {
+                        ref = doc(db, "students", row.id.trim());
+                    } else {
+                        ref = doc(collection(db, "students"));
+                    }
+                    
                     batch.set(ref, { 
+                        // Default to 'Inactive' if status is blank
                         status: (row.status && row.status.trim()) ? row.status.trim() : "Inactive", 
                         fullName: row.fullName||"", 
                         parentName: row.parentName||"", 
@@ -438,13 +446,11 @@ window.handleBulkImport = (event) => {
                         lastTestDate: row.lastTestDate||"", 
                         comments: row.comments||"", 
                         updatedAt: serverTimestamp() 
-                    });
+                    }, { merge: true }); // Merge ensures we update values without overwriting unspecified fields
                 });
-                await batch.commit(); alert("Imported!");
+                await batch.commit(); alert("Import/Update Complete!");
             }});
         };
     </script>
 </body>
 </html>
-
-
