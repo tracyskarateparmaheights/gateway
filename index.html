@@ -416,13 +416,29 @@
             const a = document.createElement('a'); a.href = url; a.download = `Roster_${new Date().toLocaleDateString()}.csv`; a.click();
         };
 
-        window.handleBulkImport = (event) => {
+window.handleBulkImport = (event) => {
             const file = event.target.files[0]; if(!file) return;
             Papa.parse(file, { header: true, skipEmptyLines: true, complete: async (r) => {
                 const batch = writeBatch(db);
                 r.data.forEach(row => {
                     const ref = doc(collection(db, "students"));
-                    batch.set(ref, { status: row.status||"Current", fullName: row.fullName||"", parentName: row.parentName||"", email: row.email||"", phone: row.phone||"", address: row.address||"", cityZip: row.cityZip||"", tuition: row.tuition||"", paymentFrequency: row.paymentFrequency||"Weekly", source: row.source||"", currentRank: row.currentRank||"", lastTestDate: row.lastTestDate||"", comments: row.comments||"", updatedAt: serverTimestamp() });
+                    // Logic updated: If row.status is truthy, use it; otherwise, default to "Inactive"
+                    batch.set(ref, { 
+                        status: (row.status && row.status.trim()) ? row.status.trim() : "Inactive", 
+                        fullName: row.fullName||"", 
+                        parentName: row.parentName||"", 
+                        email: row.email||"", 
+                        phone: row.phone||"", 
+                        address: row.address||"", 
+                        cityZip: row.cityZip||"", 
+                        tuition: row.tuition||"", 
+                        paymentFrequency: row.paymentFrequency||"Weekly", 
+                        source: row.source||"", 
+                        currentRank: row.currentRank||"", 
+                        lastTestDate: row.lastTestDate||"", 
+                        comments: row.comments||"", 
+                        updatedAt: serverTimestamp() 
+                    });
                 });
                 await batch.commit(); alert("Imported!");
             }});
@@ -430,4 +446,5 @@
     </script>
 </body>
 </html>
+
 
