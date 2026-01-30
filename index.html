@@ -9,7 +9,7 @@
     <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/tracyskarateparmaheights/gateway/main/BLACK-TK.png">
 
     <style>
-        :root { --gold: #ffcc00; --bg: #1a1a1a; --card: #2b2b2b; --input-bg: #1e1e1e; --green: #2ecc71; --red: #e74c3c; }
+        :root { --gold: #ffcc00; --bg: #1a1a1a; --card: #2b2b2b; --input-bg: #1e1e1e; --green: #2ecc71; --red: #e74c3c; --purple: #9b59b6; --blue: #3498db; --orange: #ff8800; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg); color: white; margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; box-sizing: border-box; }
         
         .container { background: var(--card); padding: 30px 20px; border-radius: 12px; border-top: 5px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 100%; max-width: 480px; margin-top: 20px; }
@@ -38,19 +38,14 @@
 
     <div class="container" id="loginBox">
         <img src="https://raw.githubusercontent.com/tracyskarateparmaheights/gateway/main/BLACK-TK.png" class="logo-img">
-        
-        <h2 style="color: var(--gold); margin: 10px 0 20px 0; font-size: 22px; line-height: 1.2;">
-            Tracy's Karate<br>Master Portal
-        </h2>
-
+        <h2 style="color: var(--gold); margin: 10px 0 20px 0; font-size: 22px; line-height: 1.2;">Tracy's Karate<br>Master Portal</h2>
         <input type="email" id="emailInput" placeholder="Email">
         <input type="password" id="passInput" placeholder="Password">
         <button id="loginBtn" class="control-btn" style="width:100%; padding:18px;">Sign In</button>
-
-<div style="margin-top: 25px; font-size: 10px; color: #888; opacity: 0.7; line-height: 1.5;">
-    Copyright 2026 by M.D.M. Studios Inc. All Rights Reserved.<br>
-    Developed by Directed Route LLC
-</div>
+        <div style="margin-top: 25px; font-size: 10px; color: #888; opacity: 0.7; line-height: 1.5;">
+            Copyright 2026 by M.D.M. Studios Inc. All Rights Reserved.<br>
+            Developed by Directed Route LLC
+        </div>
     </div>
 
     <div class="container" id="portalView" style="display:none;">
@@ -70,6 +65,7 @@
                 <div id="ytPlayer"></div>
             </div>
             <input type="text" id="videoSearch" placeholder="🔍 Search techniques..." onkeyup="searchVideos()" style="margin-bottom:15px;">
+            
             <div id="videoContainer">
                 <div id="belt-1" class="belt-group" style="display:none;">
                     <div class="belt-header" onclick="toggleGate('yellow-techs')">🟡 Yellow Belt <span>▼</span></div>
@@ -87,43 +83,46 @@
                         <button class="tech-btn" onclick="loadVideo('i-vyUr_6xZU')">10. Evasion</button>
                     </div>
                 </div>
+
                 <div id="belt-2" class="belt-group" style="display:none;">
-                    <div class="belt-header" onclick="toggleGate('orange-techs')">🟠 Orange Belt <span>▼</span></div>
+                    <div class="belt-header" style="border-left: 5px solid var(--orange);" onclick="toggleGate('orange-techs')">🟠 Orange Belt <span>▼</span></div>
                     <div id="orange-techs" class="tech-list" style="display:none;">
                         <button class="tech-btn" onclick="loadVideo('BXFDPT-vcwM')">1. Sumo</button>
-                        <button class="tech-btn" onclick="loadVideo('gFcHl0al_KE')">2. Jaoanese Strange Hold</button>
+                        <button class="tech-btn" onclick="loadVideo('gFcHl0al_KE')">2. Japanese Strangle Hold</button>
                         <button class="tech-btn" onclick="loadVideo('CPh9xshjPr4')">3. Blocking the Kick</button>
                         <button class="tech-btn" onclick="loadVideo('Y2PvWFdZlOs')">4. Headlock</button>
+                        <button class="tech-btn" onclick="loadVideo('6sIKT5BI-Ik')">Short Form 1</button>
                     </div>
                 </div>
-                    <div class="belt-header" onclick="toggleGate('orange-techs')">🟠 Orange Katas <span>▼</span></div>
-                <div id="orange-techs" class="tech-list" style="display:none;">
-                        <button class="tech-btn" onclick="loadVideo('6sIKT5BI-Ik')">Short 1</button>
+
+                <div id="belt-3" class="belt-group" style="display:none;">
+                    <div class="belt-header" style="border-left: 5px solid var(--purple);" onclick="toggleGate('purple-techs')">🟣 Purple Belt <span>▼</span></div>
+                    <div id="purple-techs" class="tech-list" style="display:none;">
+                        <button class="tech-btn" onclick="loadVideo('k3m1tjunH00')">Short Form 2</button>
+                        <button class="tech-btn" onclick="loadVideo('FfZaYCiTbRc')">Long Form 1</button>
                     </div>
                 </div>
-                <div class="belt-header" onclick="toggleGate('purple-techs')">🟣 Purple Katas <span>▼</span></div>
-                <div id="purple-techs" class="tech-list" style="display:none;">
-                        <button class="tech-btn" onclick="loadVideo('k3m1tjunH00')">Short 2</button>
-                        <button class="tech-btn" onclick="loadVideo('FfZaYCiTbRc')">Long 1</button>
+
+                <div id="belt-4" class="belt-group" style="display:none;">
+                    <div class="belt-header" style="border-left: 5px solid var(--blue);" onclick="toggleGate('blue-techs')">🔵 Blue Belt <span>▼</span></div>
+                    <div id="blue-techs" class="tech-list" style="display:none;">
+                        <button class="tech-btn" onclick="loadVideo('oBLlZge46Mw')">Short Form 3</button>
+                        <button class="tech-btn" onclick="loadVideo('iD147twBQQs')">Long Form 2</button>
                     </div>
                 </div>
-                <div class="belt-header" onclick="toggleGate('blue-techs')">🔵 Blue Katas <span>▼</span></div>
-                <div id="blue-techs" class="tech-list" style="display:none;">
-                        <button class="tech-btn" onclick="loadVideo('oBLlZge46Mw')">Short 3</button>
-                        <button class="tech-btn" onclick="loadVideo('iD147twBQQs')">Long 2</button>
-                    </div>
-                </div>
+
                 <div id="belt-5" class="belt-group" style="display:none;">
-                <div class="belt-header" onclick="toggleGate('green-techs')">🟢 Long 3 Kata <span>▼</span></div>
-                <div id="green-techs" class="tech-list" style="display:none;">
+                    <div class="belt-header" style="border-left: 5px solid var(--green);" onclick="toggleGate('green-techs')">🟢 Green Belt <span>▼</span></div>
+                    <div id="green-techs" class="tech-list" style="display:none;">
                         <button class="tech-btn" onclick="loadVideo('5JSGpLU3vEY')">Long Form 3 - Al Tracy</button>
-                        <button class="tech-btn" onclick="loadVideo('mefG0vhuHlU')">Long 3 Breakdown Without Opponent</button>
-                        <button class="tech-btn" onclick="loadVideo('SaProTWEraE')">Long 3 Breakdown With Opponent</button>
-                        <button class="tech-btn" onclick="loadVideo('dTusg37I17I')">Changes Made on The Long 3 Kata</button>
+                        <button class="tech-btn" onclick="loadVideo('mefG0vhuHlU')">Long 3 Breakdown (No Opponent)</button>
+                        <button class="tech-btn" onclick="loadVideo('SaProTWEraE')">Long 3 Breakdown (With Opponent)</button>
+                        <button class="tech-btn" onclick="loadVideo('dTusg37I17I')">Changes Made on Long 3</button>
                     </div>
                 </div>
             </div>
         </div>
+
         <div id="adminDashboard" style="display:none;">
             <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom:15px;">
                 <h3 style="margin:0;">Student Roster</h3>
@@ -158,12 +157,9 @@
         <div id="staffDashboard" style="display:none;">
             <h3>Staff Access</h3>
             <div class="guide-box">
-                <p><b>Content Access:</b><br>
-                LVL 0-5: White-Green | LVL 6-8: Brown 3-1 | LVL 9-13: Black 1-Black 5</p>
+                <p><b>Content Access:</b><br>LVL 0-5: White-Green | LVL 6-8: Brown 3-1 | LVL 9-13: Black 1-Black 5</p>
                 <hr style="border: 0; border-top: 1px solid #444; margin: 10px 0;">
-                <p><b>Permission Levels:</b><br>
-                <b>LVL 14:</b> View Student Roster<br>
-                <b>LVL 15:</b> Full Admin (Add/Edit Students, Export Data, Manage Staff)</p>
+                <p><b>Permission Levels:</b><br><b>LVL 14:</b> View Student Roster<br><b>LVL 15:</b> Full Admin</p>
             </div>
             <div id="staffTableArea"></div>
         </div>
@@ -195,18 +191,14 @@
             ytPlayer = new YT.Player('ytPlayer', {
                 height: '100%', width: '100%', videoId: id,
                 playerVars: { 'controls': 1, 'rel': 0, 'modestbranding': 1, 'playsinline': 1, 'autoplay': 0 },
-                events: {
-                    'onReady': () => { playerIsReady = true; }
-                }
+                events: { 'onReady': () => { playerIsReady = true; } }
             });
         };
 
         window.onYouTubeIframeAPIReady = () => window.initPlayer();
 
         window.stopAndHome = () => {
-            if(playerIsReady && ytPlayer && ytPlayer.stopVideo) {
-                ytPlayer.stopVideo();
-            }
+            if(playerIsReady && ytPlayer && ytPlayer.stopVideo) ytPlayer.stopVideo();
             window.showMainMenu();
         };
 
@@ -227,7 +219,10 @@
             });
         };
 
-        window.toggleGate = (id) => { const el = document.getElementById(id); el.style.display = (el.style.display === "none") ? "block" : "none"; };
+        window.toggleGate = (id) => { 
+            const el = document.getElementById(id); 
+            el.style.display = (el.style.display === "none") ? "block" : "none"; 
+        };
         
         window.showMainMenu = () => { 
             document.querySelectorAll('#portalView > div:not(:first-child)').forEach(d => d.style.display='none'); 
@@ -242,7 +237,6 @@
             if(id === 'staffDashboard') syncStaff();
         };
 
-        // ADMIN & ROSTER FUNCTIONS
         const syncRoster = () => {
             onSnapshot(query(collection(db, "students"), orderBy("fullName")), (snap) => {
                 let html = `<table>`; studentsList = [];
@@ -254,113 +248,25 @@
                         <td style="text-align:right;">${currentUserRank >= 15 ? `<button class="control-btn" onclick="event.stopPropagation(); window.editStudent('${id}')">EDIT</button>` : ''}</td>
                     </tr>
                     <tr id="det-${id}" style="display:none;"><td colspan="2" style="background:#222; padding:15px; font-size:13px; text-align:left; line-height:1.6;">
-                        ${s.parentGuardian ? `<b>Parent:</b> ${s.parentGuardian}<br>` : ''}
-                        <b>Email:</b> ${s.email}<br>
-                        <b>Address:</b> ${s.mailingAddress || ''}, ${s.cityZip || ''}<br>
-                        <b>Rank:</b> ${s.currentRank || 'N/A'}<br>
-                        <b>Last Test:</b> ${s.lastTestDate || 'N/A'}<br>
-                        <b>Source:</b> ${s.source || 'N/A'}<br>
-                        <b>Notes:</b> ${s.comments}<br><br>
-                        ${currentUserRank >= 15 ? `<button class="control-btn" style="background:var(--red); color:white; width:100%;" onclick="window.deleteStudent('${id}', '${s.fullName.replace(/'/g, "\\'")}')">DELETE RECORD</button>` : ''}
+                        <b>Email:</b> ${s.email}<br><b>Rank:</b> ${s.currentRank || 'N/A'}<br><b>Notes:</b> ${s.comments}<br>
+                        ${currentUserRank >= 15 ? `<button class="control-btn" style="background:var(--red); color:white; width:100%; margin-top:10px;" onclick="window.deleteStudent('${id}', '${s.fullName.replace(/'/g, "\\'")}')">DELETE</button>` : ''}
                     </td></tr>`;
                 });
                 document.getElementById('rosterTableArea').innerHTML = html + "</table>";
             });
         };
 
-        window.deleteStudent = async (id, name) => {
-            if(confirm(`Are you sure you want to PERMANENTLY delete ${name}?`)) {
-                try {
-                    await deleteDoc(doc(db, "students", id));
-                } catch (e) { alert("Error deleting: " + e.message); }
-            }
-        };
-
-        window.handleBulkImport = (event) => {
-            const file = event.target.files[0];
-            if (!file) return;
-            Papa.parse(file, {
-                header: true,
-                skipEmptyLines: true,
-                complete: async (results) => {
-                    const data = results.data;
-                    if(confirm(`Ready to import ${data.length} students?`)) {
-                        let count = 0;
-                        for (const row of data) {
-                            await addDoc(collection(db, "students"), {
-                                fullName: row.Name || row.fullName || "",
-                                parentGuardian: row.Parent || row.parentGuardian || "",
-                                phone: row.Phone || row.phone || "",
-                                email: row.Email || row.email || "",
-                                mailingAddress: row.Address || row.mailingAddress || "",
-                                cityZip: row.CityZip || row.cityZip || "",
-                                source: row.Source || row.source || "",
-                                comments: row.Comments || row.comments || "",
-                                currentRank: row.CurrentRank || row.currentRank || "",
-                                lastTestDate: row.LastTestDate || row.lastTestDate || "",
-                                updatedAt: serverTimestamp()
-                            });
-                            count++;
-                        }
-                        alert(`Successfully imported ${count} records!`);
-                        event.target.value = "";
-                    }
-                }
-            });
-        };
-
-        window.toggleDetail = (id) => { const el = document.getElementById(`det-${id}`); el.style.display = el.style.display === "none" ? "table-row" : "none"; };
-        window.searchRoster = () => { const q = document.getElementById('rosterSearch').value.toLowerCase(); document.querySelectorAll('.sr-row').forEach(r => r.style.display = r.innerText.toLowerCase().includes(q) ? "" : "none"); };
-        
-        window.prepareAdd = () => { 
-            document.getElementById('editId').value = ""; 
-            ['fName','fParent','fPhone','fEmail','fAddress','fCityZip','fSource','fComments','fCurrentRank','fLastTestDate'].forEach(i => document.getElementById(i).value=""); 
-            window.switchAdmin('studentForm'); 
-        };
-
-        window.editStudent = (id) => { 
-            const s = studentsList.find(item => item.id === id);
-            document.getElementById('editId').value = id; 
-            document.getElementById('fName').value = s.fullName || ''; 
-            document.getElementById('fParent').value = s.parentGuardian || ''; 
-            document.getElementById('fPhone').value = s.phone || ''; 
-            document.getElementById('fEmail').value = s.email || ''; 
-            document.getElementById('fAddress').value = s.mailingAddress || ''; 
-            document.getElementById('fCityZip').value = s.cityZip || ''; 
-            document.getElementById('fSource').value = s.source || ''; 
-            document.getElementById('fComments').value = s.comments || '';
-            document.getElementById('fCurrentRank').value = s.currentRank || '';
-            document.getElementById('fLastTestDate').value = s.lastTestDate || '';
-            window.switchAdmin('studentForm'); 
-        };
-
-        window.switchAdmin = (id) => { document.querySelectorAll('.admin-tab').forEach(t => t.style.display='none'); document.getElementById(id).style.display='block'; };
-        
         window.handleSave = async () => {
             const id = document.getElementById('editId').value;
             const data = { 
                 fullName: document.getElementById('fName').value, 
-                parentGuardian: document.getElementById('fParent').value,
-                phone: document.getElementById('fPhone').value, 
                 email: document.getElementById('fEmail').value, 
-                mailingAddress: document.getElementById('fAddress').value,
-                cityZip: document.getElementById('fCityZip').value,
-                source: document.getElementById('fSource').value,
-                comments: document.getElementById('fComments').value,
                 currentRank: document.getElementById('fCurrentRank').value,
-                lastTestDate: document.getElementById('fLastTestDate').value,
+                comments: document.getElementById('fComments').value,
                 updatedAt: serverTimestamp() 
             };
             if(id) await updateDoc(doc(db, "students", id), data); else await addDoc(collection(db, "students"), data);
             window.switchAdmin('listView');
-        };
-
-        window.exportStudents = () => {
-            let csv = "Name,Parent,Phone,Email,Address,CityZip,Source,Comments,CurrentRank,LastTestDate\n"; 
-            studentsList.forEach(s => {
-                csv += `"${s.fullName}","${s.parentGuardian || ''}","${s.phone || ''}","${s.email || ''}","${s.mailingAddress || ''}","${s.cityZip || ''}","${s.source || ''}","${s.comments || ''}","${s.currentRank || ''}","${s.lastTestDate || ''}"\n`;
-            });
-            const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'})); a.download='Roster.csv'; a.click();
         };
 
         const syncStaff = () => {
@@ -391,23 +297,22 @@
                         document.getElementById('exportBtn').style.display = 'block'; 
                         document.getElementById('importBtn').style.display = 'block';
                     }
-                    for(let i=0; i<=currentUserRank && i<=13; i++) { if(document.getElementById(`belt-${i}`)) document.getElementById(`belt-${i}`).style.display = 'block'; }
+                    // UNLOCK BELTS BASED ON LEVEL
+                    for(let i=1; i<=currentUserRank && i<=13; i++) { 
+                        const b = document.getElementById(`belt-${i}`);
+                        if(b) b.style.display = 'block'; 
+                    }
                 }
             } catch(e) { alert("Login failed"); }
         };
 
-        // Click event
         document.getElementById('loginBtn').onclick = handleAuth;
-
-        // Enter key event
-        document.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && document.getElementById('loginBox').style.display !== 'none') {
-                handleAuth();
-            }
-        });
-
+        document.addEventListener('keypress', (e) => { if (e.key === 'Enter' && document.getElementById('loginBox').style.display !== 'none') handleAuth(); });
+        
+        // Helper global functions
+        window.toggleDetail = (id) => { const el = document.getElementById(`det-${id}`); el.style.display = el.style.display === "none" ? "table-row" : "none"; };
+        window.switchAdmin = (id) => { document.querySelectorAll('.admin-tab').forEach(t => t.style.display='none'); document.getElementById(id).style.display='block'; };
+        window.searchRoster = () => { const q = document.getElementById('rosterSearch').value.toLowerCase(); document.querySelectorAll('.sr-row').forEach(r => r.style.display = r.innerText.toLowerCase().includes(q) ? "" : "none"); };
     </script>
 </body>
 </html>
-
-
