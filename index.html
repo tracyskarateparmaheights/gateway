@@ -15,11 +15,11 @@
         .container { background: var(--card); padding: 30px 20px; border-radius: 12px; border-top: 5px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 100%; max-width: 480px; margin-top: 20px; }
         .logo-img { width: 180px; height: auto; margin-bottom: 10px; }
         
+        .nav-header { width: 100%; max-width: 480px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px; }
+        
         .video-wrapper { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 8px; overflow: hidden; margin-bottom: 20px; border: 1px solid #444; }
         #ytPlayer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
         
-        .guide-box { background: #111; padding: 15px; border-radius: 8px; border: 1px solid #444; text-align: left; margin-bottom: 20px; font-size: 12px; line-height: 1.4; }
-        .lvl-input { width: 60px; padding: 8px; background: #111; color: var(--gold); border: 1px solid #555; text-align: center; font-weight: bold; border-radius: 4px; }
         .control-btn { background: var(--gold); color: #000; border: none; padding: 10px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; }
         .admin-tab { display: none; text-align: left; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
@@ -30,8 +30,8 @@
 
         input, textarea { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #444; background: var(--input-bg); color: white; box-sizing: border-box; }
         
-        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; text-align: left; }
-        .button-group { display: flex; gap: 8px; flex-wrap: wrap; }
+        .detail-view { background:#222; padding:15px; font-size:13px; text-align:left; line-height:1.6; border-radius: 8px; margin: 5px 0; border: 1px solid #444; }
+        .detail-label { color: var(--gold); font-weight: bold; display: inline-block; width: 110px; }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 </head>
@@ -43,18 +43,22 @@
         <input type="email" id="emailInput" placeholder="Email">
         <input type="password" id="passInput" placeholder="Password">
         <button id="loginBtn" class="control-btn" style="width:100%; padding:18px;">Sign In</button>
-        <div style="margin-top: 25px; font-size: 10px; color: #888; opacity: 0.7; line-height: 1.5;">
-            Copyright 2026 by M.D.M. Studios Inc. All Rights Reserved.<br>
-            Developed by Directed Route LLC
-        </div>
     </div>
 
-    <div class="container" id="portalView" style="display:none;">
-        <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+    <div class="nav-header" id="portalNav" style="display:none;">
+        <div style="display:flex; gap:8px;">
             <button class="control-btn" onclick="stopAndHome()">🏠 Menu</button>
-            <button class="control-btn" onclick="location.reload()" style="background:var(--red); color:white;">Log Out</button>
+            <div id="adminQuickActions" style="display:none; gap:8px;">
+                <button class="control-btn" id="addNewBtn" onclick="window.prepareAdd()">+ New</button>
+                <button class="control-btn" id="importBtn" onclick="document.getElementById('csvFileInput').click()">📥 Import</button>
+                <button class="control-btn" id="exportBtn" onclick="window.exportStudents()">💾 Export</button>
+                <input type="file" id="csvFileInput" accept=".csv" style="display:none;" onchange="window.handleBulkImport(event)">
+            </div>
         </div>
+        <button class="control-btn" onclick="location.reload()" style="background:var(--red); color:white;">Log Out</button>
+    </div>
 
+    <div class="container" id="portalView" style="display:none; margin-top:0;">
         <div id="mainMenu">
             <button class="tech-btn" style="padding:25px; text-align:center; font-size:18px;" onclick="openSection('curriculumSection')">🥋 Video Library</button>
             <button class="tech-btn" style="padding:25px; text-align:center; font-size:18px; display:none;" id="rosterBtn" onclick="openSection('adminDashboard')">👥 Student Roster</button>
@@ -62,152 +66,141 @@
         </div>
 
         <div id="curriculumSection" style="display:none;">
-            <div class="video-wrapper">
-                <div id="ytPlayer"></div>
-            </div>
+            <div class="video-wrapper"><div id="ytPlayer"></div></div>
             <input type="text" id="videoSearch" placeholder="🔍 Search techniques..." onkeyup="searchVideos()" style="margin-bottom:15px;">
             
-<div id="belt-0" class="belt-group">
-    <div class="belt-header" style="border-left: 5px solid var(--white);" onclick="toggleGate('white-techs')">⚪ White Belt <span>▼</span></div>
-    <div id="white-techs" class="tech-list" style="display:none; max-height: 450px; overflow-y: auto;">
-<button class="tech-btn" onclick="loadVideo('S3A9t0_6fvU')">Introduction</button>
-<button class="tech-btn" onclick="loadVideo('0yUHi0aHSEo')">Sword Hand Blocks</button>
-<button class="tech-btn" onclick="loadVideo('5IY9ofnZgV4')">Parry Trap</button>
-<button class="tech-btn" onclick="loadVideo('5auZfbZmbU0')">Parries</button>
-<button class="tech-btn" onclick="loadVideo('Fxclk_6XSkE')">Phoenixs Eye</button>
-<button class="tech-btn" onclick="loadVideo('K3v6i9Haz7I')">Sweeping Arm Hook Blocks</button>
-<button class="tech-btn" onclick="loadVideo('Kp-IqFPg2Uk')">Parry</button>
-<button class="tech-btn" onclick="loadVideo('QB2jifL1398')">Ox Jaw</button>
-<button class="tech-btn" onclick="loadVideo('QbNRWV6kcGg')">Major Hand Weapons</button>
-<button class="tech-btn" onclick="loadVideo('QhFPs2NpiAg')">Reverse Windmill Block</button>
-<button class="tech-btn" onclick="loadVideo('SrpSmo7ZIrQ')">Pivot Hip and Body Power</button>
-<button class="tech-btn" onclick="loadVideo('TgrWX_22p1k')">Tigers Jaw</button>
-<button class="tech-btn" onclick="loadVideo('WI3lIP9HZb0')">Kenpo Stances</button>
-<button class="tech-btn" onclick="loadVideo('XCpezMOxHGw')">Leg Checks</button>
-<button class="tech-btn" onclick="loadVideo('XcEvUaqV-fo')">Heel Palm</button>
-<button class="tech-btn" onclick="loadVideo('Z_vP1pe4nWU')">Universal Block</button>
-<button class="tech-btn" onclick="loadVideo('Zpchlfn0lTI')">Windmill Block</button>
-<button class="tech-btn" onclick="loadVideo('cw-NvFx4zeY')">Smother Blocks</button>
-<button class="tech-btn" onclick="loadVideo('fk4fS6qVNhY')">Tigers Claw</button>
-<button class="tech-btn" onclick="loadVideo('i8-LY4VQ61U')">Power and Focus</button>
-<button class="tech-btn" onclick="loadVideo('m-ViQFGhwW4')">Simitar Block</button>
-<button class="tech-btn" onclick="loadVideo('mdlM7Z0WQN8')">Sword Hand</button>
-<button class="tech-btn" onclick="loadVideo('nkbJhz6uirM')">Ridge Hand</button>
-<button class="tech-btn" onclick="loadVideo('pSmwAolcArk')">Hooking and Trapping</button>
-<button class="tech-btn" onclick="loadVideo('sY7CL2ZW8Ks')">Wedge Blocks</button>
-<button class="tech-btn" onclick="loadVideo('uGMXGSMiSok')">Wrist Blocks</button>
-<button class="tech-btn" onclick="loadVideo('uuDJd8TkbNA')">Roundhouse Wheel Kick</button>
-<button class="tech-btn" onclick="loadVideo('y9LcUMbW8yo')">Spear Hand</button>
-<button class="tech-btn" onclick="loadVideo('ydZpRPuvB58')">Heel Claw</button>
-<button class="tech-btn" onclick="loadVideo('088_qPMH_RQ')">Deflecting Block</button>
-<button class="tech-btn" onclick="loadVideo('10UA-JB3eYg')">Circular Blocks</button>
-<button class="tech-btn" onclick="loadVideo('1DkPBO72FUM')">Eye Strikes</button>
-<button class="tech-btn" onclick="loadVideo('1ooTAeVNy7Q')">Cross Hand Strike</button>
-<button class="tech-btn" onclick="loadVideo('2pV9xOvKpqk')">Defense Against Weapons</button>
-<button class="tech-btn" onclick="loadVideo('3GWN9OSfsTM')">Fish Hook Block</button>
-<button class="tech-btn" onclick="loadVideo('8KZHvDzGSFE')">Half Fist</button>
-<button class="tech-btn" onclick="loadVideo('DQV27CBScas')">Five Basic Blocks</button>
-<button class="tech-btn" onclick="loadVideo('Ep409bWV6F0')">Fan Block</button>
-<button class="tech-btn" onclick="loadVideo('Evtmn0aGFuo')">Foot Patterns</button>
-<button class="tech-btn" onclick="loadVideo('FuYOyl49hO0')">Breathing and KI</button>
-<button class="tech-btn" onclick="loadVideo('IaAMaXl__mY')">Cross Hand Block</button>
-<button class="tech-btn" onclick="loadVideo('Ie1CykbIFTk')">Chamber Hand Cover Hand Cover Kick Cover</button>
-<button class="tech-btn" onclick="loadVideo('JKSnNuiNhR8')">Circular Trap</button>
-<button class="tech-btn" onclick="loadVideo('JQMozX9DKiQ')">Defense Boxers Hook</button>
-<button class="tech-btn" onclick="loadVideo('PMpWWpccvuE')">Corkscrew Punch</button>
-<button class="tech-btn" onclick="loadVideo('PZ_VPmgLvdE')">Double Heel Palm</button>
-<button class="tech-btn" onclick="loadVideo('PxGv4QF1McE')">Chinese Swings</button>
-<button class="tech-btn" onclick="loadVideo('ZaRbjdDBxZw')">Eagles Beak</button>
-<button class="tech-btn" onclick="loadVideo('aPO59kTcvKs')">Double Parries</button>
-<button class="tech-btn" onclick="loadVideo('aZ3j8qQRs2g')">Figure 8 Block</button>
-<button class="tech-btn" onclick="loadVideo('h6AimvKf3Ss')">Crescent Kick Blocks</button>
-<button class="tech-btn" onclick="loadVideo('jtY3OR3SAYY')">Double Sword Hand Blocks</button>
-<button class="tech-btn" onclick="loadVideo('l5DdtGz9oyc')">Combination Weapons Kick Punch</button>
-<button class="tech-btn" onclick="loadVideo('pz2IHyWJsb4')">Forearm Elbows</button>
-<button class="tech-btn" onclick="loadVideo('tEZ2g7PfLtY')">Chamber Hand Cover Hand</button>
-<button class="tech-btn" onclick="loadVideo('vM1yw6Jj01w')">Eagles Claw</button>
-<button class="tech-btn" onclick="loadVideo('yfYJ0LJl7Qs')">Butterfly Hand</button>
-<button class="tech-btn" onclick="loadVideo('zGk3WewqI9k')">Double Punches</button>
-    </div>
-</div>
-
-                <div id="belt-1" class="belt-group" style="display:none;">
-                    <div class="belt-header" style="border-left: 5px solid var(--yellow);" onclick="toggleGate('yellow-techs')">🟡 Yellow Belt <span>▼</span></div>
-                    <div id="yellow-techs" class="tech-list" style="display:none;">
-                        <button class="tech-btn" onclick="loadVideo('19Ktd4FfDGg')">Yellow Belt History</button>
-                        <button class="tech-btn" onclick="loadVideo('JIFwfcykAY8')">Japanese Sword (A/B)</button>
-                        <button class="tech-btn" onclick="loadVideo('RoSuLCLOKuU')">Chinese Sword (A/B)</button>
-                        <button class="tech-btn" onclick="loadVideo('NjXYf4QOZnU')">Delayed Sword</button>
-                        <button class="tech-btn" onclick="loadVideo('SaCwJIsQWE8')">Knee of Vengeance</button>
-                        <button class="tech-btn" onclick="loadVideo('xNzobYNSQ4Y')">Fang of the Cobra (A/B)</button>
-                        <button class="tech-btn" onclick="loadVideo('ZJNmDVtXnBY')">Twisting Talon (A/B)</button>
-                        <button class="tech-btn" onclick="loadVideo('u0ceVbYXUXQ')">Returning Dragon</button>
-                        <button class="tech-btn" onclick="loadVideo('E44w7Eh73xs')">Breaking the Sword</button>
-                        <button class="tech-btn" onclick="loadVideo('yvrhFEiuHKc')">Kenpo Shield (A/B)</button>
-                        <button class="tech-btn" onclick="loadVideo('i-vyUr_6xZU')">Evasion</button>
-                    </div>
+            <div id="belt-0" class="belt-group">
+                <div class="belt-header" style="border-left: 5px solid var(--white);" onclick="toggleGate('white-techs')">⚪ White Belt <span>▼</span></div>
+                <div id="white-techs" class="tech-list" style="display:none; max-height: 450px; overflow-y: auto;">
+                    <button class="tech-btn" onclick="loadVideo('S3A9t0_6fvU')">Introduction</button>
+                    <button class="tech-btn" onclick="loadVideo('0yUHi0aHSEo')">Sword Hand Blocks</button>
+                    <button class="tech-btn" onclick="loadVideo('5IY9ofnZgV4')">Parry Trap</button>
+                    <button class="tech-btn" onclick="loadVideo('5auZfbZmbU0')">Parries</button>
+                    <button class="tech-btn" onclick="loadVideo('Fxclk_6XSkE')">Phoenixs Eye</button>
+                    <button class="tech-btn" onclick="loadVideo('K3v6i9Haz7I')">Sweeping Arm Hook Blocks</button>
+                    <button class="tech-btn" onclick="loadVideo('Kp-IqFPg2Uk')">Parry</button>
+                    <button class="tech-btn" onclick="loadVideo('QB2jifL1398')">Ox Jaw</button>
+                    <button class="tech-btn" onclick="loadVideo('QbNRWV6kcGg')">Major Hand Weapons</button>
+                    <button class="tech-btn" onclick="loadVideo('QhFPs2NpiAg')">Reverse Windmill Block</button>
+                    <button class="tech-btn" onclick="loadVideo('SrpSmo7ZIrQ')">Pivot Hip and Body Power</button>
+                    <button class="tech-btn" onclick="loadVideo('TgrWX_22p1k')">Tigers Jaw</button>
+                    <button class="tech-btn" onclick="loadVideo('WI3lIP9HZb0')">Kenpo Stances</button>
+                    <button class="tech-btn" onclick="loadVideo('XCpezMOxHGw')">Leg Checks</button>
+                    <button class="tech-btn" onclick="loadVideo('XcEvUaqV-fo')">Heel Palm</button>
+                    <button class="tech-btn" onclick="loadVideo('Z_vP1pe4nWU')">Universal Block</button>
+                    <button class="tech-btn" onclick="loadVideo('Zpchlfn0lTI')">Windmill Block</button>
+                    <button class="tech-btn" onclick="loadVideo('cw-NvFx4zeY')">Smother Blocks</button>
+                    <button class="tech-btn" onclick="loadVideo('fk4fS6qVNhY')">Tigers Claw</button>
+                    <button class="tech-btn" onclick="loadVideo('i8-LY4VQ61U')">Power and Focus</button>
+                    <button class="tech-btn" onclick="loadVideo('m-ViQFGhwW4')">Simitar Block</button>
+                    <button class="tech-btn" onclick="loadVideo('mdlM7Z0WQN8')">Sword Hand</button>
+                    <button class="tech-btn" onclick="loadVideo('nkbJhz6uirM')">Ridge Hand</button>
+                    <button class="tech-btn" onclick="loadVideo('pSmwAolcArk')">Hooking and Trapping</button>
+                    <button class="tech-btn" onclick="loadVideo('sY7CL2ZW8Ks')">Wedge Blocks</button>
+                    <button class="tech-btn" onclick="loadVideo('uGMXGSMiSok')">Wrist Blocks</button>
+                    <button class="tech-btn" onclick="loadVideo('uuDJd8TkbNA')">Roundhouse Wheel Kick</button>
+                    <button class="tech-btn" onclick="loadVideo('y9LcUMbW8yo')">Spear Hand</button>
+                    <button class="tech-btn" onclick="loadVideo('ydZpRPuvB58')">Heel Claw</button>
+                    <button class="tech-btn" onclick="loadVideo('088_qPMH_RQ')">Deflecting Block</button>
+                    <button class="tech-btn" onclick="loadVideo('10UA-JB3eYg')">Circular Blocks</button>
+                    <button class="tech-btn" onclick="loadVideo('1DkPBO72FUM')">Eye Strikes</button>
+                    <button class="tech-btn" onclick="loadVideo('1ooTAeVNy7Q')">Cross Hand Strike</button>
+                    <button class="tech-btn" onclick="loadVideo('2pV9xOvKpqk')">Defense Against Weapons</button>
+                    <button class="tech-btn" onclick="loadVideo('3GWN9OSfsTM')">Fish Hook Block</button>
+                    <button class="tech-btn" onclick="loadVideo('8KZHvDzGSFE')">Half Fist</button>
+                    <button class="tech-btn" onclick="loadVideo('DQV27CBScas')">Five Basic Blocks</button>
+                    <button class="tech-btn" onclick="loadVideo('Ep409bWV6F0')">Fan Block</button>
+                    <button class="tech-btn" onclick="loadVideo('Evtmn0aGFuo')">Foot Patterns</button>
+                    <button class="tech-btn" onclick="loadVideo('FuYOyl49hO0')">Breathing and KI</button>
+                    <button class="tech-btn" onclick="loadVideo('IaAMaXl__mY')">Cross Hand Block</button>
+                    <button class="tech-btn" onclick="loadVideo('Ie1CykbIFTk')">Chamber Hand Cover Hand Cover Kick Cover</button>
+                    <button class="tech-btn" onclick="loadVideo('JKSnNuiNhR8')">Circular Trap</button>
+                    <button class="tech-btn" onclick="loadVideo('JQMozX9DKiQ')">Defense Boxers Hook</button>
+                    <button class="tech-btn" onclick="loadVideo('PMpWWpccvuE')">Corkscrew Punch</button>
+                    <button class="tech-btn" onclick="loadVideo('PZ_VPmgLvdE')">Double Heel Palm</button>
+                    <button class="tech-btn" onclick="loadVideo('PxGv4QF1McE')">Chinese Swings</button>
+                    <button class="tech-btn" onclick="loadVideo('ZaRbjdDBxZw')">Eagles Beak</button>
+                    <button class="tech-btn" onclick="loadVideo('aPO59kTcvKs')">Double Parries</button>
+                    <button class="tech-btn" onclick="loadVideo('aZ3j8qQRs2g')">Figure 8 Block</button>
+                    <button class="tech-btn" onclick="loadVideo('h6AimvKf3Ss')">Crescent Kick Blocks</button>
+                    <button class="tech-btn" onclick="loadVideo('jtY3OR3SAYY')">Double Sword Hand Blocks</button>
+                    <button class="tech-btn" onclick="loadVideo('l5DdtGz9oyc')">Combination Weapons Kick Punch</button>
+                    <button class="tech-btn" onclick="loadVideo('pz2IHyWJsb4')">Forearm Elbows</button>
+                    <button class="tech-btn" onclick="loadVideo('tEZ2g7PfLtY')">Chamber Hand Cover Hand</button>
+                    <button class="tech-btn" onclick="loadVideo('vM1yw6Jj01w')">Eagles Claw</button>
+                    <button class="tech-btn" onclick="loadVideo('yfYJ0LJl7Qs')">Butterfly Hand</button>
+                    <button class="tech-btn" onclick="loadVideo('zGk3WewqI9k')">Double Punches</button>
                 </div>
-
-                <div id="belt-2" class="belt-group" style="display:none;">
-                    <div class="belt-header" style="border-left: 5px solid var(--orange);" onclick="toggleGate('orange-techs')">🟠 Orange Belt <span>▼</span></div>
-                    <div id="orange-techs" class="tech-list" style="display:none;">
-                        <button class="tech-btn" onclick="loadVideo('BXFDPT-vcwM')">Sumo</button>
-                        <button class="tech-btn" onclick="loadVideo('gFcHl0al_KE')">Japanese Strangle Hold</button>
-                        <button class="tech-btn" onclick="loadVideo('CPh9xshjPr4')">Blocking the Kick</button>
-                        <button class="tech-btn" onclick="loadVideo('Y2PvWFdZlOs')">Headlock</button>
-                        <button class="tech-btn" onclick="loadVideo('6sIKT5BI-Ik')">Short Form 1</button>
-                    </div>
-                </div>
-
-                <div id="belt-3" class="belt-group" style="display:none;">
-                    <div class="belt-header" style="border-left: 5px solid var(--purple);" onclick="toggleGate('purple-techs')">🟣 Purple Belt <span>▼</span></div>
-                    <div id="purple-techs" class="tech-list" style="display:none;">
-                        <button class="tech-btn" onclick="loadVideo('k3m1tjunH00')">Short Form 2</button>
-                        <button class="tech-btn" onclick="loadVideo('FfZaYCiTbRc')">Long Form 1</button>
-                    </div>
-                </div>
-
-                <div id="belt-4" class="belt-group" style="display:none;">
-                    <div class="belt-header" style="border-left: 5px solid var(--blue);" onclick="toggleGate('blue-techs')">🔵 Blue Belt <span>▼</span></div>
-                    <div id="blue-techs" class="tech-list" style="display:none;">
-                        <button class="tech-btn" onclick="loadVideo('oBLlZge46Mw')">Short Form 3</button>
-                        <button class="tech-btn" onclick="loadVideo('iD147twBQQs')">Long Form 2</button>
-                    </div>
-                </div>
-
-                <div id="belt-5" class="belt-group" style="display:none;">
-                    <div class="belt-header" style="border-left: 5px solid var(--green);" onclick="toggleGate('green-techs')">🟢 Green Belt <span>▼</span></div>
-                    <div id="green-techs" class="tech-list" style="display:none;">
-                        <button class="tech-btn" onclick="loadVideo('5JSGpLU3vEY')">Long Form 3 - Al Tracy</button>
-                        <button class="tech-btn" onclick="loadVideo('mefG0vhuHlU')">Long 3 Breakdown (No Opponent)</button>
-                        <button class="tech-btn" onclick="loadVideo('SaProTWEraE')">Long 3 Breakdown (With Opponent)</button>
-                        <button class="tech-btn" onclick="loadVideo('dTusg37I17I')">Changes Made on Long 3</button>
-                    </div>
-                </div>
-
-                <div id="belt-6" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('brown3-techs')">🟤 Brown Belt (3rd Degree) <span>▼</span></div><div id="brown3-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
-                <div id="belt-7" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('brown2-techs')">🟤 Brown Belt (2nd Degree) <span>▼</span></div><div id="brown2-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
-                <div id="belt-8" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('brown1-techs')">🟤 Brown Belt (1st Degree) <span>▼</span></div><div id="brown1-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
-                <div id="belt-9" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('black1-techs')">⚫ Black Belt (1st Degree) <span>▼</span></div><div id="black1-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
-                <div id="belt-10" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('black2-techs')">⚫ Black Belt (2nd Degree) <span>▼</span></div><div id="black2-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
-                <div id="belt-11" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('black3-techs')">⚫ Black Belt (3rd Degree) <span>▼</span></div><div id="black3-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
-                <div id="belt-12" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('black4-techs')">⚫ Black Belt (4th Degree) <span>▼</span></div><div id="black4-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
-                <div id="belt-13" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('black5-techs')">⚫ Black Belt (5th Degree) <span>▼</span></div><div id="black5-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
-                <div id="belt-14" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('black6-techs')">⚫ Black Belt (6th Degree) <span>▼</span></div><div id="black6-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
             </div>
+
+            <div id="belt-1" class="belt-group" style="display:none;">
+                <div class="belt-header" style="border-left: 5px solid var(--yellow);" onclick="toggleGate('yellow-techs')">🟡 Yellow Belt <span>▼</span></div>
+                <div id="yellow-techs" class="tech-list" style="display:none;">
+                    <button class="tech-btn" onclick="loadVideo('19Ktd4FfDGg')">Yellow Belt History</button>
+                    <button class="tech-btn" onclick="loadVideo('JIFwfcykAY8')">Japanese Sword (A/B)</button>
+                    <button class="tech-btn" onclick="loadVideo('RoSuLCLOKuU')">Chinese Sword (A/B)</button>
+                    <button class="tech-btn" onclick="loadVideo('NjXYf4QOZnU')">Delayed Sword</button>
+                    <button class="tech-btn" onclick="loadVideo('SaCwJIsQWE8')">Knee of Vengeance</button>
+                    <button class="tech-btn" onclick="loadVideo('xNzobYNSQ4Y')">Fang of the Cobra (A/B)</button>
+                    <button class="tech-btn" onclick="loadVideo('ZJNmDVtXnBY')">Twisting Talon (A/B)</button>
+                    <button class="tech-btn" onclick="loadVideo('u0ceVbYXUXQ')">Returning Dragon</button>
+                    <button class="tech-btn" onclick="loadVideo('E44w7Eh73xs')">Breaking the Sword</button>
+                    <button class="tech-btn" onclick="loadVideo('yvrhFEiuHKc')">Kenpo Shield (A/B)</button>
+                    <button class="tech-btn" onclick="loadVideo('i-vyUr_6xZU')">Evasion</button>
+                </div>
+            </div>
+
+            <div id="belt-2" class="belt-group" style="display:none;">
+                <div class="belt-header" style="border-left: 5px solid var(--orange);" onclick="toggleGate('orange-techs')">🟠 Orange Belt <span>▼</span></div>
+                <div id="orange-techs" class="tech-list" style="display:none;">
+                    <button class="tech-btn" onclick="loadVideo('BXFDPT-vcwM')">Sumo</button>
+                    <button class="tech-btn" onclick="loadVideo('gFcHl0al_KE')">Japanese Strangle Hold</button>
+                    <button class="tech-btn" onclick="loadVideo('CPh9xshjPr4')">Blocking the Kick</button>
+                    <button class="tech-btn" onclick="loadVideo('Y2PvWFdZlOs')">Headlock</button>
+                    <button class="tech-btn" onclick="loadVideo('6sIKT5BI-Ik')">Short Form 1</button>
+                </div>
+            </div>
+
+            <div id="belt-3" class="belt-group" style="display:none;">
+                <div class="belt-header" style="border-left: 5px solid var(--purple);" onclick="toggleGate('purple-techs')">🟣 Purple Belt <span>▼</span></div>
+                <div id="purple-techs" class="tech-list" style="display:none;">
+                    <button class="tech-btn" onclick="loadVideo('k3m1tjunH00')">Short Form 2</button>
+                    <button class="tech-btn" onclick="loadVideo('FfZaYCiTbRc')">Long Form 1</button>
+                </div>
+            </div>
+
+            <div id="belt-4" class="belt-group" style="display:none;">
+                <div class="belt-header" style="border-left: 5px solid var(--blue);" onclick="toggleGate('blue-techs')">🔵 Blue Belt <span>▼</span></div>
+                <div id="blue-techs" class="tech-list" style="display:none;">
+                    <button class="tech-btn" onclick="loadVideo('oBLlZge46Mw')">Short Form 3</button>
+                    <button class="tech-btn" onclick="loadVideo('iD147twBQQs')">Long Form 2</button>
+                </div>
+            </div>
+
+            <div id="belt-5" class="belt-group" style="display:none;">
+                <div class="belt-header" style="border-left: 5px solid var(--green);" onclick="toggleGate('green-techs')">🟢 Green Belt <span>▼</span></div>
+                <div id="green-techs" class="tech-list" style="display:none;">
+                    <button class="tech-btn" onclick="loadVideo('5JSGpLU3vEY')">Long Form 3 - Al Tracy</button>
+                    <button class="tech-btn" onclick="loadVideo('mefG0vhuHlU')">Long 3 Breakdown (No Opponent)</button>
+                    <button class="tech-btn" onclick="loadVideo('SaProTWEraE')">Long 3 Breakdown (With Opponent)</button>
+                    <button class="tech-btn" onclick="loadVideo('dTusg37I17I')">Changes Made on Long 3</button>
+                </div>
+            </div>
+
+            <div id="belt-6" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('brown3-techs')">🟤 Brown Belt (3rd Degree) <span>▼</span></div><div id="brown3-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
+            <div id="belt-7" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('brown2-techs')">🟤 Brown Belt (2nd Degree) <span>▼</span></div><div id="brown2-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
+            <div id="belt-8" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('brown1-techs')">🟤 Brown Belt (1st Degree) <span>▼</span></div><div id="brown1-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
+            <div id="belt-9" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('black1-techs')">⚫ Black Belt (1st Degree) <span>▼</span></div><div id="black1-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
+            <div id="belt-10" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('black2-techs')">⚫ Black Belt (2nd Degree) <span>▼</span></div><div id="black2-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
+            <div id="belt-11" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('black3-techs')">⚫ Black Belt (3rd Degree) <span>▼</span></div><div id="black3-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
+            <div id="belt-12" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('black4-techs')">⚫ Black Belt (4th Degree) <span>▼</span></div><div id="black4-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
+            <div id="belt-13" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('black5-techs')">⚫ Black Belt (5th Degree) <span>▼</span></div><div id="black5-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
+            <div id="belt-14" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('black6-techs')">⚫ Black Belt (6th Degree) <span>▼</span></div><div id="black6-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
         </div>
 
         <div id="adminDashboard" style="display:none;">
-            <div class="admin-header">
-                <h3 style="margin:0;">Student Roster</h3>
-                <div class="button-group">
-                    <input type="file" id="csvFileInput" accept=".csv" style="display:none;" onchange="window.handleBulkImport(event)">
-                    <button class="control-btn" style="background:#444; color:white; display:none;" id="importBtn" onclick="document.getElementById('csvFileInput').click()">📥 Import</button>
-                    <button class="control-btn" style="background:var(--green); color:white; display:none;" id="exportBtn" onclick="window.exportStudents()">💾 Export</button>
-                    <button class="control-btn" style="display:none;" id="addNewBtn" onclick="window.prepareAdd()">+ New</button>
-                </div>
-            </div>
             <div id="studentForm" class="admin-tab">
+                <h3>Student Profile</h3>
                 <input type="hidden" id="editId">
                 <input type="text" id="fName" placeholder="Student Name">
                 <input type="text" id="fParent" placeholder="Parent/Guardian (if minor)">
@@ -226,18 +219,11 @@
                 <input type="text" id="rosterSearch" placeholder="🔍 Search records..." onkeyup="searchRoster()">
                 <div id="rosterTableArea"></div>
             </div>
-            <button class="control-btn" style="width:100%; margin-top:20px; background:#444; color:white;" onclick="window.showMainMenu()">Back to Menu</button>
         </div>
 
         <div id="staffDashboard" style="display:none;">
             <h3>Staff Access</h3>
-            <div class="guide-box">
-                <p><b>Content Access:</b><br>LVL 0-5: White-Green | LVL 6-8: Brown 3-1 | LVL 9-13: Black 1-Black 6</p>
-                <hr style="border: 0; border-top: 1px solid #444; margin: 10px 0;">
-                <p><b>Permission Levels:</b><br><b>LVL 14:</b> View Student Roster<br><b>LVL 15:</b> Full Admin</p>
-            </div>
             <div id="staffTableArea"></div>
-            <button class="control-btn" style="width:100%; margin-top:20px; background:#444; color:white;" onclick="window.showMainMenu()">Back to Menu</button>
         </div>
     </div>
 
@@ -248,40 +234,31 @@
         import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, collection, onSnapshot, updateDoc, addDoc, query, orderBy, serverTimestamp, deleteDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        const firebaseConfig = { 
-            apiKey: "AIzaSyC35Ubf6GxyDi3JEiKWaYgVFkYGknMZrcw",
-            authDomain: "tracy-s-karate-portal.firebaseapp.com",
-            projectId: "tracy-s-karate-portal",
-            storageBucket: "tracy-s-karate-portal.appspot.com",
-            messagingSenderId: "338865615783",
-            appId: "1:338865615783:web:75865261864177d46536da"
-        };
+        const firebaseConfig = { apiKey: "AIzaSyC35Ubf6GxyDi3JEiKWaYgVFkYGknMZrcw", authDomain: "tracy-s-karate-portal.firebaseapp.com", projectId: "tracy-s-karate-portal", storageBucket: "tracy-s-karate-portal.appspot.com", messagingSenderId: "338865615783", appId: "1:338865615783:web:75865261864177d46536da" };
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        let ytPlayer, currentUserRank = 0, studentsList = [];
-        let playerIsReady = false;
+        let ytPlayer, currentUserRank = 0, studentsList = [], playerIsReady = false;
 
-        window.initPlayer = (id = '19Ktd4FfDGg') => {
-            ytPlayer = new YT.Player('ytPlayer', {
-                height: '100%', width: '100%', videoId: id,
-                playerVars: { 'controls': 1, 'rel': 0, 'modestbranding': 1, 'playsinline': 1, 'autoplay': 0 },
-                events: { 'onReady': () => { playerIsReady = true; } }
-            });
-        };
-
+        window.initPlayer = (id = '19Ktd4FfDGg') => { ytPlayer = new YT.Player('ytPlayer', { height: '100%', width: '100%', videoId: id, playerVars: { 'controls': 1, 'rel': 0, 'modestbranding': 1, 'playsinline': 1, 'autoplay': 0 }, events: { 'onReady': () => { playerIsReady = true; } } }); };
         window.onYouTubeIframeAPIReady = () => window.initPlayer();
         window.stopAndHome = () => { if(playerIsReady && ytPlayer && ytPlayer.stopVideo) ytPlayer.stopVideo(); window.showMainMenu(); };
         window.loadVideo = (id) => { if (playerIsReady && ytPlayer && ytPlayer.loadVideoById) { ytPlayer.loadVideoById(id); ytPlayer.playVideo(); } else { document.getElementById('ytPlayer').innerHTML = ""; window.initPlayer(id); } };
         window.searchVideos = () => { const q = document.getElementById('videoSearch').value.toLowerCase(); document.querySelectorAll('#curriculumSection .tech-btn').forEach(btn => { btn.style.display = btn.innerText.toLowerCase().includes(q) ? "block" : "none"; }); };
         window.toggleGate = (id) => { const el = document.getElementById(id); el.style.display = (el.style.display === "none") ? "block" : "none"; };
-        window.showMainMenu = () => { ['mainMenu', 'curriculumSection', 'adminDashboard', 'staffDashboard'].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; }); document.getElementById('mainMenu').style.display='block'; };
+        
+        window.showMainMenu = () => { 
+            ['mainMenu', 'curriculumSection', 'adminDashboard', 'staffDashboard'].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
+            document.getElementById('adminQuickActions').style.display = 'none';
+            document.getElementById('mainMenu').style.display='block'; 
+        };
         
         window.openSection = (id) => { 
             ['mainMenu', 'curriculumSection', 'adminDashboard', 'staffDashboard'].forEach(s => { const el = document.getElementById(s); if (el) el.style.display = 'none'; });
             if (id !== 'curriculumSection' && playerIsReady && ytPlayer && ytPlayer.pauseVideo) ytPlayer.pauseVideo();
             const target = document.getElementById(id); if (target) target.style.display='block';
+            document.getElementById('adminQuickActions').style.display = (id === 'adminDashboard' && currentUserRank >= 15) ? 'flex' : 'none';
             if(id === 'adminDashboard') syncRoster();
             if(id === 'staffDashboard') syncStaff();
         };
@@ -312,16 +289,11 @@
         window.handleSave = async () => {
             const id = document.getElementById('editId').value;
             const data = { 
-                fullName: document.getElementById('fName').value, 
-                parentName: document.getElementById('fParent').value,
-                email: document.getElementById('fEmail').value, 
-                phone: document.getElementById('fPhone').value,
-                address: document.getElementById('fAddress').value,
-                cityZip: document.getElementById('fCityZip').value,
-                source: document.getElementById('fSource').value,
-                currentRank: document.getElementById('fCurrentRank').value,
-                lastTestDate: document.getElementById('fLastTestDate').value,
-                comments: document.getElementById('fComments').value,
+                fullName: document.getElementById('fName').value, parentName: document.getElementById('fParent').value,
+                email: document.getElementById('fEmail').value, phone: document.getElementById('fPhone').value,
+                address: document.getElementById('fAddress').value, cityZip: document.getElementById('fCityZip').value,
+                source: document.getElementById('fSource').value, currentRank: document.getElementById('fCurrentRank').value,
+                lastTestDate: document.getElementById('fLastTestDate').value, comments: document.getElementById('fComments').value,
                 updatedAt: serverTimestamp() 
             };
             if(id) await updateDoc(doc(db, "students", id), data); else await addDoc(collection(db, "students"), data);
@@ -332,55 +304,41 @@
             const csv = Papa.unparse(studentsList.map(({id, updatedAt, ...rest}) => rest));
             const blob = new Blob([csv], { type: 'text/csv' });
             const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url; a.download = `Student_Roster_${new Date().toLocaleDateString()}.csv`;
-            a.click();
+            const a = document.createElement('a'); a.href = url; a.download = `Roster_${new Date().toLocaleDateString()}.csv`; a.click();
         };
 
         window.handleBulkImport = (event) => {
-            const file = event.target.files[0];
-            if(!file) return;
-            Papa.parse(file, {
-                header: true,
-                skipEmptyLines: true,
-                complete: async (results) => {
-                    const batch = writeBatch(db);
-                    results.data.forEach(row => {
-                        const newDocRef = doc(collection(db, "students"));
-                        batch.set(newDocRef, {
-                            fullName: row.fullName || "",
-                            parentName: row.parentName || "",
-                            email: row.email || "",
-                            phone: row.phone || "",
-                            address: row.address || "",
-                            cityZip: row.cityZip || "",
-                            source: row.source || "",
-                            currentRank: row.currentRank || "",
-                            lastTestDate: row.lastTestDate || "",
-                            comments: row.comments || "",
-                            updatedAt: serverTimestamp()
-                        });
-                    });
-                    await batch.commit();
-                    alert("Import Complete");
-                }
-            });
+            const file = event.target.files[0]; if(!file) return;
+            Papa.parse(file, { header: true, skipEmptyLines: true, complete: async (r) => {
+                const batch = writeBatch(db);
+                r.data.forEach(row => {
+                    const ref = doc(collection(db, "students"));
+                    batch.set(ref, { fullName: row.fullName||"", parentName: row.parentName||"", email: row.email||"", phone: row.phone||"", address: row.address||"", cityZip: row.cityZip||"", source: row.source||"", currentRank: row.currentRank||"", lastTestDate: row.lastTestDate||"", comments: row.comments||"", updatedAt: serverTimestamp() });
+                });
+                await batch.commit(); alert("Imported!");
+            }});
         };
 
         const syncRoster = () => {
             onSnapshot(query(collection(db, "students"), orderBy("fullName")), (snap) => {
                 let html = `<table>`; studentsList = [];
                 snap.forEach(docSnap => {
-                    const s = docSnap.data(); const id = docSnap.id; 
-                    studentsList.push({id, ...s});
+                    const s = docSnap.data(); const id = docSnap.id; studentsList.push({id, ...s});
                     html += `<tr class="sr-row" onclick="window.toggleDetail('${id}')">
-                        <td><b>${s.fullName}</b><br><small>${s.phone || ''}</small></td>
+                        <td><b>${s.fullName}</b><br><small>${s.phone || 'No Phone'}</small></td>
                         <td style="text-align:right;">${currentUserRank >= 15 ? `<button class="control-btn" onclick="event.stopPropagation(); window.editStudent('${id}')">EDIT</button>` : ''}</td>
                     </tr>
-                    <tr id="det-${id}" style="display:none;"><td colspan="2" style="background:#222; padding:15px; font-size:13px; text-align:left; line-height:1.6;">
-                        <b>Email:</b> ${s.email}<br><b>Rank:</b> ${s.currentRank || 'N/A'}<br><b>Notes:</b> ${s.comments}<br>
-                        ${currentUserRank >= 15 ? `<button class="control-btn" style="background:var(--red); color:white; width:100%; margin-top:10px;" onclick="window.deleteStudent('${id}', '${s.fullName.replace(/'/g, "\\'")}')">DELETE</button>` : ''}
-                    </td></tr>`;
+                    <tr id="det-${id}" style="display:none;"><td colspan="2"><div class="detail-view">
+                        <div><span class="detail-label">Parent:</span> ${s.parentName || '---'}</div>
+                        <div><span class="detail-label">Email:</span> ${s.email || '---'}</div>
+                        <div><span class="detail-label">Address:</span> ${s.address || '---'}</div>
+                        <div><span class="detail-label">City/Zip:</span> ${s.cityZip || '---'}</div>
+                        <div><span class="detail-label">Current Rank:</span> ${s.currentRank || '---'}</div>
+                        <div><span class="detail-label">Last Test:</span> ${s.lastTestDate || '---'}</div>
+                        <div><span class="detail-label">Source:</span> ${s.source || '---'}</div>
+                        <div><span class="detail-label">Notes:</span> ${s.comments || '---'}</div>
+                        ${currentUserRank >= 15 ? `<button class="control-btn" style="background:var(--red); color:white; width:100%; margin-top:10px;" onclick="window.deleteStudent('${id}', '${s.fullName.replace(/'/g, "\\'")}')">DELETE RECORD</button>` : ''}
+                    </div></td></tr>`;
                 });
                 document.getElementById('rosterTableArea').innerHTML = html + "</table>";
             });
@@ -407,18 +365,11 @@
                 if(snap.exists()) {
                     currentUserRank = snap.data().rankLevel;
                     document.getElementById('loginBox').style.display = 'none';
+                    document.getElementById('portalNav').style.display = 'flex';
                     document.getElementById('portalView').style.display = 'block';
                     if(currentUserRank >= 14) document.getElementById('rosterBtn').style.display = 'block';
-                    if(currentUserRank >= 15) { 
-                        document.getElementById('staffBtn').style.display = 'block'; 
-                        document.getElementById('addNewBtn').style.display = 'block'; 
-                        document.getElementById('exportBtn').style.display = 'block'; 
-                        document.getElementById('importBtn').style.display = 'block';
-                    }
-                    for(let i=0; i<=currentUserRank && i<=14; i++) { 
-                        const b = document.getElementById(`belt-${i}`);
-                        if(b) b.style.display = 'block'; 
-                    }
+                    if(currentUserRank >= 15) document.getElementById('staffBtn').style.display = 'block'; 
+                    for(let i=0; i<=currentUserRank && i<=14; i++) { const b = document.getElementById(`belt-${i}`); if(b) b.style.display = 'block'; }
                 }
             } catch(e) { alert("Login failed"); }
         };
