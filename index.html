@@ -9,7 +9,7 @@
     <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/tracyskarateparmaheights/gateway/main/BLACK-TK.png">
 
     <style>
-        :root { --gold: #ffcc00; --bg: #1a1a1a; --card: #2b2b2b; --input-bg: #1e1e1e; --green: #2ecc71; --red: #e74c3c; --purple: #9b59b6; --blue: #3498db; --orange: #ff8800; --yellow: #ffff00; --white: #ffffff; --brown: #8b4513; --black: #000000; }
+        :root { --gold: #ffcc00; --bg: #1a1a1a; --card: #2b2b2b; --input-bg: #1e1e1e; --red: #e74c3c; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg); color: white; margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; box-sizing: border-box; }
         
         .container { background: var(--card); padding: 30px 20px; border-radius: 12px; border-top: 5px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 100%; max-width: 480px; margin-top: 20px; }
@@ -20,25 +20,19 @@
         .video-wrapper { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 8px; overflow: hidden; margin-bottom: 20px; border: 1px solid #444; }
         #ytPlayer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
         
-        .control-btn { background: var(--gold); color: #000; border: none; padding: 10px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; transition: 0.2s; }
-        .control-btn:active { transform: scale(0.95); opacity: 0.8; }
+        .control-btn { background: var(--gold); color: #000; border: none; padding: 10px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; }
         
         .admin-tab { display: none; text-align: left; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         td { padding: 12px 5px; border-bottom: 1px solid #333; font-size: 14px; }
         
         .belt-header { background: #3d3d3d; padding: 15px; margin-top: 10px; border-radius: 8px; color: var(--gold); cursor: pointer; display: flex; justify-content: space-between; font-weight: bold; }
-        .tech-list { max-height: 400px; overflow-y: auto; }
         .tech-btn { background: #222; color: #eee; padding: 14px; margin: 5px 0; border-radius: 6px; border-left: 4px solid var(--gold); width: 100%; cursor: pointer; display: block; text-align: left; font-size: 13px; border:none; }
         
-        input, textarea, select { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #444; background: var(--input-bg); color: white; box-sizing: border-box; font-size: 14px; }
+        input, textarea { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #444; background: var(--input-bg); color: white; box-sizing: border-box; font-size: 14px; }
         
         .detail-view { background:#222; padding:15px; font-size:13px; text-align:left; line-height:1.6; border-radius: 8px; margin: 5px 0; border: 1px solid #444; }
-        .perm-desc { font-size: 11px; color: #aaa; margin-top: -8px; margin-bottom: 15px; font-style: italic; }
-        
-        .filter-bar { display: flex; gap: 5px; margin-bottom: 10px; }
-        .filter-btn { flex: 1; padding: 8px; background: #333; border: 1px solid #444; color: #888; border-radius: 6px; font-size: 12px; cursor: pointer; }
-        .filter-btn.active { background: var(--gold); color: black; border-color: var(--gold); font-weight: bold; }
+        .perm-desc { font-size: 12px; color: #aaa; margin: 10px 0; padding: 10px; background: #111; border-radius: 6px; text-align: left; }
 
         * { -webkit-user-select: none; user-select: none; }
         input, textarea { -webkit-user-select: text; user-select: text; }
@@ -92,8 +86,8 @@
                 <input type="text" id="fName" placeholder="Full Name">
                 <input type="text" id="fPhone" placeholder="Phone Number">
                 <textarea id="fComments" placeholder="Notes" style="height:80px;"></textarea>
-                <button class="control-btn" style="width:100%;" onclick="window.handleSave()">Save Record</button>
-                <button class="control-btn" style="width:100%; background:none; color:#888;" onclick="window.switchAdmin('listView')">Cancel</button>
+                <button id="saveBtn" class="control-btn" style="width:100%;" onclick="window.handleSave()">Save Record</button>
+                <button class="control-btn" style="width:100%; background:none; color:#888;" onclick="window.switchAdmin('listView')">Back to List</button>
             </div>
             <div id="listView" class="admin-tab" style="display:block;">
                 <input type="text" id="rosterSearch" placeholder="🔍 Search records..." onkeyup="window.searchRoster()">
@@ -102,12 +96,11 @@
         </div>
 
         <div id="staffDashboard" style="display:none;">
-            <h3>Staff Permissions</h3>
+            <h3>System Permissions</h3>
             <div class="perm-desc">
-                0-10: Student (Video Library Only)<br>
-                11-13: Instructor (View Roster Only)<br>
-                14: Admin (Full Roster Edit/Export)<br>
-                15: Master (Full Access + Curriculum Manager)
+                <strong>Rank 15:</strong> Master (Full Access)<br>
+                <strong>Rank 14:</strong> Staff (View Roster Only)<br>
+                <strong>Rank 0-13:</strong> Student (Videos Only)
             </div>
             <div id="staffTableArea"></div>
         </div>
@@ -118,7 +111,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, collection, query, where, orderBy, getDocs, updateDoc, setDoc, arrayUnion, onSnapshot, addDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, collection, query, where, orderBy, getDocs, updateDoc, setDoc, onSnapshot, addDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = { apiKey: "AIzaSyC35Ubf6GxyDi3JEiKWaYgVFkYGknMZrcw", authDomain: "tracy-s-karate-portal.firebaseapp.com", projectId: "tracy-s-karate-portal", storageBucket: "tracy-s-karate-portal.appspot.com", messagingSenderId: "338865615783", appId: "1:338865615783:web:75865261864177d46536da" };
         const app = initializeApp(firebaseConfig);
@@ -127,66 +120,11 @@
 
         let ytPlayer, currentUserRank = 0, studentsList = [];
 
-        // --- YOUTUBE LOGIC ---
         window.onYouTubeIframeAPIReady = () => {
-            ytPlayer = new YT.Player('ytPlayer', { 
-                height: '100%', width: '100%', videoId: '', 
-                playerVars: { 'controls': 1, 'rel': 0, 'modestbranding': 1, 'playsinline': 1 } 
-            });
+            ytPlayer = new YT.Player('ytPlayer', { height: '100%', width: '100%', videoId: '', playerVars: { 'controls': 1, 'rel': 0, 'modestbranding': 1, 'playsinline': 1 } });
         };
-        window.loadVideo = (id) => { 
-            if (ytPlayer && ytPlayer.loadVideoById) {
-                ytPlayer.loadVideoById(id);
-                ytPlayer.playVideo();
-            }
-        };
+        window.loadVideo = (id) => { if (ytPlayer && ytPlayer.loadVideoById) { ytPlayer.loadVideoById(id); ytPlayer.playVideo(); } };
 
-        // --- BULK OPERATIONS (ID PERSISTENCE) ---
-        window.exportToCSV = () => {
-            // Include Firebase ID in the export so it can be matched on re-import
-            const exportData = studentsList.map(s => ({
-                firebase_id: s.id,
-                fullName: s.fullName,
-                phone: s.phone,
-                comments: s.comments
-            }));
-            const csv = Papa.unparse(exportData);
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.setAttribute("download", `Roster_Export_${new Date().toLocaleDateString()}.csv`);
-            link.click();
-        };
-
-        window.handleImport = (event) => {
-            const file = event.target.files[0];
-            if (!file) return;
-            Papa.parse(file, {
-                header: true,
-                skipEmptyLines: true,
-                complete: async (results) => {
-                    const batch = writeBatch(db);
-                    results.data.forEach(row => {
-                        const data = {
-                            fullName: row.fullName || "",
-                            phone: row.phone || "",
-                            comments: row.comments || ""
-                        };
-                        // If firebase_id exists in CSV, update that doc; otherwise, create new
-                        if (row.firebase_id) {
-                            batch.set(doc(db, "students", row.firebase_id), data, { merge: true });
-                        } else {
-                            const newDoc = doc(collection(db, "students"));
-                            batch.set(newDoc, data);
-                        }
-                    });
-                    await batch.commit();
-                    alert("Import Complete!");
-                }
-            });
-        };
-
-        // --- NAVIGATION ---
         window.stopAndHome = () => { 
             if(ytPlayer && ytPlayer.stopVideo) ytPlayer.stopVideo(); 
             ['curriculumSection', 'adminDashboard', 'staffDashboard', 'mainMenu'].forEach(s => document.getElementById(s).style.display = 'none');
@@ -199,22 +137,12 @@
             document.getElementById(id).style.display = 'block';
             if(id === 'adminDashboard') {
                 window.syncRoster();
-                document.getElementById('adminQuickActions').style.display = (currentUserRank >= 14) ? 'flex' : 'none';
+                // Show Import/Export/Add buttons ONLY for Rank 15
+                document.getElementById('adminQuickActions').style.display = (currentUserRank >= 15) ? 'flex' : 'none';
             }
             if(id === 'staffDashboard') window.syncStaff();
         };
 
-        window.toggleDetail = (id) => {
-            const el = document.getElementById(`det-${id}`);
-            if (el) el.style.display = (el.style.display === "none") ? "table-row" : "none";
-        };
-
-        window.switchAdmin = (id) => {
-            document.querySelectorAll('.admin-tab').forEach(t => t.style.display='none');
-            document.getElementById(id).style.display='block';
-        };
-
-        // --- ROSTER SYNC ---
         window.syncRoster = () => {
             onSnapshot(query(collection(db, "students"), orderBy("fullName")), (snap) => {
                 let html = `<table>`; studentsList = [];
@@ -224,27 +152,37 @@
                     html += `
                         <tr onclick="window.toggleDetail('${id}')">
                             <td><b>${s.fullName}</b><br><small style="color:var(--gold);">${s.phone || ''}</small></td>
-                            <td style="text-align:right;"><button class="control-btn" onclick="event.stopPropagation(); window.editStudent('${id}')">EDIT</button></td>
+                            <td style="text-align:right;">
+                                <button class="control-btn" onclick="event.stopPropagation(); window.viewOrEditStudent('${id}')">
+                                    ${currentUserRank >= 15 ? 'EDIT' : 'VIEW'}
+                                </button>
+                            </td>
                         </tr>
-                        <tr id="det-${id}" style="display:none;"><td colspan="2"><div class="detail-view">
-                            <small style="color:#666; display:block; margin-bottom:5px;">ID: ${id}</small>
-                            Notes: ${s.comments || 'No notes.'}
-                        </div></td></tr>`;
+                        <tr id="det-${id}" style="display:none;"><td colspan="2"><div class="detail-view">Notes: ${s.comments || ''}</div></td></tr>`;
                 });
                 document.getElementById('rosterTableArea').innerHTML = html + "</table>";
             });
         };
 
-        window.editStudent = (id) => {
+        window.viewOrEditStudent = (id) => {
             const s = studentsList.find(x => x.id === id);
             document.getElementById('editId').value = id;
             document.getElementById('fName').value = s.fullName || "";
             document.getElementById('fPhone').value = s.phone || "";
             document.getElementById('fComments').value = s.comments || "";
+            
+            // LOCK fields if Rank 14
+            const isReadOnly = currentUserRank < 15;
+            document.getElementById('fName').readOnly = isReadOnly;
+            document.getElementById('fPhone').readOnly = isReadOnly;
+            document.getElementById('fComments').readOnly = isReadOnly;
+            document.getElementById('saveBtn').style.display = isReadOnly ? 'none' : 'block';
+            
             window.switchAdmin('studentForm');
         };
 
         window.handleSave = async () => {
+            if (currentUserRank < 15) return;
             const id = document.getElementById('editId').value;
             const data = { fullName: document.getElementById('fName').value, phone: document.getElementById('fPhone').value, comments: document.getElementById('fComments').value };
             if(id) await updateDoc(doc(db, "students", id), data); else await addDoc(collection(db, "students"), data);
@@ -252,30 +190,14 @@
         };
 
         window.prepareAdd = () => {
+            if (currentUserRank < 15) return;
             document.getElementById('editId').value = "";
-            document.getElementById('studentForm').querySelectorAll('input,textarea').forEach(i => i.value="");
+            document.getElementById('fName').value = ""; document.getElementById('fPhone').value = ""; document.getElementById('fComments').value = "";
+            document.getElementById('saveBtn').style.display = 'block';
             window.switchAdmin('studentForm');
         };
 
-        // --- STAFF SYNC ---
-        window.syncStaff = () => {
-            onSnapshot(collection(db, "users"), (snap) => {
-                let html = `<table>`;
-                snap.forEach(uDoc => {
-                    const u = uDoc.data();
-                    html += `<tr><td>${u.name || 'User'}</td><td><input type="number" style="width:50px; padding:5px;" value="${u.rankLevel || 0}" id="rank-${uDoc.id}"></td>
-                    <td><button class="control-btn" onclick="window.updateRank('${uDoc.id}')">Update</button></td></tr>`;
-                });
-                document.getElementById('staffTableArea').innerHTML = html + "</table>";
-            });
-        };
-        window.updateRank = async (id) => {
-            const newRank = parseInt(document.getElementById(`rank-${id}`).value);
-            await updateDoc(doc(db, "users", id), { rankLevel: newRank });
-            alert("Rank Updated");
-        };
-
-        // --- LOGIN & CURRICULUM ---
+        // --- AUTH ---
         document.getElementById('loginBtn').onclick = async () => {
             try {
                 const cred = await signInWithEmailAndPassword(auth, document.getElementById('emailInput').value, document.getElementById('passInput').value);
@@ -285,13 +207,17 @@
                     document.getElementById('loginBox').style.display = 'none';
                     document.getElementById('portalNav').style.display = 'flex';
                     document.getElementById('portalView').style.display = 'block';
-                    if(currentUserRank >= 11) document.getElementById('rosterBtn').style.display = 'block';
+                    if(currentUserRank >= 14) document.getElementById('rosterBtn').style.display = 'block';
                     if(currentUserRank >= 15) document.getElementById('staffBtn').style.display = 'block';
                     loadCurriculum(currentUserRank);
                 }
             } catch(e) { alert("Login Failed"); }
         };
 
+        // Helper functions
+        window.switchAdmin = (id) => { document.querySelectorAll('.admin-tab').forEach(t => t.style.display='none'); document.getElementById(id).style.display='block'; };
+        window.toggleDetail = (id) => { const el = document.getElementById(`det-${id}`); if (el) el.style.display = (el.style.display === "none") ? "table-row" : "none"; };
+        window.toggleGate = (id) => { const el = document.getElementById(id); el.style.display = (el.style.display === "none") ? "block" : "none"; };
         const loadCurriculum = async (rank) => {
             const q = query(collection(db, "curriculum"), where("rankRequired", "<=", rank), orderBy("rankRequired", "asc"));
             const snap = await getDocs(q);
@@ -299,17 +225,9 @@
             container.innerHTML = "";
             snap.forEach(bDoc => {
                 const d = bDoc.data();
-                container.insertAdjacentHTML('beforeend', `
-                    <div class="belt-group">
-                        <div class="belt-header" onclick="window.toggleGate('gate-${bDoc.id}')">${d.beltName} <span>▼</span></div>
-                        <div id="gate-${bDoc.id}" class="tech-list" style="display:none;">
-                            ${d.videos.map(v => `<button class="tech-btn" onclick="window.loadVideo('${v.ytId}')">${v.title}</button>`).join('')}
-                        </div>
-                    </div>`);
+                container.insertAdjacentHTML('beforeend', `<div class="belt-group"><div class="belt-header" onclick="window.toggleGate('gate-${bDoc.id}')">${d.beltName} <span>▼</span></div><div id="gate-${bDoc.id}" class="tech-list" style="display:none;">${d.videos.map(v => `<button class="tech-btn" onclick="window.loadVideo('${v.ytId}')">${v.title}</button>`).join('')}</div></div>`);
             });
         };
-        
-        window.toggleGate = (id) => { const el = document.getElementById(id); el.style.display = (el.style.display === "none") ? "block" : "none"; };
     </script>
 </body>
 </html>
