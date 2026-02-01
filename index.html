@@ -21,6 +21,7 @@
         #ytPlayer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
         
         .control-btn { background: var(--gold); color: #000; border: none; padding: 10px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; }
+        .delete-btn { background: var(--red); color: white; margin-top: 10px; width: 100%; }
         
         .admin-tab { display: none; text-align: left; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
@@ -62,7 +63,12 @@
         <div style="display:flex; gap:8px;">
             <button class="control-btn" onclick="window.stopAndHome()">🏠 Menu</button>
             <div id="adminQuickActions" style="display:none; gap:8px;">
-                <button class="control-btn" onclick="window.prepareAdd()">+ New Student</button>
+                <button class="control-btn" onclick="window.prepareAdd()">+ New</button>
+                <div id="bulkTools" style="display:none; gap:8px;">
+                    <button class="control-btn" onclick="window.exportToCSV()">📤 Export</button>
+                    <button class="control-btn" onclick="document.getElementById('csvFileInput').click()">📥 Import</button>
+                    <input type="file" id="csvFileInput" style="display:none;" accept=".csv" onchange="window.handleImport(event)">
+                </div>
             </div>
         </div>
         <button class="control-btn" onclick="location.reload()" style="background:var(--red); color:white;">Log Out</button>
@@ -77,7 +83,6 @@
 
         <div id="curriculumSection" style="display:none;">
             <div class="video-wrapper"><div id="ytPlayer"></div></div>
-            <input type="text" id="videoSearch" placeholder="🔍 Search techniques..." onkeyup="window.searchVideos()" style="margin-bottom:15px;">
             <div id="dynamicCurriculum"></div>
         </div>
 
@@ -90,15 +95,13 @@
                 <input type="text" id="fPhone" placeholder="Phone Number">
                 <input type="text" id="fAddress" placeholder="Home Address">
                 <input type="text" id="fCityZip" placeholder="City, State, Zip">
-                <hr style="border:0; border-top:1px solid #444; margin:10px 0;">
                 <input type="text" id="fRank" placeholder="Current Belt Rank">
                 <input type="text" id="fLastTest" placeholder="Last Test Date">
-                <input type="text" id="fParent" placeholder="Parent Name (if applicable)">
+                <input type="text" id="fParent" placeholder="Parent Name">
                 <select id="fStatus">
-                    <option value="Active">Active</option>
+                    <option value="Current">Current</option>
                     <option value="Inactive">Inactive</option>
                 </select>
-                <hr style="border:0; border-top:1px solid #444; margin:10px 0;">
                 <input type="text" id="fTuition" placeholder="Tuition Amount">
                 <select id="fFreq">
                     <option value="Weekly">Weekly</option>
@@ -106,16 +109,17 @@
                     <option value="Monthly">Monthly</option>
                 </select>
                 <input type="text" id="fSource" placeholder="Marketing Source">
-                <textarea id="fComments" placeholder="General Comments / History" style="height:100px;"></textarea>
+                <textarea id="fComments" placeholder="Notes/History" style="height:100px;"></textarea>
                 
                 <button id="saveBtn" class="control-btn" style="width:100%; margin-top:10px;" onclick="window.handleSave()">Save Record</button>
+                <button id="deleteBtn" class="control-btn delete-btn" style="display:none;" onclick="window.handleDelete()">Delete Record</button>
                 <button class="control-btn" style="width:100%; background:none; color:#888;" onclick="window.switchAdmin('listView')">Cancel</button>
             </div>
 
             <div id="listView" class="admin-tab" style="display:block;">
                 <div class="filter-bar">
                     <button class="filter-btn active" id="btnAll" onclick="window.setFilter('All')">ALL</button>
-                    <button class="filter-btn" id="btnActive" onclick="window.setFilter('Active')">ACTIVE</button>
+                    <button class="filter-btn" id="btnCurrent" onclick="window.setFilter('Current')">CURRENT</button>
                     <button class="filter-btn" id="btnInactive" onclick="window.setFilter('Inactive')">INACTIVE</button>
                 </div>
                 <input type="text" id="rosterSearch" placeholder="🔍 Search records..." onkeyup="window.runSearch()">
@@ -126,9 +130,8 @@
         <div id="staffDashboard" style="display:none;">
             <h3>System Permissions</h3>
             <div class="permission-info">
-                <strong>Rank 15 (Master Admin):</strong> Full system access. Can create/edit students, view financial data, and manage staff permissions.<br><br>
-                <strong>Rank 14 (Staff/View-Only):</strong> Can view the student roster and records, but cannot edit fields or save changes.<br><br>
-                <strong>Rank 0-13 (Students):</strong> Access to Video Library only (based on rank level).
+                <strong>Rank 15:</strong> Full Admin (CRUD + Bulk Tools).<br>
+                <strong>Rank 14:</strong> Staff (View Only - All Statuses).
             </div>
             <div id="staffTableArea"></div>
         </div>
@@ -139,7 +142,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, collection, query, where, orderBy, getDocs, updateDoc, setDoc, onSnapshot, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, collection, query, where, orderBy, getDocs, updateDoc, setDoc, onSnapshot, addDoc, deleteDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = { apiKey: "AIzaSyC35Ubf6GxyDi3JEiKWaYgVFkYGknMZrcw", authDomain: "tracy-s-karate-portal.firebaseapp.com", projectId: "tracy-s-karate-portal", storageBucket: "tracy-s-karate-portal.appspot.com", messagingSenderId: "338865615783", appId: "1:338865615783:web:75865261864177d46536da" };
         const app = initializeApp(firebaseConfig);
@@ -176,7 +179,8 @@
             document.getElementById(id).style.display = 'block';
             if(id === 'adminDashboard') {
                 window.syncRoster();
-                document.getElementById('adminQuickActions').style.display = (currentUserRank >= 15) ? 'flex' : 'none';
+                document.getElementById('adminQuickActions').style.display = (currentUserRank >= 14) ? 'flex' : 'none';
+                document.getElementById('bulkTools').style.display = (currentUserRank >= 15) ? 'flex' : 'none';
             }
             if(id === 'staffDashboard') window.syncStaff();
         };
@@ -214,9 +218,7 @@
                     <tr onclick="window.toggleDetail('${s.id}')">
                         <td style="color:${statusColor}; display: flex; align-items: center;">
                             ${getBeltEmoji(s.currentRank)}
-                            <div>
-                                <b>${s.fullName || 'Unnamed'}</b><br><small>${s.currentRank || 'No Rank'}</small>
-                            </div>
+                            <div><b>${s.fullName || 'Unnamed'}</b><br><small>${s.currentRank || 'No Rank'}</small></div>
                         </td>
                         <td style="text-align:right;">
                             <button class="control-btn" onclick="event.stopPropagation(); window.viewOrEditStudent('${s.id}')">${currentUserRank >= 15 ? 'EDIT' : 'VIEW'}</button>
@@ -224,14 +226,21 @@
                     </tr>
                     <tr id="det-${s.id}" style="display:none;"><td colspan="2"><div class="detail-view">
                         <b>Phone:</b> ${s.phone || '—'}<br>
-                        <b>Address:</b> ${s.address || '—'}, ${s.cityZip || ''}<br>
                         <b>Tuition:</b> ${s.tuition || '—'} (${s.paymentFrequency || '—'})<br>
                         <b>Last Test:</b> ${s.lastTestDate || '—'}<br>
-                        <b>Comments:</b> ${s.comments || 'No notes available.'}
+                        <b>Status:</b> ${s.status || 'Current'}
                     </div></td></tr>`;
             });
             document.getElementById('rosterTableArea').innerHTML = html + "</table>";
         }
+
+        window.prepareAdd = () => {
+            document.getElementById('editId').value = "";
+            document.getElementById('studentForm').querySelectorAll('input, textarea, select').forEach(i => i.value = "");
+            document.getElementById('fStatus').value = "Current";
+            document.getElementById('deleteBtn').style.display = "none";
+            window.switchAdmin('studentForm');
+        };
 
         window.viewOrEditStudent = (id) => {
             const s = studentsList.find(x => x.id === id);
@@ -244,16 +253,16 @@
             document.getElementById('fRank').value = s.currentRank || "";
             document.getElementById('fLastTest').value = s.lastTestDate || "";
             document.getElementById('fParent').value = s.parentName || "";
-            document.getElementById('fStatus').value = s.status || "Active";
+            document.getElementById('fStatus').value = s.status || "Current";
             document.getElementById('fTuition').value = s.tuition || "";
             document.getElementById('fFreq').value = s.paymentFrequency || "Weekly";
             document.getElementById('fSource').value = s.source || "";
             document.getElementById('fComments').value = s.comments || "";
             
             const isReadOnly = currentUserRank < 15;
-            const fields = ['fName', 'fEmail', 'fPhone', 'fAddress', 'fCityZip', 'fRank', 'fLastTest', 'fParent', 'fStatus', 'fTuition', 'fFreq', 'fSource', 'fComments'];
-            fields.forEach(fid => document.getElementById(fid).disabled = isReadOnly);
+            document.getElementById('studentForm').querySelectorAll('input, textarea, select').forEach(i => i.disabled = isReadOnly);
             document.getElementById('saveBtn').style.display = isReadOnly ? 'none' : 'block';
+            document.getElementById('deleteBtn').style.display = isReadOnly ? 'none' : 'block';
             window.switchAdmin('studentForm');
         };
 
@@ -261,23 +270,55 @@
             if (currentUserRank < 15) return;
             const id = document.getElementById('editId').value;
             const data = { 
-                fullName: document.getElementById('fName').value, 
-                email: document.getElementById('fEmail').value,
-                phone: document.getElementById('fPhone').value, 
-                address: document.getElementById('fAddress').value,
-                cityZip: document.getElementById('fCityZip').value,
-                currentRank: document.getElementById('fRank').value, 
-                lastTestDate: document.getElementById('fLastTest').value,
-                parentName: document.getElementById('fParent').value,
-                status: document.getElementById('fStatus').value, 
-                tuition: document.getElementById('fTuition').value,
-                paymentFrequency: document.getElementById('fFreq').value,
-                source: document.getElementById('fSource').value,
-                comments: document.getElementById('fComments').value,
-                updatedAt: new Date().toLocaleString()
+                fullName: document.getElementById('fName').value, email: document.getElementById('fEmail').value,
+                phone: document.getElementById('fPhone').value, address: document.getElementById('fAddress').value,
+                cityZip: document.getElementById('fCityZip').value, currentRank: document.getElementById('fRank').value, 
+                lastTestDate: document.getElementById('fLastTest').value, parentName: document.getElementById('fParent').value,
+                status: document.getElementById('fStatus').value, tuition: document.getElementById('fTuition').value,
+                paymentFrequency: document.getElementById('fFreq').value, source: document.getElementById('fSource').value,
+                comments: document.getElementById('fComments').value, updatedAt: new Date().toLocaleString()
             };
             if(id) await updateDoc(doc(db, "students", id), data); else await addDoc(collection(db, "students"), data);
             alert("Record Saved"); window.switchAdmin('listView');
+        };
+
+        window.handleDelete = async () => {
+            const id = document.getElementById('editId').value;
+            if (id && confirm("Permanently delete this student?")) {
+                await deleteDoc(doc(db, "students", id));
+                alert("Deleted"); window.switchAdmin('listView');
+            }
+        };
+
+        window.exportToCSV = () => {
+            const csv = Papa.unparse(studentsList);
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.setAttribute("download", "tracys_students_export.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        };
+
+        window.handleImport = (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+            Papa.parse(file, {
+                header: true,
+                skipEmptyLines: true,
+                complete: async (results) => {
+                    if (confirm(`Import ${results.data.length} records?`)) {
+                        const batch = writeBatch(db);
+                        results.data.forEach(item => {
+                            const ref = doc(collection(db, "students"));
+                            batch.set(ref, { ...item, status: item.status || "Current", updatedAt: new Date().toLocaleString() });
+                        });
+                        await batch.commit();
+                        alert("Import Successful");
+                    }
+                }
+            });
         };
 
         window.syncStaff = () => {
@@ -285,11 +326,7 @@
                 let html = `<table>`;
                 snap.forEach(uDoc => {
                     const u = uDoc.data();
-                    html += `<tr>
-                        <td>${u.name || u.email}</td>
-                        <td><input type="number" style="width:60px; padding:8px;" value="${u.rankLevel || 0}" id="rank-${uDoc.id}"></td>
-                        <td><button class="control-btn" onclick="window.updateRank('${uDoc.id}')">SAVE</button></td>
-                    </tr>`;
+                    html += `<tr><td>${u.name || u.email}</td><td><input type="number" style="width:60px;" value="${u.rankLevel || 0}" id="rank-${uDoc.id}"></td><td><button class="control-btn" onclick="window.updateRank('${uDoc.id}')">SAVE</button></td></tr>`;
                 });
                 document.getElementById('staffTableArea').innerHTML = html + "</table>";
             });
@@ -314,7 +351,7 @@
                     if(currentUserRank >= 15) document.getElementById('staffBtn').style.display = 'block';
                     loadCurriculum(currentUserRank);
                 }
-            } catch(e) { alert("Login Failed: Unauthorized or Wrong Password"); }
+            } catch(e) { alert("Login Failed"); }
         };
 
         window.switchAdmin = (id) => { document.querySelectorAll('.admin-tab').forEach(t => t.style.display='none'); document.getElementById(id).style.display='block'; };
