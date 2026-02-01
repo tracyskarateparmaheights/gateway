@@ -25,16 +25,15 @@
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         td { padding: 12px 5px; border-bottom: 1px solid #333; font-size: 14px; vertical-align: middle; }
         
-        /* THE COLOR TABS */
         .belt-header { background: #3d3d3d; padding: 15px; margin-top: 10px; border-radius: 8px; color: var(--gold); cursor: pointer; display: flex; justify-content: space-between; font-weight: bold; }
         .tech-list { max-height: 450px; overflow-y: auto; }
         .tech-btn { background: #222; color: #eee; padding: 14px; margin: 5px 0; border-radius: 6px; border-left: 4px solid var(--gold); width: 100%; cursor: pointer; display: block; text-align: left; font-size: 13px; border:none; }
+        .tech-btn:focus { border: 2px solid var(--blue); }
 
         input, textarea, select { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #444; background: var(--input-bg); color: white; box-sizing: border-box; font-size: 14px; }
         
         .detail-view { background:#222; padding:15px; font-size:13px; text-align:left; line-height:1.6; border-radius: 8px; margin: 5px 0; border: 1px solid #444; }
         .detail-label { color: var(--gold); font-weight: bold; display: inline-block; width: 110px; }
-        .lvl-input { width: 60px; padding: 8px; background: #111; color: var(--gold); border: 1px solid #555; text-align: center; font-weight: bold; border-radius: 4px; }
         
         .filter-bar { display: flex; gap: 5px; margin-bottom: 10px; }
         .filter-btn { flex: 1; padding: 8px; background: #333; border: 1px solid #444; color: #888; border-radius: 6px; font-size: 12px; cursor: pointer; }
@@ -49,7 +48,7 @@
 
     <div class="container" id="loginBox">
         <img src="https://raw.githubusercontent.com/tracyskarateparmaheights/gateway/main/BLACK-TK.png" class="logo-img">
-        <h2 style="color: var(--gold); margin: 10px 0 20px 0; font-size: 22px; line-height: 1.2;">Tracy's Karate<br>Master Portal</h2>
+        <h2 style="color: var(--gold); margin: 10px 0 20px 0; font-size: 22px;">Tracy's Karate Portal</h2>
         <input type="email" id="emailInput" placeholder="Email">
         <input type="password" id="passInput" placeholder="Password">
         <button id="loginBtn" class="control-btn" style="width:100%; padding:18px;">Sign In</button>
@@ -63,9 +62,8 @@
         <div style="display:flex; gap:8px;">
             <button class="control-btn" onclick="window.stopAndHome()">🏠 Menu</button>
             <div id="adminQuickActions" style="display:none; gap:8px;">
-                <button class="control-btn" onclick="window.prepareAdd()">+ New Student</button>
-                <button class="control-btn" onclick="document.getElementById('csvFileInput').click()">📥 Import</button>
-                <input type="file" id="csvFileInput" accept=".csv" style="display:none;" onchange="window.handleBulkImport(event)">
+                <button class="control-btn" onclick="window.prepareAdd()">+ New</button>
+                <button class="control-btn" onclick="window.exportToCSV()">📤 Export</button>
             </div>
         </div>
         <button class="control-btn" onclick="location.reload()" style="background:var(--red); color:white;">Log Out</button>
@@ -75,12 +73,12 @@
         <div id="mainMenu">
             <button class="tech-btn" style="padding:25px; text-align:center; font-size:18px;" onclick="window.openSection('curriculumSection')">🥋 Video Library</button>
             <button class="tech-btn" style="padding:25px; text-align:center; font-size:18px; display:none;" id="rosterBtn" onclick="window.openSection('adminDashboard')">👥 Student Roster</button>
-            <button class="tech-btn" style="padding:25px; text-align:center; font-size:18px; display:none;" id="staffBtn" onclick="window.openSection('staffDashboard')">🛡️ Admin Access</button>
+            <button class="tech-btn" style="padding:25px; text-align:center; font-size:18px; display:none;" id="staffBtn" onclick="window.openSection('staffDashboard')">🛡️ Staff Admin</button>
         </div>
 
         <div id="curriculumSection" style="display:none;">
             <div class="video-wrapper"><div id="ytPlayer"></div></div>
-            <input type="text" id="videoSearch" placeholder="🔍 Search techniques..." onkeyup="window.searchVideos()" style="margin-bottom:15px;">
+            <input type="text" id="videoSearch" placeholder="🔍 Search techniques..." onkeyup="window.searchVideos()">
             <div id="dynamicCurriculum"></div>
         </div>
 
@@ -88,47 +86,21 @@
             <div id="studentForm" class="admin-tab">
                 <h3>Student Profile</h3>
                 <input type="hidden" id="editId">
-                <select id="fStatus"><option value="Current">Status: Current</option><option value="Inactive">Status: Inactive</option></select>
-                <input type="text" id="fName" placeholder="Student Name">
-                <input type="text" id="fParent" placeholder="Parent/Guardian (if minor)">
+                <input type="text" id="fName" placeholder="Full Name">
                 <input type="text" id="fPhone" placeholder="Phone Number">
-                <input type="email" id="fEmail" placeholder="Email Address">
-                <input type="text" id="fAddress" placeholder="Mailing Address">
-                <input type="text" id="fCityZip" placeholder="City/Zip">
-                <div style="display: flex; gap: 10px;">
-                    <input type="text" id="fTuition" placeholder="Tuition Amount ($)">
-                    <select id="fFrequency"><option value="Weekly">Weekly</option><option value="Monthly">Monthly</option><option value="None">None</option></select>
-                </div>
-                <textarea id="fComments" placeholder="General Notes/Comments" style="height:80px;"></textarea>
-                <input type="text" id="fCurrentRank" placeholder="Current Rank">
+                <textarea id="fComments" placeholder="Notes" style="height:60px;"></textarea>
                 <button class="control-btn" style="width:100%;" onclick="window.handleSave()">Save Record</button>
                 <button class="control-btn" style="width:100%; background:none; color:#888;" onclick="window.switchAdmin('listView')">Cancel</button>
             </div>
-
             <div id="listView" class="admin-tab" style="display:block;">
-                <input type="text" id="rosterSearch" placeholder="🔍 Search records..." onkeyup="window.searchRoster()">
-                <div class="filter-bar">
-                    <button id="filterActive" class="filter-btn active" onclick="window.setFilter('Current')">Active</button>
-                    <button id="filterInactive" class="filter-btn" onclick="window.setFilter('Inactive')">Inactive</button>
-                </div>
+                <input type="text" id="rosterSearch" placeholder="🔍 Search..." onkeyup="window.searchRoster()">
                 <div id="rosterTableArea"></div>
             </div>
         </div>
 
         <div id="staffDashboard" style="display:none;">
-            <h3>Admin Access Rights</h3>
+            <h3>Staff & Permissions</h3>
             <div id="staffTableArea"></div>
-            <hr style="border:0; border-top:1px solid #444; margin: 20px 0;">
-            <div id="videoManager">
-                <h4 style="color:var(--gold);">Curriculum Management</h4>
-                <select id="mBeltSelect">
-                    <option value="belt_0">White Belt</option><option value="belt_1">Yellow Belt</option><option value="belt_2">Orange Belt</option>
-                    <option value="belt_3">Purple Belt</option><option value="belt_4">Blue Belt</option><option value="belt_5">Green Belt</option>
-                </select>
-                <input type="text" id="mVideoTitle" placeholder="Technique Name">
-                <input type="text" id="mVideoId" placeholder="YouTube Video ID">
-                <button class="control-btn" style="width:100%;" onclick="window.saveNewVideo()">Add to Curriculum</button>
-            </div>
         </div>
     </div>
 
@@ -143,20 +115,37 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        window.dbInstance = db;
+        window.dbInstance = db; 
 
-        let ytPlayer, currentUserRank = 0, currentRosterFilter = 'Current', studentsList = [];
+        let ytPlayer, currentUserRank = 0, studentsList = [];
 
-        // --- YOUTUBE LOGIC FIXED ---
+        // --- YOUTUBE FIX ---
         window.onYouTubeIframeAPIReady = () => {
             ytPlayer = new YT.Player('ytPlayer', { 
-                height: '100%', width: '100%', videoId: '19Ktd4FfDGg', 
+                height: '100%', width: '100%', videoId: '', 
                 playerVars: { 'controls': 1, 'rel': 0, 'modestbranding': 1, 'playsinline': 1 } 
             });
         };
-        window.loadVideo = (id) => { if (ytPlayer && ytPlayer.loadVideoById) { ytPlayer.loadVideoById(id); ytPlayer.playVideo(); } };
+        window.loadVideo = (id) => { 
+            if (ytPlayer && ytPlayer.loadVideoById) {
+                ytPlayer.loadVideoById(id);
+                ytPlayer.playVideo();
+            }
+        };
 
-        // --- NAVIGATION ---
+        // --- EXPORT FIX ---
+        window.exportToCSV = () => {
+            const csv = Papa.unparse(studentsList);
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.setAttribute("download", "Tracy_Roster_Export.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        };
+
+        // --- UI TOGGLES ---
         window.stopAndHome = () => { 
             if(ytPlayer && ytPlayer.stopVideo) ytPlayer.stopVideo(); 
             ['curriculumSection', 'adminDashboard', 'staffDashboard', 'mainMenu'].forEach(s => document.getElementById(s).style.display = 'none');
@@ -167,58 +156,40 @@
         window.openSection = (id) => {
             document.getElementById('mainMenu').style.display = 'none';
             document.getElementById(id).style.display = 'block';
-            if(id === 'adminDashboard') { window.syncRoster(); document.getElementById('adminQuickActions').style.display = (currentUserRank >= 14) ? 'flex' : 'none'; }
-            if(id === 'staffDashboard') window.syncStaff();
+            if(id === 'adminDashboard') {
+                window.syncRoster();
+                document.getElementById('adminQuickActions').style.display = 'flex';
+            }
         };
 
-        window.switchAdmin = (id) => { document.querySelectorAll('.admin-tab').forEach(t => t.style.display='none'); document.getElementById(id).style.display='block'; };
-        window.toggleGate = (id) => { const el = document.getElementById(id); el.style.display = (el.style.display === "none") ? "block" : "none"; };
-
-        // --- CURRICULUM ---
-        const loadCurriculum = async (rank) => {
-            const container = document.getElementById('dynamicCurriculum');
-            const q = query(collection(db, "curriculum"), where("rankRequired", "<=", rank), orderBy("rankRequired", "asc"));
-            const snap = await getDocs(q);
-            container.innerHTML = "";
-            snap.forEach(bDoc => {
-                const d = bDoc.data();
-                container.insertAdjacentHTML('beforeend', `
-                    <div class="belt-group">
-                        <div class="belt-header" onclick="window.toggleGate('gate-${bDoc.id}')">${d.beltName} <span>▼</span></div>
-                        <div id="gate-${bDoc.id}" class="tech-list" style="display:none;">
-                            ${d.videos.map(v => `<button class="tech-btn" onclick="window.loadVideo('${v.ytId}')">${v.title}</button>`).join('')}
-                        </div>
-                    </div>`);
-            });
+        window.toggleGate = (id) => {
+            const el = document.getElementById(id);
+            el.style.display = (el.style.display === "none") ? "block" : "none";
         };
 
-        // --- STAFF & PERMISSIONS ---
-        window.syncStaff = () => {
-            onSnapshot(collection(db, "users"), (snap) => {
-                let html = `<table><tr><th>User</th><th>Rank</th><th></th></tr>`;
-                snap.forEach(uDoc => {
-                    const u = uDoc.data();
-                    html += `<tr><td>${u.name || 'User'}</td><td><input type="number" class="lvl-input" id="lvl-${uDoc.id}" value="${u.rankLevel || 0}"></td>
-                    <td><button class="control-btn" onclick="window.updateRank('${uDoc.id}')">Update</button></td></tr>`;
-                });
-                document.getElementById('staffTableArea').innerHTML = html + "</table>";
-            });
+        window.toggleDetail = (id) => {
+            const el = document.getElementById(`det-${id}`);
+            if (el) el.style.display = (el.style.display === "none") ? "table-row" : "none";
         };
-        window.updateRank = async (id) => { await updateDoc(doc(db, "users", id), { rankLevel: parseInt(document.getElementById(`lvl-${id}`).value) }); alert("Permission Updated"); };
 
-        // --- STUDENT ROSTER (WITH PHONE UNDER NAME) ---
+        window.switchAdmin = (id) => {
+            document.querySelectorAll('.admin-tab').forEach(t => t.style.display='none');
+            document.getElementById(id).style.display='block';
+        };
+
+        // --- DATA SYNC ---
         window.syncRoster = () => {
             onSnapshot(query(collection(db, "students"), orderBy("fullName")), (snap) => {
                 let html = `<table>`; studentsList = [];
                 snap.forEach(docSnap => {
-                    const s = docSnap.data(); const id = docSnap.id; studentsList.push({id, ...s});
-                    if((s.status || "Current") === currentRosterFilter) {
-                        html += `<tr onclick="window.toggleDetail('${id}')"><td><b>${s.fullName}</b><br><small style="color:var(--gold);">${s.phone || ''}</small></td>
-                            <td style="text-align:right;"><button class="control-btn" onclick="event.stopPropagation(); window.editStudent('${id}')">EDIT</button></td></tr>
-                            <tr id="det-${id}" style="display:none;"><td colspan="2"><div class="detail-view">
-                                Rank: ${s.currentRank || 'N/A'}<br>Email: ${s.email || ''}<br>Notes: ${s.comments || ''}
-                            </div></td></tr>`;
-                    }
+                    const s = docSnap.data(); const id = docSnap.id;
+                    studentsList.push({id, ...s});
+                    html += `
+                        <tr onclick="window.toggleDetail('${id}')">
+                            <td><b>${s.fullName}</b><br><small style="color:var(--gold);">${s.phone || ''}</small></td>
+                            <td style="text-align:right;"><button class="control-btn" onclick="event.stopPropagation(); window.editStudent('${id}')">EDIT</button></td>
+                        </tr>
+                        <tr id="det-${id}" style="display:none;"><td colspan="2"><div class="detail-view">Notes: ${s.comments || 'No notes.'}</div></td></tr>`;
                 });
                 document.getElementById('rosterTableArea').innerHTML = html + "</table>";
             });
@@ -227,24 +198,28 @@
         window.editStudent = (id) => {
             const s = studentsList.find(x => x.id === id);
             document.getElementById('editId').value = id;
-            document.getElementById('fName').value = s.fullName || '';
-            document.getElementById('fPhone').value = s.phone || '';
-            document.getElementById('fEmail').value = s.email || '';
-            document.getElementById('fAddress').value = s.address || '';
-            document.getElementById('fTuition').value = s.tuition || '';
-            document.getElementById('fComments').value = s.comments || '';
-            document.getElementById('fCurrentRank').value = s.currentRank || '';
+            document.getElementById('fName').value = s.fullName;
+            document.getElementById('fPhone').value = s.phone;
+            document.getElementById('fComments').value = s.comments;
             window.switchAdmin('studentForm');
         };
 
         window.handleSave = async () => {
             const id = document.getElementById('editId').value;
-            const data = { fullName: document.getElementById('fName').value, phone: document.getElementById('fPhone').value, email: document.getElementById('fEmail').value, address: document.getElementById('fAddress').value, tuition: document.getElementById('fTuition').value, comments: document.getElementById('fComments').value, currentRank: document.getElementById('fCurrentRank').value, status: document.getElementById('fStatus').value };
+            const data = { fullName: document.getElementById('fName').value, phone: document.getElementById('fPhone').value, comments: document.getElementById('fComments').value };
             if(id) await updateDoc(doc(db, "students", id), data); else await addDoc(collection(db, "students"), data);
-            alert("Record Saved"); window.switchAdmin('listView');
+            alert("Saved"); window.switchAdmin('listView');
         };
 
-        // --- AUTH & BOOT ---
+        window.prepareAdd = () => {
+            document.getElementById('editId').value = "";
+            document.getElementById('fName').value = "";
+            document.getElementById('fPhone').value = "";
+            document.getElementById('fComments').value = "";
+            window.switchAdmin('studentForm');
+        };
+
+        // --- AUTH ---
         document.getElementById('loginBtn').onclick = async () => {
             try {
                 const cred = await signInWithEmailAndPassword(auth, document.getElementById('emailInput').value, document.getElementById('passInput').value);
@@ -258,7 +233,24 @@
                     if(currentUserRank >= 15) document.getElementById('staffBtn').style.display = 'block';
                     await loadCurriculum(currentUserRank);
                 }
-            } catch(e) { alert("Invalid Credentials"); }
+            } catch(e) { alert("Login Fail"); }
+        };
+
+        const loadCurriculum = async (rank) => {
+            const q = query(collection(db, "curriculum"), where("rankRequired", "<=", rank), orderBy("rankRequired", "asc"));
+            const snap = await getDocs(q);
+            const container = document.getElementById('dynamicCurriculum');
+            container.innerHTML = "";
+            snap.forEach(bDoc => {
+                const d = bDoc.data();
+                container.insertAdjacentHTML('beforeend', `
+                    <div class="belt-group">
+                        <div class="belt-header" onclick="window.toggleGate('gate-${bDoc.id}')">${d.beltName} <span>▼</span></div>
+                        <div id="gate-${bDoc.id}" class="tech-list" style="display:none;">
+                            ${d.videos.map(v => `<button class="tech-btn" onclick="window.loadVideo('${v.ytId}')">${v.title}</button>`).join('')}
+                        </div>
+                    </div>`);
+            });
         };
     </script>
 </body>
