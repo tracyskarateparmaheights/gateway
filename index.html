@@ -9,35 +9,46 @@
     <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/tracyskarateparmaheights/gateway/main/BLACK-TK.png">
 
     <style>
-        :root { --gold: #ffcc00; --bg: #1a1a1a; --card: #2b2b2b; --input-bg: #1e1e1e; --green: #2ecc71; --red: #e74c3c; --blue: #3498db; --orange: #ff8800; --yellow: #ffff00; --purple: #9b59b6; --brown: #8b4513; --white: #ffffff; --black: #000000; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg); color: white; margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; box-sizing: border-box; }
+        :root { --gold: #ffcc00; --bg: #1a1a1a; --card: #242424; --input-bg: #1e1e1e; --green: #2ecc71; --red: #e74c3c; --blue: #3498db; --orange: #ff8800; --yellow: #ffff00; --purple: #9b59b6; --brown: #8b4513; --white: #ffffff; --black: #000000; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg); color: white; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; box-sizing: border-box; }
         
-        .container { background: var(--card); padding: 25px 15px; border-radius: 12px; border-top: 5px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 100%; max-width: 500px; margin-top: 20px; box-sizing: border-box; }
-        .logo-img { width: 180px; height: auto; margin-bottom: 10px; }
+        .container { background: var(--card); padding: 20px; border-radius: 12px; border-top: 4px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 100%; max-width: 500px; margin-top: 10px; box-sizing: border-box; }
+        .logo-img { width: 160px; height: auto; margin-bottom: 10px; }
         
-        .nav-header { width: 100%; max-width: 500px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 10px; }
-        
-        .video-wrapper { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 8px; overflow: hidden; margin-bottom: 20px; border: 1px solid #444; }
+        /* Navigation & Header */
+        .nav-header { width: 100%; max-width: 500px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 8px; }
+        .control-btn { background: var(--gold); color: #000; border: none; padding: 10px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 5px; }
+        .logout-btn { background: var(--red); color: white; }
+
+        /* Video Library Style */
+        .video-wrapper { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 8px; overflow: hidden; margin-bottom: 15px; border: 1px solid #333; }
         #ytPlayer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
         
-        .control-btn { background: var(--gold); color: #000; border: none; padding: 10px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; }
-        .delete-btn { background: var(--red); color: white; margin-top: 10px; width: 100%; }
-        
-        .admin-tab { display: none; text-align: left; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        td { padding: 12px 5px; border-bottom: 1px solid #333; font-size: 14px; vertical-align: middle; }
-        
-        .filter-bar { display: flex; gap: 5px; margin-bottom: 10px; }
-        .filter-btn { flex: 1; padding: 10px; background: #333; border: 1px solid #444; color: #888; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; }
-        .filter-btn.active { background: var(--gold); color: black; border-color: var(--gold); }
+        .belt-group { margin-bottom: 10px; }
+        .belt-header { background: #333; padding: 15px; border-radius: 8px; color: var(--gold); cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: bold; border-left: 5px solid transparent; }
+        .tech-btn { background: #1a1a1a; color: #eee; padding: 14px; margin: 2px 0; border-radius: 4px; width: 100%; cursor: pointer; text-align: left; font-size: 13px; border: 1px solid #333; transition: background 0.2s; }
+        .tech-btn:active { background: #333; border-color: var(--blue); }
 
-        .belt-icon { font-size: 18px; margin-right: 8px; filter: drop-shadow(0 0 2px rgba(0,0,0,0.5)); }
-        .tech-btn { background: #222; color: #eee; padding: 14px; margin: 5px 0; border-radius: 6px; border-left: 4px solid var(--gold); width: 100%; cursor: pointer; display: block; text-align: left; font-size: 13px; border:none; }
-        
-        input, textarea, select { width: 100%; padding: 12px; margin-bottom: 8px; border-radius: 6px; border: 1px solid #444; background: var(--input-bg); color: white; box-sizing: border-box; font-size: 13px; }
-        .detail-view { background:#1a1a1a; padding:15px; font-size:12px; text-align:left; line-height:1.6; border-radius: 8px; margin: 5px 0; border: 1px solid #444; color: #ccc; }
-        
-        .permission-info { background: #111; padding: 15px; border-radius: 8px; border-left: 4px solid var(--blue); margin-bottom: 20px; font-size: 12px; text-align: left; line-height: 1.4; }
+        /* Student Record Style */
+        .student-row { padding: 15px; border-bottom: 1px solid #333; cursor: pointer; position: relative; }
+        .student-main { display: flex; align-items: center; justify-content: space-between; }
+        .student-info { display: flex; align-items: center; gap: 10px; }
+        .status-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+        .student-name { font-weight: bold; font-size: 15px; }
+        .student-phone { font-size: 12px; color: #aaa; margin-top: 2px; }
+
+        .detail-view { background:#1a1a1a; padding:15px; font-size:13px; text-align:left; border-radius: 8px; margin: 10px 0; border: 1px solid #444; }
+        .detail-grid { display: grid; grid-template-columns: 100px 1fr; gap: 5px; margin-bottom: 10px; }
+        .detail-label { color: var(--gold); font-weight: bold; font-size: 12px; }
+        .detail-value { color: #fff; font-size: 13px; }
+
+        .filter-bar { display: flex; gap: 5px; margin-bottom: 15px; background: #333; padding: 4px; border-radius: 8px; }
+        .filter-btn { flex: 1; padding: 10px; background: transparent; border: none; color: #888; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: bold; }
+        .filter-btn.active { background: var(--gold); color: black; }
+
+        .delete-btn { background: var(--red); color: white; margin-top: 15px; width: 100%; padding: 15px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; text-transform: uppercase; }
+
+        input, textarea, select { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 6px; border: 1px solid #444; background: var(--input-bg); color: white; box-sizing: border-box; font-size: 14px; }
         .footer-text { margin-top: 25px; font-size: 10px; color: #888; opacity: 0.7; line-height: 1.5; text-align: center; }
 
         * { -webkit-user-select: none; user-select: none; }
@@ -49,10 +60,10 @@
 
     <div class="container" id="loginBox">
         <img src="https://raw.githubusercontent.com/tracyskarateparmaheights/gateway/main/BLACK-TK.png" class="logo-img">
-        <h2 style="color: var(--gold); margin: 10px 0 20px 0; font-size: 22px;">Tracy's Karate Portal</h2>
+        <h2 style="color: var(--gold); margin: 0 0 20px 0; font-size: 20px;">Student & Staff Portal</h2>
         <input type="email" id="emailInput" placeholder="Email">
         <input type="password" id="passInput" placeholder="Password">
-        <button id="loginBtn" class="control-btn" style="width:100%; padding:18px;">Sign In</button>
+        <button id="loginBtn" class="control-btn" style="width:100%; padding:18px; justify-content:center;">SIGN IN</button>
         <div class="footer-text">
             Copyright 2026 by M.D.M. Studios Inc. All Rights Reserved.<br>
             Developed by Directed Route LLC
@@ -60,80 +71,61 @@
     </div>
 
     <div class="nav-header" id="portalNav" style="display:none;">
-        <div style="display:flex; gap:8px;">
-            <button class="control-btn" onclick="window.stopAndHome()">🏠 Menu</button>
-            <div id="adminQuickActions" style="display:none; gap:8px;">
-                <button class="control-btn" onclick="window.prepareAdd()">+ New</button>
-                <div id="bulkTools" style="display:none; gap:8px;">
-                    <button class="control-btn" onclick="window.exportToCSV()">📤 Export</button>
-                    <button class="control-btn" onclick="document.getElementById('csvFileInput').click()">📥 Import</button>
-                    <input type="file" id="csvFileInput" style="display:none;" accept=".csv" onchange="window.handleImport(event)">
-                </div>
-            </div>
+        <button class="control-btn" onclick="window.stopAndHome()">🏠 Menu</button>
+        <div id="adminTools" style="display:none; gap:5px;">
+            <button class="control-btn" onclick="window.prepareAdd()">+ New</button>
+            <button class="control-btn" onclick="document.getElementById('csvIn').click()">📥 Import</button>
+            <button class="control-btn" onclick="window.exportToCSV()">📤 Export</button>
+            <input type="file" id="csvIn" style="display:none;" accept=".csv" onchange="window.handleImport(event)">
         </div>
-        <button class="control-btn" onclick="location.reload()" style="background:var(--red); color:white;">Log Out</button>
+        <button class="control-btn logout-btn" onclick="location.reload()">Log Out</button>
     </div>
 
     <div class="container" id="portalView" style="display:none; margin-top:0;">
         <div id="mainMenu">
-            <button class="tech-btn" style="padding:25px; text-align:center; font-size:18px;" onclick="window.openSection('curriculumSection')">🥋 Video Library</button>
-            <button class="tech-btn" style="padding:25px; text-align:center; font-size:18px; display:none;" id="rosterBtn" onclick="window.openSection('adminDashboard')">👥 Student Roster</button>
+            <button class="tech-btn" style="padding:25px; text-align:center; font-size:18px; margin-bottom:10px;" onclick="window.openSection('curriculumSection')">🥋 Video Library</button>
+            <button class="tech-btn" style="padding:25px; text-align:center; font-size:18px; display:none; margin-bottom:10px;" id="rosterBtn" onclick="window.openSection('adminDashboard')">👥 Student Roster</button>
             <button class="tech-btn" style="padding:25px; text-align:center; font-size:18px; display:none;" id="staffBtn" onclick="window.openSection('staffDashboard')">🛡️ Admin Access</button>
         </div>
 
         <div id="curriculumSection" style="display:none;">
             <div class="video-wrapper"><div id="ytPlayer"></div></div>
+            <input type="text" id="videoSearch" placeholder="🔍 Search techniques..." onkeyup="window.searchVideos()">
             <div id="dynamicCurriculum"></div>
         </div>
 
         <div id="adminDashboard" style="display:none;">
-            <div id="studentForm" class="admin-tab">
-                <h3>Student Profile</h3>
+            <div id="studentForm" style="display:none; text-align:left;">
+                <h3 style="color:var(--gold);">Edit Student</h3>
                 <input type="hidden" id="editId">
                 <input type="text" id="fName" placeholder="Full Name">
-                <input type="text" id="fEmail" placeholder="Email Address">
-                <input type="text" id="fPhone" placeholder="Phone Number">
-                <input type="text" id="fAddress" placeholder="Home Address">
-                <input type="text" id="fCityZip" placeholder="City, State, Zip">
-                <input type="text" id="fRank" placeholder="Current Belt Rank">
+                <input type="text" id="fPhone" placeholder="Phone">
+                <input type="text" id="fEmail" placeholder="Email">
+                <input type="text" id="fAddress" placeholder="Address">
+                <input type="text" id="fCityZip" placeholder="City/Zip">
+                <input type="text" id="fRank" placeholder="Current Rank">
                 <input type="text" id="fLastTest" placeholder="Last Test Date">
-                <input type="text" id="fParent" placeholder="Parent Name">
-                <select id="fStatus">
-                    <option value="Current">Current</option>
-                    <option value="Inactive">Inactive</option>
-                </select>
                 <input type="text" id="fTuition" placeholder="Tuition Amount">
-                <select id="fFreq">
-                    <option value="Weekly">Weekly</option>
-                    <option value="Bi-Weekly">Bi-Weekly</option>
-                    <option value="Monthly">Monthly</option>
-                </select>
-                <input type="text" id="fSource" placeholder="Marketing Source">
-                <textarea id="fComments" placeholder="Notes/History" style="height:100px;"></textarea>
-                
-                <button id="saveBtn" class="control-btn" style="width:100%; margin-top:10px;" onclick="window.handleSave()">Save Record</button>
-                <button id="deleteBtn" class="control-btn delete-btn" style="display:none;" onclick="window.handleDelete()">Delete Record</button>
-                <button class="control-btn" style="width:100%; background:none; color:#888;" onclick="window.switchAdmin('listView')">Cancel</button>
+                <select id="fStatus"><option value="Current">Current</option><option value="Inactive">Inactive</option></select>
+                <textarea id="fComments" placeholder="Notes..." style="height:80px;"></textarea>
+                <button id="saveBtn" class="control-btn" style="width:100%; justify-content:center; padding:15px;" onclick="window.handleSave()">SAVE CHANGES</button>
+                <button id="delBtn" class="delete-btn" onclick="window.handleDelete()">DELETE RECORD</button>
+                <button class="control-btn" style="width:100%; background:none; color:#888; justify-content:center;" onclick="window.switchAdmin('listView')">Cancel</button>
             </div>
 
-            <div id="listView" class="admin-tab" style="display:block;">
-                <div class="filter-bar">
-                    <button class="filter-btn active" id="btnAll" onclick="window.setFilter('All')">ALL</button>
-                    <button class="filter-btn" id="btnCurrent" onclick="window.setFilter('Current')">CURRENT</button>
-                    <button class="filter-btn" id="btnInactive" onclick="window.setFilter('Inactive')">INACTIVE</button>
-                </div>
+            <div id="listView">
                 <input type="text" id="rosterSearch" placeholder="🔍 Search records..." onkeyup="window.runSearch()">
-                <div id="rosterTableArea"></div>
+                <div class="filter-bar">
+                    <button class="filter-btn active" id="btnCurrent" onclick="window.setFilter('Current')">Active</button>
+                    <button class="filter-btn" id="btnInactive" onclick="window.setFilter('Inactive')">Inactive</button>
+                </div>
+                <div id="rosterArea"></div>
             </div>
         </div>
 
         <div id="staffDashboard" style="display:none;">
-            <h3>System Permissions</h3>
-            <div class="permission-info">
-                <strong>Rank 15:</strong> Full Admin (CRUD + Bulk Tools).<br>
-                <strong>Rank 14:</strong> Staff (View Only - All Statuses).
-            </div>
-            <div id="staffTableArea"></div>
+            <h3 style="color:var(--gold);">Staff Permissions</h3>
+            <div id="staffArea"></div>
         </div>
     </div>
 
@@ -142,47 +134,47 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, collection, query, where, orderBy, getDocs, updateDoc, setDoc, onSnapshot, addDoc, deleteDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, collection, query, where, orderBy, getDocs, updateDoc, onSnapshot, addDoc, deleteDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = { apiKey: "AIzaSyC35Ubf6GxyDi3JEiKWaYgVFkYGknMZrcw", authDomain: "tracy-s-karate-portal.firebaseapp.com", projectId: "tracy-s-karate-portal", storageBucket: "tracy-s-karate-portal.appspot.com", messagingSenderId: "338865615783", appId: "1:338865615783:web:75865261864177d46536da" };
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        let ytPlayer, currentUserRank = 0, studentsList = [], currentFilter = 'All';
+        let ytPlayer, currentUserRank = 0, studentsList = [], currentFilter = 'Current';
 
-        function getBeltEmoji(rankText) {
+        // Mappings for UI
+        const beltColors = { "white": "#ffffff", "yellow": "#ffff00", "orange": "#ff8800", "purple": "#9b59b6", "blue": "#3498db", "green": "#2ecc71", "brown": "#8b4513", "black": "#000000" };
+
+        function getBeltHex(rankText) {
             const r = (rankText || "").toLowerCase();
-            let color = "white";
-            if(r.includes("yellow")) color = "var(--yellow)";
-            else if(r.includes("orange")) color = "var(--orange)";
-            else if(r.includes("purple")) color = "var(--purple)";
-            else if(r.includes("blue")) color = "var(--blue)";
-            else if(r.includes("green")) color = "var(--green)";
-            else if(r.includes("brown")) color = "var(--brown)";
-            else if(r.includes("black")) color = "var(--black)";
-            return `<span class="belt-icon" style="color:${color}">🥋</span>`;
+            for (const [name, hex] of Object.entries(beltColors)) { if (r.includes(name)) return hex; }
+            return "#666";
         }
 
-        window.onYouTubeIframeAPIReady = () => { ytPlayer = new YT.Player('ytPlayer', { height: '100%', width: '100%', videoId: '', playerVars: { 'controls': 1, 'rel': 0, 'modestbranding': 1, 'playsinline': 1 } }); };
-        window.loadVideo = (id) => { if (ytPlayer && ytPlayer.loadVideoById) { ytPlayer.loadVideoById(id); ytPlayer.playVideo(); } };
+        // Exposed Globally to fix "is not a function" errors
+        window.toggleDetail = (id) => {
+            const el = document.getElementById(`det-${id}`);
+            if (el) el.style.display = (el.style.display === "none") ? "block" : "none";
+        };
 
-        window.stopAndHome = () => { 
-            if(ytPlayer && ytPlayer.stopVideo) ytPlayer.stopVideo(); 
+        window.onYouTubeIframeAPIReady = () => { 
+            ytPlayer = new YT.Player('ytPlayer', { height: '100%', width: '100%', videoId: '', playerVars: { 'controls': 1, 'rel': 0, 'modestbranding': 1, 'playsinline': 1 } }); 
+        };
+
+        window.loadVideo = (id) => { if (ytPlayer?.loadVideoById) { ytPlayer.loadVideoById(id); ytPlayer.playVideo(); } };
+
+        window.stopAndHome = () => {
+            if (ytPlayer?.stopVideo) ytPlayer.stopVideo();
             ['curriculumSection', 'adminDashboard', 'staffDashboard', 'mainMenu'].forEach(s => document.getElementById(s).style.display = 'none');
             document.getElementById('mainMenu').style.display = 'block';
-            document.getElementById('adminQuickActions').style.display = 'none';
         };
 
         window.openSection = (id) => {
             document.getElementById('mainMenu').style.display = 'none';
             document.getElementById(id).style.display = 'block';
-            if(id === 'adminDashboard') {
-                window.syncRoster();
-                document.getElementById('adminQuickActions').style.display = (currentUserRank >= 14) ? 'flex' : 'none';
-                document.getElementById('bulkTools').style.display = (currentUserRank >= 15) ? 'flex' : 'none';
-            }
-            if(id === 'staffDashboard') window.syncStaff();
+            if (id === 'adminDashboard') window.syncRoster();
+            if (id === 'staffDashboard') window.syncStaff();
         };
 
         window.setFilter = (f) => {
@@ -195,11 +187,11 @@
         window.runSearch = () => {
             const term = document.getElementById('rosterSearch').value.toLowerCase();
             const filtered = studentsList.filter(s => {
-                const matchStatus = (currentFilter === 'All' || s.status === currentFilter);
-                const matchTerm = (s.fullName || "").toLowerCase().includes(term) || (s.currentRank || "").toLowerCase().includes(term);
+                const matchStatus = (s.status === currentFilter);
+                const matchTerm = (s.fullName || "").toLowerCase().includes(term);
                 return matchStatus && matchTerm;
             });
-            renderTable(filtered);
+            renderRoster(filtered);
         };
 
         window.syncRoster = () => {
@@ -210,132 +202,104 @@
             });
         };
 
-        function renderTable(data) {
-            let html = `<table>`;
+        function renderRoster(data) {
+            let html = "";
             data.forEach(s => {
-                const statusColor = s.status === 'Inactive' ? '#666' : 'white';
+                const beltColor = getBeltHex(s.currentRank);
                 html += `
-                    <tr onclick="window.toggleDetail('${s.id}')">
-                        <td style="color:${statusColor}; display: flex; align-items: center;">
-                            ${getBeltEmoji(s.currentRank)}
-                            <div><b>${s.fullName || 'Unnamed'}</b><br><small>${s.currentRank || 'No Rank'}</small></div>
-                        </td>
-                        <td style="text-align:right;">
-                            <button class="control-btn" onclick="event.stopPropagation(); window.viewOrEditStudent('${s.id}')">${currentUserRank >= 15 ? 'EDIT' : 'VIEW'}</button>
-                        </td>
-                    </tr>
-                    <tr id="det-${s.id}" style="display:none;"><td colspan="2"><div class="detail-view">
-                        <b>Phone:</b> ${s.phone || '—'}<br>
-                        <b>Tuition:</b> ${s.tuition || '—'} (${s.paymentFrequency || '—'})<br>
-                        <b>Last Test:</b> ${s.lastTestDate || '—'}<br>
-                        <b>Status:</b> ${s.status || 'Current'}
-                    </div></td></tr>`;
+                <div class="student-row" onclick="window.toggleDetail('${s.id}')">
+                    <div class="student-main">
+                        <div class="student-info">
+                            <span class="status-dot" style="background:${beltColor}"></span>
+                            <div>
+                                <div class="student-name">${s.fullName}</div>
+                                <div class="student-phone">${s.phone || '(No Phone)'}</div>
+                            </div>
+                        </div>
+                        <button class="control-btn" style="padding:6px 12px;" onclick="event.stopPropagation(); window.viewEdit('${s.id}')">EDIT</button>
+                    </div>
+                    <div id="det-${s.id}" class="detail-view" style="display:none;">
+                        <div class="detail-grid">
+                            <div class="detail-label">Status:</div><div class="detail-value">${s.status || 'Current'}</div>
+                            <div class="detail-label">Parent:</div><div class="detail-value">${s.parentName || '---'}</div>
+                            <div class="detail-label">Email:</div><div class="detail-value">${s.email || '---'}</div>
+                            <div class="detail-label">Address:</div><div class="detail-value">${s.address || '---'}</div>
+                            <div class="detail-label">Tuition:</div><div class="detail-value">${s.tuition || '---'} (${s.paymentFrequency || '---'})</div>
+                            <div class="detail-label">Rank:</div><div class="detail-value">${s.currentRank || '---'}</div>
+                            <div class="detail-label">Last Test:</div><div class="detail-value">${s.lastTestDate || '---'}</div>
+                            <div class="detail-label">Notes:</div><div class="detail-value">${s.comments || '---'}</div>
+                        </div>
+                        <button class="delete-btn" style="padding:10px; font-size:11px;" onclick="event.stopPropagation(); window.handleDelete('${s.id}')">DELETE RECORD</button>
+                    </div>
+                </div>`;
             });
-            document.getElementById('rosterTableArea').innerHTML = html + "</table>";
+            document.getElementById('rosterArea').innerHTML = html || "<p style='padding:20px; color:#666;'>No records found.</p>";
         }
 
-        window.prepareAdd = () => {
-            document.getElementById('editId').value = "";
-            document.getElementById('studentForm').querySelectorAll('input, textarea, select').forEach(i => i.value = "");
-            document.getElementById('fStatus').value = "Current";
-            document.getElementById('deleteBtn').style.display = "none";
-            window.switchAdmin('studentForm');
-        };
-
-        window.viewOrEditStudent = (id) => {
+        window.viewEdit = (id) => {
             const s = studentsList.find(x => x.id === id);
+            if (!s) return;
             document.getElementById('editId').value = id;
             document.getElementById('fName').value = s.fullName || "";
-            document.getElementById('fEmail').value = s.email || "";
             document.getElementById('fPhone').value = s.phone || "";
+            document.getElementById('fEmail').value = s.email || "";
             document.getElementById('fAddress').value = s.address || "";
             document.getElementById('fCityZip').value = s.cityZip || "";
             document.getElementById('fRank').value = s.currentRank || "";
-            document.getElementById('fLastTest').value = s.lastTestDate || "";
-            document.getElementById('fParent').value = s.parentName || "";
-            document.getElementById('fStatus').value = s.status || "Current";
             document.getElementById('fTuition').value = s.tuition || "";
-            document.getElementById('fFreq').value = s.paymentFrequency || "Weekly";
-            document.getElementById('fSource').value = s.source || "";
+            document.getElementById('fLastTest').value = s.lastTestDate || "";
+            document.getElementById('fStatus').value = s.status || "Current";
             document.getElementById('fComments').value = s.comments || "";
             
-            const isReadOnly = currentUserRank < 15;
-            document.getElementById('studentForm').querySelectorAll('input, textarea, select').forEach(i => i.disabled = isReadOnly);
-            document.getElementById('saveBtn').style.display = isReadOnly ? 'none' : 'block';
-            document.getElementById('deleteBtn').style.display = isReadOnly ? 'none' : 'block';
-            window.switchAdmin('studentForm');
+            document.getElementById('listView').style.display = "none";
+            document.getElementById('studentForm').style.display = "block";
+        };
+
+        window.switchAdmin = (view) => {
+            document.getElementById('listView').style.display = (view === 'listView') ? 'block' : 'none';
+            document.getElementById('studentForm').style.display = (view === 'studentForm') ? 'block' : 'none';
         };
 
         window.handleSave = async () => {
-            if (currentUserRank < 15) return;
             const id = document.getElementById('editId').value;
-            const data = { 
-                fullName: document.getElementById('fName').value, email: document.getElementById('fEmail').value,
-                phone: document.getElementById('fPhone').value, address: document.getElementById('fAddress').value,
-                cityZip: document.getElementById('fCityZip').value, currentRank: document.getElementById('fRank').value, 
-                lastTestDate: document.getElementById('fLastTest').value, parentName: document.getElementById('fParent').value,
-                status: document.getElementById('fStatus').value, tuition: document.getElementById('fTuition').value,
-                paymentFrequency: document.getElementById('fFreq').value, source: document.getElementById('fSource').value,
-                comments: document.getElementById('fComments').value, updatedAt: new Date().toLocaleString()
+            const data = {
+                fullName: document.getElementById('fName').value,
+                phone: document.getElementById('fPhone').value,
+                email: document.getElementById('fEmail').value,
+                address: document.getElementById('fAddress').value,
+                cityZip: document.getElementById('fCityZip').value,
+                currentRank: document.getElementById('fRank').value,
+                tuition: document.getElementById('fTuition').value,
+                lastTestDate: document.getElementById('fLastTest').value,
+                status: document.getElementById('fStatus').value,
+                comments: document.getElementById('fComments').value
             };
             if(id) await updateDoc(doc(db, "students", id), data); else await addDoc(collection(db, "students"), data);
-            alert("Record Saved"); window.switchAdmin('listView');
+            alert("Saved"); window.switchAdmin('listView');
         };
 
-        window.handleDelete = async () => {
-            const id = document.getElementById('editId').value;
-            if (id && confirm("Permanently delete this student?")) {
-                await deleteDoc(doc(db, "students", id));
-                alert("Deleted"); window.switchAdmin('listView');
+        window.handleDelete = async (id) => {
+            const targetId = id || document.getElementById('editId').value;
+            if (confirm("Delete this student permanently?")) {
+                await deleteDoc(doc(db, "students", targetId));
+                window.switchAdmin('listView');
             }
         };
 
         window.exportToCSV = () => {
             const csv = Papa.unparse(studentsList);
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.setAttribute("download", "tracys_students_export.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url; a.download = 'students.csv'; a.click();
         };
 
-        window.handleImport = (event) => {
-            const file = event.target.files[0];
-            if (!file) return;
-            Papa.parse(file, {
-                header: true,
-                skipEmptyLines: true,
-                complete: async (results) => {
-                    if (confirm(`Import ${results.data.length} records?`)) {
-                        const batch = writeBatch(db);
-                        results.data.forEach(item => {
-                            const ref = doc(collection(db, "students"));
-                            batch.set(ref, { ...item, status: item.status || "Current", updatedAt: new Date().toLocaleString() });
-                        });
-                        await batch.commit();
-                        alert("Import Successful");
-                    }
-                }
-            });
-        };
-
-        window.syncStaff = () => {
-            onSnapshot(collection(db, "users"), (snap) => {
-                let html = `<table>`;
-                snap.forEach(uDoc => {
-                    const u = uDoc.data();
-                    html += `<tr><td>${u.name || u.email}</td><td><input type="number" style="width:60px;" value="${u.rankLevel || 0}" id="rank-${uDoc.id}"></td><td><button class="control-btn" onclick="window.updateRank('${uDoc.id}')">SAVE</button></td></tr>`;
-                });
-                document.getElementById('staffTableArea').innerHTML = html + "</table>";
-            });
-        };
-
-        window.updateRank = async (id) => {
-            const newRank = parseInt(document.getElementById(`rank-${id}`).value);
-            await updateDoc(doc(db, "users", id), { rankLevel: newRank });
-            alert("Permissions updated!");
+        window.handleImport = (e) => {
+            const file = e.target.files[0];
+            Papa.parse(file, { header: true, complete: async (res) => {
+                const batch = writeBatch(db);
+                res.data.forEach(row => { if(row.fullName) batch.set(doc(collection(db, "students")), row); });
+                await batch.commit(); alert("Imported!");
+            }});
         };
 
         document.getElementById('loginBtn').onclick = async () => {
@@ -348,23 +312,39 @@
                     document.getElementById('portalNav').style.display = 'flex';
                     document.getElementById('portalView').style.display = 'block';
                     if(currentUserRank >= 14) document.getElementById('rosterBtn').style.display = 'block';
-                    if(currentUserRank >= 15) document.getElementById('staffBtn').style.display = 'block';
+                    if(currentUserRank >= 15) {
+                        document.getElementById('staffBtn').style.display = 'block';
+                        document.getElementById('adminTools').style.display = 'flex';
+                    }
                     loadCurriculum(currentUserRank);
                 }
             } catch(e) { alert("Login Failed"); }
         };
 
-        window.switchAdmin = (id) => { document.querySelectorAll('.admin-tab').forEach(t => t.style.display='none'); document.getElementById(id).style.display='block'; };
-        window.toggleDetail = (id) => { const el = document.getElementById(`det-${id}`); if (el) el.style.display = (el.style.display === "none") ? "table-row" : "none"; };
-        window.toggleGate = (id) => { const el = document.getElementById(id); el.style.display = (el.style.display === "none") ? "block" : "none"; };
         const loadCurriculum = async (rank) => {
             const q = query(collection(db, "curriculum"), where("rankRequired", "<=", rank), orderBy("rankRequired", "asc"));
             const snap = await getDocs(q);
             const container = document.getElementById('dynamicCurriculum'); container.innerHTML = "";
             snap.forEach(bDoc => {
                 const d = bDoc.data();
-                container.insertAdjacentHTML('beforeend', `<div class="belt-group"><div class="belt-header" onclick="window.toggleGate('gate-${bDoc.id}')">${d.beltName} <span>▼</span></div><div id="gate-${bDoc.id}" class="tech-list" style="display:none;">${d.videos.map(v => `<button class="tech-btn" onclick="window.loadVideo('${v.ytId}')">${v.title}</button>`).join('')}</div></div>`);
+                const bColor = getBeltHex(d.beltName);
+                container.insertAdjacentHTML('beforeend', `
+                    <div class="belt-group">
+                        <div class="belt-header" style="border-left-color:${bColor}" onclick="window.toggleDetail('belt-${bDoc.id}')">
+                            <span style="display:flex; align-items:center; gap:10px;"><span class="status-dot" style="background:${bColor}"></span> ${d.beltName}</span>
+                            <span>▼</span>
+                        </div>
+                        <div id="det-belt-${bDoc.id}" style="display:none; padding-top:5px;">
+                            ${d.videos.map(v => `<button class="tech-btn" onclick="window.loadVideo('${v.ytId}')">${v.title}</button>`).join('')}
+                        </div>
+                    </div>`);
             });
+        };
+
+        window.prepareAdd = () => {
+            document.getElementById('editId').value = "";
+            document.getElementById('studentForm').querySelectorAll('input, textarea').forEach(i => i.value = "");
+            window.switchAdmin('studentForm');
         };
     </script>
 </body>
