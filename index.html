@@ -25,17 +25,17 @@
 
         input, textarea, select { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #444; background: var(--input-bg); color: white; box-sizing: border-box; font-size: 14px; }
         
-        .detail-view { background:#222; padding:15px; font-size:13px; text-align:left; line-height:1.6; border-radius: 8px; margin: 5px 0; border: 1px solid #444; }
-        .detail-label { color: var(--gold); font-weight: bold; display: inline-block; width: 110px; }
-        
-        .filter-bar { display: flex; gap: 5px; margin-bottom: 15px; }
-        .filter-btn { flex: 1; padding: 10px; background: #333; border: 1px solid #444; color: #888; border-radius: 6px; font-size: 12px; cursor: pointer; }
-        .filter-btn.active { background: var(--gold); color: black; font-weight: bold; }
+        .admin-tab { display: none; text-align: left; }
+        .detail-view { background:#111; padding:15px; font-size:13px; text-align:left; line-height:1.6; border-radius: 8px; margin: 5px 0; border: 1px solid #444; }
+        .detail-label { color: var(--gold); font-weight: bold; display: inline-block; width: 130px; }
         
         .control-btn { background: var(--gold); color: #000; border: none; padding: 10px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; }
-        .status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 8px; }
-        table { width: 100%; border-collapse: collapse; }
-        td { padding: 12px 5px; border-bottom: 1px solid #333; }
+        .filter-bar { display: flex; gap: 5px; margin-bottom: 15px; }
+        .filter-btn { flex: 1; padding: 10px; background: #333; color: #888; border-radius: 6px; cursor: pointer; border: 1px solid #444; }
+        .filter-btn.active { background: var(--gold); color: black; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        td { padding: 12px 5px; border-bottom: 1px solid #333; font-size: 14px; }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 </head>
@@ -43,7 +43,7 @@
 
     <div class="container" id="loginBox">
         <img src="https://raw.githubusercontent.com/tracyskarateparmaheights/gateway/main/BLACK-TK.png" class="logo-img">
-        <h2 style="color: var(--gold);">Master Portal</h2>
+        <h2 style="color: var(--gold);">Tracy's Karate Portal</h2>
         <input type="email" id="emailInput" placeholder="Email">
         <input type="password" id="passInput" placeholder="Password">
         <button id="loginBtn" class="control-btn" style="width:100%; padding:18px;">SIGN IN</button>
@@ -68,28 +68,37 @@
         </div>
 
         <div id="adminDashboard" style="display:none;">
-            <div style="display:flex; gap:5px; margin-bottom:15px;">
-                <button class="control-btn" onclick="window.prepareAdd()">+ New</button>
-                <button class="control-btn" onclick="document.getElementById('csvIn').click()">📥 Import</button>
-                <button class="control-btn" onclick="window.exportStudents()">💾 Export</button>
+            <div style="display:flex; gap:8px; margin-bottom:15px;">
+                <button class="control-btn" onclick="window.prepareAdd()">+ New Student</button>
+                <button class="control-btn" onclick="document.getElementById('csvIn').click()">📥 Import CSV</button>
+                <button class="control-btn" onclick="window.exportStudents()">💾 Export CSV</button>
                 <input type="file" id="csvIn" style="display:none;" accept=".csv" onchange="window.handleBulkImport(event)">
             </div>
-            
-            <div id="studentForm" style="display:none; text-align:left;">
+
+            <div id="studentForm" class="admin-tab">
                 <input type="hidden" id="editId">
                 <select id="fStatus"><option value="Current">Current</option><option value="Inactive">Inactive</option></select>
-                <input type="text" id="fName" placeholder="Full Name">
+                <input type="text" id="fName" placeholder="Student Full Name">
+                <input type="text" id="fParent" placeholder="Parent Name">
                 <input type="text" id="fPhone" placeholder="Phone">
                 <input type="email" id="fEmail" placeholder="Email">
-                <textarea id="fComments" placeholder="Notes" style="height:60px;"></textarea>
-                <button class="control-btn" style="width:100%;" onclick="window.handleSave()">SAVE</button>
-                <button class="control-btn" style="width:100%; background:none; color:#888;" onclick="window.showList()">Cancel</button>
+                <input type="text" id="fAddress" placeholder="Address">
+                <input type="text" id="fCityZip" placeholder="City & Zip">
+                <div style="display:flex; gap:10px;">
+                    <input type="text" id="fTuition" placeholder="Tuition $">
+                    <select id="fFrequency"><option value="Weekly">Weekly</option><option value="Bi-Weekly">Bi-Weekly</option><option value="Monthly">Monthly</option></select>
+                </div>
+                <input type="text" id="fRank" placeholder="Current Rank">
+                <input type="text" id="fSource" placeholder="Lead Source">
+                <textarea id="fComments" placeholder="Notes" style="height:80px;"></textarea>
+                <button class="control-btn" style="width:100%; padding:15px;" onclick="window.handleSave()">SAVE RECORD</button>
+                <button class="control-btn" style="width:100%; background:none; color:#888;" onclick="window.switchAdmin('listView')">Cancel</button>
             </div>
 
-            <div id="listView">
+            <div id="listView" class="admin-tab" style="display:block;">
                 <div class="filter-bar">
-                    <button id="btnCur" class="filter-btn active" onclick="window.setFilter('Current')">Active</button>
-                    <button id="btnIna" class="filter-btn" onclick="window.setFilter('Inactive')">Inactive</button>
+                    <button id="fCur" class="filter-btn active" onclick="window.setFilter('Current')">Active</button>
+                    <button id="fIna" class="filter-btn" onclick="window.setFilter('Inactive')">Inactive</button>
                 </div>
                 <div id="rosterTableArea"></div>
             </div>
@@ -105,7 +114,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, collection, query, where, orderBy, getDocs, updateDoc, onSnapshot, addDoc, deleteDoc, writeBatch, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, collection, query, where, orderBy, getDocs, onSnapshot, updateDoc, addDoc, deleteDoc, serverTimestamp, writeBatch } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = { apiKey: "AIzaSyC35Ubf6GxyDi3JEiKWaYgVFkYGknMZrcw", authDomain: "tracy-s-karate-portal.firebaseapp.com", projectId: "tracy-s-karate-portal", storageBucket: "tracy-s-karate-portal.appspot.com", messagingSenderId: "338865615783", appId: "1:338865615783:web:75865261864177d46536da" };
         const app = initializeApp(firebaseConfig);
@@ -114,20 +123,17 @@
 
         let ytPlayer, playerReady = false, currentUserRank = 0, studentsList = [], currentFilter = 'Current';
 
-        // YOUTUBE
         window.onYouTubeIframeAPIReady = () => {
             ytPlayer = new YT.Player('ytPlayer', { height: '100%', width: '100%', videoId: 'S3A9t0_6fvU', events: { 'onReady': () => playerReady = true } });
         };
         window.loadVideo = (id) => { if(playerReady) { ytPlayer.loadVideoById(id); window.scrollTo({top:0, behavior:'smooth'}); } };
 
-        // CURRICULUM
         const loadCurriculum = async (rank) => {
-            document.getElementById('dbStatus').innerText = "Status: Fetching curriculum...";
+            document.getElementById('dbStatus').innerText = "Status: Connecting...";
             try {
                 const q = query(collection(db, "curriculum"), where("rankRequired", "<=", rank), orderBy("rankRequired", "asc"));
                 const snap = await getDocs(q);
-                if(snap.empty) document.getElementById('dbStatus').innerText = "Status: No videos found for your rank.";
-                else document.getElementById('dbStatus').innerText = "Status: Connection Successful.";
+                if(snap.empty) { document.getElementById('dbStatus').innerText = "Status: No curriculum data found."; return; }
                 
                 const container = document.getElementById('dynamicCurriculum');
                 container.innerHTML = "";
@@ -143,10 +149,67 @@
                             </div>
                         </div>`);
                 });
-            } catch(e) { document.getElementById('dbStatus').innerText = "Status Error: " + e.message; }
+                document.getElementById('dbStatus').innerText = "Status: Online.";
+            } catch(e) { document.getElementById('dbStatus').innerText = "Error: " + e.message; console.error(e); }
         };
 
-        // AUTH
+        window.syncRoster = () => {
+            onSnapshot(query(collection(db, "students"), orderBy("fullName")), (snap) => {
+                studentsList = []; let html = `<table>`;
+                snap.forEach(docSnap => {
+                    const s = docSnap.data(); const id = docSnap.id; studentsList.push({id, ...s});
+                    if((s.status || 'Current') === currentFilter) {
+                        html += `<tr onclick="window.toggleGate('det-${id}')">
+                            <td><b>${s.fullName}</b><br><small>${s.phone || ''}</small></td>
+                            <td style="text-align:right;"><button class="control-btn" onclick="event.stopPropagation(); window.editStudent('${id}')">EDIT</button></td>
+                        </tr>
+                        <tr id="det-${id}" style="display:none;"><td colspan="2"><div class="detail-view">
+                            <div><span class="detail-label">Parent:</span> ${s.parentName || '--'}</div>
+                            <div><span class="detail-label">Email:</span> ${s.email || '--'}</div>
+                            <div><span class="detail-label">Address:</span> ${s.address || '--'} ${s.cityZip || ''}</div>
+                            <div><span class="detail-label">Tuition:</span> ${s.tuition || '--'} (${s.paymentFrequency || ''})</div>
+                            <div><span class="detail-label">Current Rank:</span> ${s.currentRank || '--'}</div>
+                            <div><span class="detail-label">Source:</span> ${s.source || '--'}</div>
+                            <div><span class="detail-label">Notes:</span> ${s.comments || '--'}</div>
+                            <button class="control-btn" style="background:var(--red); color:white; width:100%; margin-top:10px;" onclick="window.deleteStudent('${id}')">DELETE</button>
+                        </div></td></tr>`;
+                    }
+                });
+                document.getElementById('rosterTableArea').innerHTML = html + "</table>";
+            });
+        };
+
+        window.handleSave = async () => {
+            const id = document.getElementById('editId').value;
+            const data = { 
+                fullName: document.getElementById('fName').value, parentName: document.getElementById('fParent').value,
+                phone: document.getElementById('fPhone').value, email: document.getElementById('fEmail').value,
+                address: document.getElementById('fAddress').value, cityZip: document.getElementById('fCityZip').value,
+                tuition: document.getElementById('fTuition').value, paymentFrequency: document.getElementById('fFrequency').value,
+                status: document.getElementById('fStatus').value, currentRank: document.getElementById('fRank').value,
+                source: document.getElementById('fSource').value, comments: document.getElementById('fComments').value, updatedAt: serverTimestamp() 
+            };
+            if(id) await updateDoc(doc(db, "students", id), data); else await addDoc(collection(db, "students"), data);
+            window.switchAdmin('listView');
+        };
+
+        window.toggleGate = (id) => { const el = document.getElementById(id); if(el) el.style.display = el.style.display === 'none' ? 'block' : 'none'; };
+        window.switchAdmin = (id) => { document.querySelectorAll('.admin-tab').forEach(t => t.style.display='none'); document.getElementById(id).style.display='block'; };
+        window.openSection = (id) => { 
+            document.getElementById('mainMenu').style.display = 'none'; 
+            document.getElementById(id).style.display = 'block';
+            if(id === 'adminDashboard') window.syncRoster();
+        };
+        window.stopAndHome = () => {
+            if(ytPlayer && ytPlayer.stopVideo) ytPlayer.stopVideo();
+            ['curriculumSection', 'adminDashboard', 'staffDashboard', 'mainMenu'].forEach(s => document.getElementById(s).style.display = 'none');
+            document.getElementById('mainMenu').style.display = 'block';
+        };
+        window.setFilter = (f) => { currentFilter = f; document.getElementById('fCur').classList.toggle('active', f==='Current'); document.getElementById('fIna').classList.toggle('active', f==='Inactive'); window.syncRoster(); };
+        window.prepareAdd = () => { document.getElementById('editId').value = ""; document.querySelectorAll('#studentForm input, #studentForm textarea').forEach(i => i.value = ""); window.switchAdmin('studentForm'); };
+        window.deleteStudent = async (id) => { if(confirm("Permanently delete?")) await deleteDoc(doc(db, "students", id)); };
+        window.exportStudents = () => { const csv = Papa.unparse(studentsList); const blob = new Blob([csv], { type: 'text/csv' }); const url = window.URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `Roster.csv`; a.click(); };
+
         const handleLogin = async () => {
             try {
                 const cred = await signInWithEmailAndPassword(auth, document.getElementById('emailInput').value, document.getElementById('passInput').value);
@@ -162,73 +225,8 @@
                 }
             } catch(e) { alert("Login Failed"); }
         };
-
-        // STUDENT ROSTER LOGIC
-        window.syncRoster = () => {
-            onSnapshot(query(collection(db, "students"), orderBy("fullName")), (snap) => {
-                studentsList = []; let html = `<table>`;
-                snap.forEach(docSnap => {
-                    const s = docSnap.data(); const id = docSnap.id; studentsList.push({id, ...s});
-                    if((s.status || 'Current') === currentFilter) {
-                        html += `<tr onclick="window.toggleGate('det-${id}')">
-                            <td><b>${s.fullName}</b><br><small>${s.phone || ''}</small></td>
-                            <td style="text-align:right;"><button class="control-btn" onclick="event.stopPropagation(); window.editStudent('${id}')">EDIT</button></td>
-                        </tr>
-                        <tr id="det-${id}" style="display:none;"><td colspan="2"><div class="detail-view">
-                            <p><span class="detail-label">Email:</span> ${s.email || '--'}</p>
-                            <p><span class="detail-label">Notes:</span> ${s.comments || '--'}</p>
-                        </div></td></tr>`;
-                    }
-                });
-                document.getElementById('rosterTableArea').innerHTML = html + "</table>";
-            });
-        };
-
-        window.editStudent = (id) => {
-            const s = studentsList.find(x => x.id === id);
-            document.getElementById('editId').value = id;
-            document.getElementById('fName').value = s.fullName || "";
-            document.getElementById('fPhone').value = s.phone || "";
-            document.getElementById('fEmail').value = s.email || "";
-            document.getElementById('fStatus').value = s.status || "Current";
-            document.getElementById('fComments').value = s.comments || "";
-            document.getElementById('listView').style.display = 'none';
-            document.getElementById('studentForm').style.display = 'block';
-        };
-
-        window.handleSave = async () => {
-            const id = document.getElementById('editId').value;
-            const data = { fullName: document.getElementById('fName').value, phone: document.getElementById('fPhone').value, email: document.getElementById('fEmail').value, status: document.getElementById('fStatus').value, comments: document.getElementById('fComments').value, updatedAt: serverTimestamp() };
-            if(id) await updateDoc(doc(db, "students", id), data); else await addDoc(collection(db, "students"), data);
-            window.showList();
-        };
-
-        window.setFilter = (f) => { 
-            currentFilter = f; 
-            document.getElementById('btnCur').classList.toggle('active', f==='Current');
-            document.getElementById('btnIna').classList.toggle('active', f==='Inactive');
-            window.syncRoster(); 
-        };
-
-        // GENERAL UI
-        window.toggleGate = (id) => { const el = document.getElementById(id); el.style.display = el.style.display === 'none' ? 'block' : 'none'; };
-        window.openSection = (id) => { 
-            document.getElementById('mainMenu').style.display = 'none'; 
-            document.getElementById(id).style.display = 'block';
-            if(id === 'adminDashboard') window.syncRoster();
-        };
-        window.stopAndHome = () => {
-            if(ytPlayer && ytPlayer.stopVideo) ytPlayer.stopVideo();
-            ['curriculumSection', 'adminDashboard', 'staffDashboard', 'mainMenu'].forEach(s => document.getElementById(s).style.display = 'none');
-            document.getElementById('mainMenu').style.display = 'block';
-        };
-        window.showList = () => { document.getElementById('studentForm').style.display = 'none'; document.getElementById('listView').style.display = 'block'; };
-        window.prepareAdd = () => { document.getElementById('editId').value = ""; document.querySelectorAll('#studentForm input, #studentForm textarea').forEach(i => i.value = ""); window.editStudent(""); };
-        window.exportStudents = () => { const csv = Papa.unparse(studentsList); const blob = new Blob([csv], { type: 'text/csv' }); const url = window.URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `Roster.csv`; a.click(); };
-
         document.getElementById('loginBtn').onclick = handleLogin;
-        document.getElementById('passInput').onkeypress = (e) => { if(e.key === 'Enter') handleLogin(); };
-
+        document.getElementById('passInput').addEventListener('keypress', (e) => { if(e.key === 'Enter') handleLogin(); });
     </script>
 </body>
 </html>
