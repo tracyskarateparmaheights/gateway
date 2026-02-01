@@ -144,7 +144,6 @@
 
         let ytPlayer, currentUserRank = 0, studentsList = [], currentRosterFilter = 'Current', playerIsReady = false;
 
-        // Visual Mappings
         const beltColors = { "white": "#ffffff", "yellow": "#ffff00", "orange": "#ff8800", "purple": "#9b59b6", "blue": "#3498db", "green": "#2ecc71", "brown": "#8b4513", "black": "#000000" };
         function getHex(name) { 
             const n = (name || "").toLowerCase();
@@ -152,23 +151,8 @@
             return "#444";
         }
 
-        // Global functions
-        window.toggleDetail = (id) => {
-            const el = document.getElementById(`det-${id}`);
-            if (el) el.style.display = (el.style.display === "none") ? "table-row" : "none";
-        };
-
-        window.toggleGate = (id) => {
-            const el = document.getElementById(id);
-            if (el) el.style.display = (el.style.display === "none") ? "block" : "none";
-        };
-
-        // YOUTUBE PLAYER LOGIC
         window.onYouTubeIframeAPIReady = () => {
-            ytPlayer = new YT.Player('ytPlayer', { 
-                height: '100%', 
-                width: '100%', 
-                videoId: 'S3A9t0_6fvU', 
+            ytPlayer = new YT.Player('ytPlayer', { height: '100%', width: '100%', videoId: 'S3A9t0_6fvU', 
                 playerVars: { 'controls': 1, 'rel': 0, 'modestbranding': 1, 'playsinline': 1 },
                 events: { 'onReady': () => { playerIsReady = true; } }
             });
@@ -188,98 +172,6 @@
             document.getElementById('mainMenu').style.display = 'block';
         };
 
-        window.openSection = (id) => {
-            document.getElementById('mainMenu').style.display = 'none';
-            document.getElementById(id).style.display = 'block';
-            if (id === 'adminDashboard') window.syncRoster();
-            if (id === 'staffDashboard') window.syncStaff();
-        };
-
-        // ROSTER LOGIC
-        window.syncRoster = () => {
-            onSnapshot(query(collection(db, "students"), orderBy("fullName")), (snap) => {
-                studentsList = [];
-                let html = `<table>`;
-                snap.forEach(docSnap => {
-                    const s = docSnap.data(); const id = docSnap.id; studentsList.push({id, ...s});
-                    const displayStyle = (s.status || "Current") === currentRosterFilter ? "" : "none";
-                    const dotColor = (s.status === "Inactive") ? "var(--red)" : "var(--green)";
-                    
-                    html += `<tr class="sr-row" style="display:${displayStyle}" onclick="window.toggleDetail('${id}')">
-                        <td><span class="status-dot" style="background:${dotColor}"></span><b>${s.fullName}</b><br><small>${s.phone || 'No Phone'}</small></td>
-                        <td style="text-align:right;"><button class="control-btn" onclick="event.stopPropagation(); window.editStudent('${id}')">EDIT</button></td>
-                    </tr>
-                    <tr id="det-${id}" style="display:none;"><td colspan="2"><div class="detail-view">
-                        <div><span class="detail-label">Status:</span> ${s.status || 'Current'}</div>
-                        <div><span class="detail-label">Parent:</span> ${s.parentName || '---'}</div>
-                        <div><span class="detail-label">Email:</span> ${s.email || '---'}</div>
-                        <div><span class="detail-label">Address:</span> ${s.address || '---'}</div>
-                        <div><span class="detail-label">Tuition:</span> ${s.tuition || '---'} (${s.paymentFrequency || 'Weekly'})</div>
-                        <div><span class="detail-label">Rank:</span> ${s.currentRank || '---'}</div>
-                        <div><span class="detail-label">Notes:</span> ${s.comments || '---'}</div>
-                        <button class="control-btn" style="background:var(--red); color:white; width:100%; margin-top:10px; justify-content:center;" onclick="window.deleteStudent('${id}', '${s.fullName.replace(/'/g, "\\'")}')">DELETE RECORD</button>
-                    </div></td></tr>`;
-                });
-                document.getElementById('rosterTableArea').innerHTML = html + "</table>";
-            });
-        };
-
-        window.editStudent = (id) => {
-            const s = studentsList.find(x => x.id === id);
-            document.getElementById('editId').value = id;
-            document.getElementById('fName').value = s.fullName || "";
-            document.getElementById('fParent').value = s.parentName || "";
-            document.getElementById('fPhone').value = s.phone || "";
-            document.getElementById('fEmail').value = s.email || "";
-            document.getElementById('fAddress').value = s.address || "";
-            document.getElementById('fCityZip').value = s.cityZip || "";
-            document.getElementById('fTuition').value = s.tuition || "";
-            document.getElementById('fFrequency').value = s.paymentFrequency || "Weekly";
-            document.getElementById('fSource').value = s.source || "";
-            document.getElementById('fComments').value = s.comments || "";
-            document.getElementById('fCurrentRank').value = s.currentRank || "";
-            document.getElementById('fLastTestDate').value = s.lastTestDate || "";
-            window.switchAdmin('studentForm');
-        };
-
-        window.handleSave = async () => {
-            const id = document.getElementById('editId').value;
-            const data = { 
-                fullName: document.getElementById('fName').value, status: document.getElementById('fStatus').value,
-                parentName: document.getElementById('fParent').value, phone: document.getElementById('fPhone').value,
-                email: document.getElementById('fEmail').value, address: document.getElementById('fAddress').value,
-                cityZip: document.getElementById('fCityZip').value, tuition: document.getElementById('fTuition').value,
-                paymentFrequency: document.getElementById('fFrequency').value, source: document.getElementById('fSource').value,
-                comments: document.getElementById('fComments').value, currentRank: document.getElementById('fCurrentRank').value,
-                lastTestDate: document.getElementById('fLastTestDate').value, updatedAt: serverTimestamp() 
-            };
-            if(id) await updateDoc(doc(db, "students", id), data); else await addDoc(collection(db, "students"), data);
-            window.switchAdmin('listView');
-        };
-
-        // STAFF LOGIC
-        window.syncStaff = () => {
-            onSnapshot(collection(db, "users"), (snap) => {
-                let html = `<table><tr><th>NAME</th><th>LVL</th><th></th></tr>`;
-                snap.forEach(uDoc => {
-                    const u = uDoc.data();
-                    html += `<tr>
-                        <td>${u.name || u.email}</td>
-                        <td><input type="number" class="lvl-input" id="lvl-${uDoc.id}" value="${u.rankLevel || 0}"></td>
-                        <td style="text-align:right;"><button class="control-btn" onclick="window.updateRank('${uDoc.id}')">✔</button></td>
-                    </tr>`;
-                });
-                document.getElementById('staffTableArea').innerHTML = html + "</table>";
-            });
-        };
-
-        window.updateRank = async (id) => {
-            const val = parseInt(document.getElementById(`lvl-${id}`).value);
-            await updateDoc(doc(db, "users", id), { rankLevel: val });
-            alert("Updated");
-        };
-
-        // CURRICULUM LOADER
         const loadCurriculum = async (rank) => {
             const q = query(collection(db, "curriculum"), where("rankRequired", "<=", rank), orderBy("rankRequired", "asc"));
             const snap = await getDocs(q);
@@ -300,16 +192,7 @@
             });
         };
 
-        // Helpers
-        window.setFilter = (s) => { currentRosterFilter = s; document.getElementById('filterActive').classList.toggle('active', s === 'Current'); document.getElementById('filterInactive').classList.toggle('active', s === 'Inactive'); window.syncRoster(); };
-        window.switchAdmin = (id) => { document.querySelectorAll('.admin-tab').forEach(t => t.style.display='none'); document.getElementById(id).style.display='block'; };
-        window.prepareAdd = () => { document.getElementById('editId').value = ""; document.querySelectorAll('#studentForm input, #studentForm textarea').forEach(i => i.value = ""); window.switchAdmin('studentForm'); };
-        window.deleteStudent = async (id, name) => { if(confirm(`Delete ${name}?`)) await deleteDoc(doc(db, "students", id)); };
-        window.exportStudents = () => { const csv = Papa.unparse(studentsList); const blob = new Blob([csv], { type: 'text/csv' }); const url = window.URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `Roster_${new Date().toLocaleDateString()}.csv`; a.click(); };
-        window.handleBulkImport = (e) => { const file = e.target.files[0]; Papa.parse(file, { header: true, complete: async (r) => { const batch = writeBatch(db); r.data.forEach(row => { if(row.fullName) batch.set(doc(collection(db, "students")), {...row, updatedAt: serverTimestamp()}); }); await batch.commit(); alert("Done!"); }}); };
-
-        // AUTH
-        document.getElementById('loginBtn').onclick = async () => {
+        const handleLogin = async () => {
             try {
                 const cred = await signInWithEmailAndPassword(auth, document.getElementById('emailInput').value, document.getElementById('passInput').value);
                 const snap = await getDoc(doc(db, "users", cred.user.uid));
@@ -324,6 +207,55 @@
                 }
             } catch(e) { alert("Login Failed"); }
         };
+
+        document.getElementById('loginBtn').onclick = handleLogin;
+        document.getElementById('passInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') handleLogin(); });
+
+        window.openSection = (id) => {
+            document.getElementById('mainMenu').style.display = 'none';
+            document.getElementById(id).style.display = 'block';
+            if (id === 'adminDashboard') window.syncRoster();
+            if (id === 'staffDashboard') window.syncStaff();
+        };
+
+        window.toggleDetail = (id) => { const el = document.getElementById(`det-${id}`); if (el) el.style.display = (el.style.display === "none") ? "table-row" : "none"; };
+        window.toggleGate = (id) => { const el = document.getElementById(id); if (el) el.style.display = (el.style.display === "none") ? "block" : "none"; };
+        window.switchAdmin = (id) => { document.querySelectorAll('.admin-tab').forEach(t => t.style.display='none'); document.getElementById(id).style.display='block'; };
+        window.syncRoster = () => {
+            onSnapshot(query(collection(db, "students"), orderBy("fullName")), (snap) => {
+                studentsList = []; let html = `<table>`;
+                snap.forEach(docSnap => {
+                    const s = docSnap.data(); const id = docSnap.id; studentsList.push({id, ...s});
+                    const displayStyle = (s.status || "Current") === currentRosterFilter ? "" : "none";
+                    const dotColor = (s.status === "Inactive") ? "var(--red)" : "var(--green)";
+                    html += `<tr class="sr-row" style="display:${displayStyle}" onclick="window.toggleDetail('${id}')"><td><span class="status-dot" style="background:${dotColor}"></span><b>${s.fullName}</b><br><small>${s.phone || 'No Phone'}</small></td><td style="text-align:right;"><button class="control-btn" onclick="event.stopPropagation(); window.editStudent('${id}')">EDIT</button></td></tr><tr id="det-${id}" style="display:none;"><td colspan="2"><div class="detail-view"><div><span class="detail-label">Status:</span> ${s.status || 'Current'}</div><div><span class="detail-label">Parent:</span> ${s.parentName || '---'}</div><div><span class="detail-label">Email:</span> ${s.email || '---'}</div><div><span class="detail-label">Address:</span> ${s.address || '---'}</div><div><span class="detail-label">Tuition:</span> ${s.tuition || '---'} (${s.paymentFrequency || 'Weekly'})</div><div><span class="detail-label">Rank:</span> ${s.currentRank || '---'}</div><div><span class="detail-label">Notes:</span> ${s.comments || '---'}</div><button class="control-btn" style="background:var(--red); color:white; width:100%; margin-top:10px; justify-content:center;" onclick="window.deleteStudent('${id}', '${s.fullName.replace(/'/g, "\\'")}')">DELETE RECORD</button></div></td></tr>`;
+                });
+                document.getElementById('rosterTableArea').innerHTML = html + "</table>";
+            });
+        };
+        window.editStudent = (id) => {
+            const s = studentsList.find(x => x.id === id);
+            document.getElementById('editId').value = id; document.getElementById('fName').value = s.fullName || ""; document.getElementById('fParent').value = s.parentName || ""; document.getElementById('fPhone').value = s.phone || ""; document.getElementById('fEmail').value = s.email || ""; document.getElementById('fAddress').value = s.address || ""; document.getElementById('fCityZip').value = s.cityZip || ""; document.getElementById('fTuition').value = s.tuition || ""; document.getElementById('fFrequency').value = s.paymentFrequency || "Weekly"; document.getElementById('fSource').value = s.source || ""; document.getElementById('fComments').value = s.comments || ""; document.getElementById('fCurrentRank').value = s.currentRank || ""; document.getElementById('fLastTestDate').value = s.lastTestDate || "";
+            window.switchAdmin('studentForm');
+        };
+        window.handleSave = async () => {
+            const id = document.getElementById('editId').value;
+            const data = { fullName: document.getElementById('fName').value, status: document.getElementById('fStatus').value, parentName: document.getElementById('fParent').value, phone: document.getElementById('fPhone').value, email: document.getElementById('fEmail').value, address: document.getElementById('fAddress').value, cityZip: document.getElementById('fCityZip').value, tuition: document.getElementById('fTuition').value, paymentFrequency: document.getElementById('fFrequency').value, source: document.getElementById('fSource').value, comments: document.getElementById('fComments').value, currentRank: document.getElementById('fCurrentRank').value, lastTestDate: document.getElementById('fLastTestDate').value, updatedAt: serverTimestamp() };
+            if(id) await updateDoc(doc(db, "students", id), data); else await addDoc(collection(db, "students"), data);
+            window.switchAdmin('listView');
+        };
+        window.syncStaff = () => {
+            onSnapshot(collection(db, "users"), (snap) => {
+                let html = `<table><tr><th>NAME</th><th>LVL</th><th></th></tr>`;
+                snap.forEach(uDoc => { const u = uDoc.data(); html += `<tr><td>${u.name || u.email}</td><td><input type="number" class="lvl-input" id="lvl-${uDoc.id}" value="${u.rankLevel || 0}"></td><td style="text-align:right;"><button class="control-btn" onclick="window.updateRank('${uDoc.id}')">✔</button></td></tr>`; });
+                document.getElementById('staffTableArea').innerHTML = html + "</table>";
+            });
+        };
+        window.updateRank = async (id) => { const val = parseInt(document.getElementById(`lvl-${id}`).value); await updateDoc(doc(db, "users", id), { rankLevel: val }); alert("Updated"); };
+        window.setFilter = (s) => { currentRosterFilter = s; document.getElementById('filterActive').classList.toggle('active', s === 'Current'); document.getElementById('filterInactive').classList.toggle('active', s === 'Inactive'); window.syncRoster(); };
+        window.deleteStudent = async (id, name) => { if(confirm(`Delete ${name}?`)) await deleteDoc(doc(db, "students", id)); };
+        window.exportStudents = () => { const csv = Papa.unparse(studentsList); const blob = new Blob([csv], { type: 'text/csv' }); const url = window.URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `Roster_${new Date().toLocaleDateString()}.csv`; a.click(); };
+        window.handleBulkImport = (e) => { const file = e.target.files[0]; Papa.parse(file, { header: true, complete: async (r) => { const batch = writeBatch(db); r.data.forEach(row => { if(row.fullName) batch.set(doc(collection(db, "students")), {...row, updatedAt: serverTimestamp()}); }); await batch.commit(); alert("Done!"); }}); };
     </script>
 </body>
 </html>
