@@ -13,54 +13,39 @@
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg); color: white; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; box-sizing: border-box; }
         
         .container { background: var(--card); padding: 20px; border-radius: 12px; border-top: 4px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 100%; max-width: 500px; margin-top: 10px; box-sizing: border-box; }
-        .logo-img { width: 160px; height: auto; margin-bottom: 10px; }
         
-        /* Navigation & Header */
+        /* Navigation */
         .nav-header { width: 100%; max-width: 500px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 8px; }
         .control-btn { background: var(--gold); color: #000; border: none; padding: 10px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 5px; }
-        .logout-btn { background: var(--red); color: white; }
 
         /* Video Library Style */
         .video-wrapper { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 8px; overflow: hidden; margin-bottom: 15px; border: 1px solid #333; }
         #ytPlayer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
         
-        .belt-group { margin-bottom: 10px; }
-        .belt-header { background: #333; padding: 15px; border-radius: 8px; color: var(--gold); cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: bold; border-left: 5px solid transparent; }
-        .tech-btn { background: #1a1a1a; color: #eee; padding: 14px; margin: 2px 0; border-radius: 4px; width: 100%; cursor: pointer; text-align: left; font-size: 13px; border: 1px solid #333; transition: background 0.2s; }
-        .tech-btn:active { background: #333; border-color: var(--blue); }
+        .belt-header { background: #333; padding: 15px; border-radius: 8px; color: var(--gold); cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: bold; margin-bottom: 5px; border-left: 5px solid transparent; }
+        .status-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 10px; }
+        .tech-btn { background: #1a1a1a; color: #eee; padding: 14px; margin: 2px 0; border-radius: 4px; width: 100%; cursor: pointer; text-align: left; font-size: 13px; border: 1px solid #333; }
 
-        /* Student Record Style */
-        .student-row { padding: 15px; border-bottom: 1px solid #333; cursor: pointer; position: relative; }
-        .student-main { display: flex; align-items: center; justify-content: space-between; }
-        .student-info { display: flex; align-items: center; gap: 10px; }
-        .status-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
-        .student-name { font-weight: bold; font-size: 15px; }
-        .student-phone { font-size: 12px; color: #aaa; margin-top: 2px; }
-
-        .detail-view { background:#1a1a1a; padding:15px; font-size:13px; text-align:left; border-radius: 8px; margin: 10px 0; border: 1px solid #444; }
-        .detail-grid { display: grid; grid-template-columns: 100px 1fr; gap: 5px; margin-bottom: 10px; }
+        /* Roster Elements */
+        .student-row { padding: 15px; border-bottom: 1px solid #333; cursor: pointer; }
+        .detail-view { background:#1a1a1a; padding:15px; font-size:13px; border-radius: 8px; margin: 10px 0; border: 1px solid #444; }
+        .detail-grid { display: grid; grid-template-columns: 100px 1fr; gap: 5px; }
         .detail-label { color: var(--gold); font-weight: bold; font-size: 12px; }
-        .detail-value { color: #fff; font-size: 13px; }
-
-        .filter-bar { display: flex; gap: 5px; margin-bottom: 15px; background: #333; padding: 4px; border-radius: 8px; }
+        
+        .filter-bar { display: flex; gap: 5px; margin: 15px 0; background: #333; padding: 4px; border-radius: 8px; }
         .filter-btn { flex: 1; padding: 10px; background: transparent; border: none; color: #888; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: bold; }
         .filter-btn.active { background: var(--gold); color: black; }
 
-        .delete-btn { background: var(--red); color: white; margin-top: 15px; width: 100%; padding: 15px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; text-transform: uppercase; }
-
-        input, textarea, select { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 6px; border: 1px solid #444; background: var(--input-bg); color: white; box-sizing: border-box; font-size: 14px; }
-        .footer-text { margin-top: 25px; font-size: 10px; color: #888; opacity: 0.7; line-height: 1.5; text-align: center; }
-
-        * { -webkit-user-select: none; user-select: none; }
-        input, textarea { -webkit-user-select: text; user-select: text; }
+        input, textarea, select { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 6px; border: 1px solid #444; background: var(--input-bg); color: white; box-sizing: border-box; }
+        .footer-text { margin-top: 25px; font-size: 10px; color: #888; opacity: 0.7; text-align: center; }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 </head>
-<body oncontextmenu="return false">
+<body>
 
     <div class="container" id="loginBox">
-        <img src="https://raw.githubusercontent.com/tracyskarateparmaheights/gateway/main/BLACK-TK.png" class="logo-img">
-        <h2 style="color: var(--gold); margin: 0 0 20px 0; font-size: 20px;">Student & Staff Portal</h2>
+        <img src="https://raw.githubusercontent.com/tracyskarateparmaheights/gateway/main/BLACK-TK.png" style="width:160px; margin-bottom:10px;">
+        <h2 style="color: var(--gold); margin: 0 0 20px 0;">Tracy's Karate Portal</h2>
         <input type="email" id="emailInput" placeholder="Email">
         <input type="password" id="passInput" placeholder="Password">
         <button id="loginBtn" class="control-btn" style="width:100%; padding:18px; justify-content:center;">SIGN IN</button>
@@ -72,13 +57,7 @@
 
     <div class="nav-header" id="portalNav" style="display:none;">
         <button class="control-btn" onclick="window.stopAndHome()">🏠 Menu</button>
-        <div id="adminTools" style="display:none; gap:5px;">
-            <button class="control-btn" onclick="window.prepareAdd()">+ New</button>
-            <button class="control-btn" onclick="document.getElementById('csvIn').click()">📥 Import</button>
-            <button class="control-btn" onclick="window.exportToCSV()">📤 Export</button>
-            <input type="file" id="csvIn" style="display:none;" accept=".csv" onchange="window.handleImport(event)">
-        </div>
-        <button class="control-btn logout-btn" onclick="location.reload()">Log Out</button>
+        <button class="control-btn" onclick="location.reload()" style="background:var(--red); color:white;">Log Out</button>
     </div>
 
     <div class="container" id="portalView" style="display:none; margin-top:0;">
@@ -95,21 +74,20 @@
         </div>
 
         <div id="adminDashboard" style="display:none;">
-            <div id="studentForm" style="display:none; text-align:left;">
-                <h3 style="color:var(--gold);">Edit Student</h3>
+            <div id="rosterControls" style="display:flex; gap:5px; margin-bottom:15px;">
+                <button class="control-btn" onclick="window.prepareAdd()">+ New</button>
+                <button class="control-btn" onclick="document.getElementById('csvIn').click()">📥 Import</button>
+                <button class="control-btn" onclick="window.exportToCSV()">📤 Export</button>
+                <input type="file" id="csvIn" style="display:none;" accept=".csv" onchange="window.handleImport(event)">
+            </div>
+
+            <div id="studentForm" style="display:none;">
                 <input type="hidden" id="editId">
                 <input type="text" id="fName" placeholder="Full Name">
-                <input type="text" id="fPhone" placeholder="Phone">
-                <input type="text" id="fEmail" placeholder="Email">
-                <input type="text" id="fAddress" placeholder="Address">
-                <input type="text" id="fCityZip" placeholder="City/Zip">
                 <input type="text" id="fRank" placeholder="Current Rank">
-                <input type="text" id="fLastTest" placeholder="Last Test Date">
-                <input type="text" id="fTuition" placeholder="Tuition Amount">
                 <select id="fStatus"><option value="Current">Current</option><option value="Inactive">Inactive</option></select>
                 <textarea id="fComments" placeholder="Notes..." style="height:80px;"></textarea>
-                <button id="saveBtn" class="control-btn" style="width:100%; justify-content:center; padding:15px;" onclick="window.handleSave()">SAVE CHANGES</button>
-                <button id="delBtn" class="delete-btn" onclick="window.handleDelete()">DELETE RECORD</button>
+                <button class="control-btn" style="width:100%; justify-content:center; padding:15px;" onclick="window.handleSave()">SAVE</button>
                 <button class="control-btn" style="width:100%; background:none; color:#888; justify-content:center;" onclick="window.switchAdmin('listView')">Cancel</button>
             </div>
 
@@ -143,16 +121,6 @@
 
         let ytPlayer, currentUserRank = 0, studentsList = [], currentFilter = 'Current';
 
-        // Mappings for UI
-        const beltColors = { "white": "#ffffff", "yellow": "#ffff00", "orange": "#ff8800", "purple": "#9b59b6", "blue": "#3498db", "green": "#2ecc71", "brown": "#8b4513", "black": "#000000" };
-
-        function getBeltHex(rankText) {
-            const r = (rankText || "").toLowerCase();
-            for (const [name, hex] of Object.entries(beltColors)) { if (r.includes(name)) return hex; }
-            return "#666";
-        }
-
-        // Exposed Globally to fix "is not a function" errors
         window.toggleDetail = (id) => {
             const el = document.getElementById(`det-${id}`);
             if (el) el.style.display = (el.style.display === "none") ? "block" : "none";
@@ -162,10 +130,15 @@
             ytPlayer = new YT.Player('ytPlayer', { height: '100%', width: '100%', videoId: '', playerVars: { 'controls': 1, 'rel': 0, 'modestbranding': 1, 'playsinline': 1 } }); 
         };
 
-        window.loadVideo = (id) => { if (ytPlayer?.loadVideoById) { ytPlayer.loadVideoById(id); ytPlayer.playVideo(); } };
+        window.loadVideo = (id) => { 
+            if (ytPlayer && ytPlayer.loadVideoById) { 
+                ytPlayer.loadVideoById(id); 
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } 
+        };
 
         window.stopAndHome = () => {
-            if (ytPlayer?.stopVideo) ytPlayer.stopVideo();
+            if (ytPlayer && ytPlayer.stopVideo) ytPlayer.stopVideo();
             ['curriculumSection', 'adminDashboard', 'staffDashboard', 'mainMenu'].forEach(s => document.getElementById(s).style.display = 'none');
             document.getElementById('mainMenu').style.display = 'block';
         };
@@ -186,11 +159,7 @@
 
         window.runSearch = () => {
             const term = document.getElementById('rosterSearch').value.toLowerCase();
-            const filtered = studentsList.filter(s => {
-                const matchStatus = (s.status === currentFilter);
-                const matchTerm = (s.fullName || "").toLowerCase().includes(term);
-                return matchStatus && matchTerm;
-            });
+            const filtered = studentsList.filter(s => (s.status === currentFilter) && (s.fullName || "").toLowerCase().includes(term));
             renderRoster(filtered);
         };
 
@@ -205,103 +174,66 @@
         function renderRoster(data) {
             let html = "";
             data.forEach(s => {
-                const beltColor = getBeltHex(s.currentRank);
                 html += `
                 <div class="student-row" onclick="window.toggleDetail('${s.id}')">
-                    <div class="student-main">
-                        <div class="student-info">
-                            <span class="status-dot" style="background:${beltColor}"></span>
-                            <div>
-                                <div class="student-name">${s.fullName}</div>
-                                <div class="student-phone">${s.phone || '(No Phone)'}</div>
-                            </div>
-                        </div>
-                        <button class="control-btn" style="padding:6px 12px;" onclick="event.stopPropagation(); window.viewEdit('${s.id}')">EDIT</button>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div><b>${s.fullName}</b><br><small style="color:#aaa;">${s.phone || ''}</small></div>
+                        <button class="control-btn" style="padding:6px;" onclick="event.stopPropagation(); window.viewEdit('${s.id}')">EDIT</button>
                     </div>
                     <div id="det-${s.id}" class="detail-view" style="display:none;">
                         <div class="detail-grid">
-                            <div class="detail-label">Status:</div><div class="detail-value">${s.status || 'Current'}</div>
-                            <div class="detail-label">Parent:</div><div class="detail-value">${s.parentName || '---'}</div>
-                            <div class="detail-label">Email:</div><div class="detail-value">${s.email || '---'}</div>
-                            <div class="detail-label">Address:</div><div class="detail-value">${s.address || '---'}</div>
-                            <div class="detail-label">Tuition:</div><div class="detail-value">${s.tuition || '---'} (${s.paymentFrequency || '---'})</div>
-                            <div class="detail-label">Rank:</div><div class="detail-value">${s.currentRank || '---'}</div>
-                            <div class="detail-label">Last Test:</div><div class="detail-value">${s.lastTestDate || '---'}</div>
-                            <div class="detail-label">Notes:</div><div class="detail-value">${s.comments || '---'}</div>
+                            <div class="detail-label">Rank:</div><div>${s.currentRank || '---'}</div>
+                            <div class="detail-label">Tuition:</div><div>${s.tuition || '---'}</div>
+                            <div class="detail-label">Notes:</div><div>${s.comments || '---'}</div>
                         </div>
-                        <button class="delete-btn" style="padding:10px; font-size:11px;" onclick="event.stopPropagation(); window.handleDelete('${s.id}')">DELETE RECORD</button>
+                        <button class="control-btn" style="background:var(--red); color:white; width:100%; margin-top:10px; justify-content:center;" onclick="window.handleDelete('${s.id}')">DELETE</button>
                     </div>
                 </div>`;
             });
-            document.getElementById('rosterArea').innerHTML = html || "<p style='padding:20px; color:#666;'>No records found.</p>";
+            document.getElementById('rosterArea').innerHTML = html;
         }
 
-        window.viewEdit = (id) => {
-            const s = studentsList.find(x => x.id === id);
-            if (!s) return;
-            document.getElementById('editId').value = id;
-            document.getElementById('fName').value = s.fullName || "";
-            document.getElementById('fPhone').value = s.phone || "";
-            document.getElementById('fEmail').value = s.email || "";
-            document.getElementById('fAddress').value = s.address || "";
-            document.getElementById('fCityZip').value = s.cityZip || "";
-            document.getElementById('fRank').value = s.currentRank || "";
-            document.getElementById('fTuition').value = s.tuition || "";
-            document.getElementById('fLastTest').value = s.lastTestDate || "";
-            document.getElementById('fStatus').value = s.status || "Current";
-            document.getElementById('fComments').value = s.comments || "";
-            
-            document.getElementById('listView').style.display = "none";
-            document.getElementById('studentForm').style.display = "block";
+        window.syncStaff = () => {
+            onSnapshot(collection(db, "users"), (snap) => {
+                let html = `<table style="width:100%; border-collapse:collapse;">`;
+                snap.forEach(uDoc => {
+                    const u = uDoc.data();
+                    html += `<tr style="border-bottom:1px solid #333;">
+                        <td style="padding:10px;">${u.name || u.email}</td>
+                        <td><input type="number" style="width:50px; margin:0;" value="${u.rankLevel || 0}" id="staff-${uDoc.id}"></td>
+                        <td><button class="control-btn" onclick="window.updateStaff('${uDoc.id}')">SAVE</button></td>
+                    </tr>`;
+                });
+                document.getElementById('staffArea').innerHTML = html + "</table>";
+            });
         };
 
-        window.switchAdmin = (view) => {
-            document.getElementById('listView').style.display = (view === 'listView') ? 'block' : 'none';
-            document.getElementById('studentForm').style.display = (view === 'studentForm') ? 'block' : 'none';
+        window.updateStaff = async (id) => {
+            const val = parseInt(document.getElementById(`staff-${id}`).value);
+            await updateDoc(doc(db, "users", id), { rankLevel: val });
+            alert("Updated");
         };
 
-        window.handleSave = async () => {
-            const id = document.getElementById('editId').value;
-            const data = {
-                fullName: document.getElementById('fName').value,
-                phone: document.getElementById('fPhone').value,
-                email: document.getElementById('fEmail').value,
-                address: document.getElementById('fAddress').value,
-                cityZip: document.getElementById('fCityZip').value,
-                currentRank: document.getElementById('fRank').value,
-                tuition: document.getElementById('fTuition').value,
-                lastTestDate: document.getElementById('fLastTest').value,
-                status: document.getElementById('fStatus').value,
-                comments: document.getElementById('fComments').value
-            };
-            if(id) await updateDoc(doc(db, "students", id), data); else await addDoc(collection(db, "students"), data);
-            alert("Saved"); window.switchAdmin('listView');
+        const loadCurriculum = async (rank) => {
+            const q = query(collection(db, "curriculum"), where("rankRequired", "<=", rank), orderBy("rankRequired", "asc"));
+            const snap = await getDocs(q);
+            const container = document.getElementById('dynamicCurriculum'); 
+            container.innerHTML = "";
+            snap.forEach(bDoc => {
+                const d = bDoc.data();
+                container.insertAdjacentHTML('beforeend', `
+                    <div class="belt-group">
+                        <div class="belt-header" onclick="window.toggleDetail('belt-${bDoc.id}')">
+                            <span>🥋 ${d.beltName}</span><span>▼</span>
+                        </div>
+                        <div id="det-belt-${bDoc.id}" style="display:none;">
+                            ${d.videos.map(v => `<button class="tech-btn" onclick="window.loadVideo('${v.ytId}')">${v.title}</button>`).join('')}
+                        </div>
+                    </div>`);
+            });
         };
 
-        window.handleDelete = async (id) => {
-            const targetId = id || document.getElementById('editId').value;
-            if (confirm("Delete this student permanently?")) {
-                await deleteDoc(doc(db, "students", targetId));
-                window.switchAdmin('listView');
-            }
-        };
-
-        window.exportToCSV = () => {
-            const csv = Papa.unparse(studentsList);
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a'); a.href = url; a.download = 'students.csv'; a.click();
-        };
-
-        window.handleImport = (e) => {
-            const file = e.target.files[0];
-            Papa.parse(file, { header: true, complete: async (res) => {
-                const batch = writeBatch(db);
-                res.data.forEach(row => { if(row.fullName) batch.set(doc(collection(db, "students")), row); });
-                await batch.commit(); alert("Imported!");
-            }});
-        };
-
+        // Standard logic for login, save, delete, etc.
         document.getElementById('loginBtn').onclick = async () => {
             try {
                 const cred = await signInWithEmailAndPassword(auth, document.getElementById('emailInput').value, document.getElementById('passInput').value);
@@ -312,34 +244,36 @@
                     document.getElementById('portalNav').style.display = 'flex';
                     document.getElementById('portalView').style.display = 'block';
                     if(currentUserRank >= 14) document.getElementById('rosterBtn').style.display = 'block';
-                    if(currentUserRank >= 15) {
-                        document.getElementById('staffBtn').style.display = 'block';
-                        document.getElementById('adminTools').style.display = 'flex';
-                    }
+                    if(currentUserRank >= 15) document.getElementById('staffBtn').style.display = 'block';
                     loadCurriculum(currentUserRank);
                 }
             } catch(e) { alert("Login Failed"); }
         };
 
-        const loadCurriculum = async (rank) => {
-            const q = query(collection(db, "curriculum"), where("rankRequired", "<=", rank), orderBy("rankRequired", "asc"));
-            const snap = await getDocs(q);
-            const container = document.getElementById('dynamicCurriculum'); container.innerHTML = "";
-            snap.forEach(bDoc => {
-                const d = bDoc.data();
-                const bColor = getBeltHex(d.beltName);
-                container.insertAdjacentHTML('beforeend', `
-                    <div class="belt-group">
-                        <div class="belt-header" style="border-left-color:${bColor}" onclick="window.toggleDetail('belt-${bDoc.id}')">
-                            <span style="display:flex; align-items:center; gap:10px;"><span class="status-dot" style="background:${bColor}"></span> ${d.beltName}</span>
-                            <span>▼</span>
-                        </div>
-                        <div id="det-belt-${bDoc.id}" style="display:none; padding-top:5px;">
-                            ${d.videos.map(v => `<button class="tech-btn" onclick="window.loadVideo('${v.ytId}')">${v.title}</button>`).join('')}
-                        </div>
-                    </div>`);
-            });
+        window.viewEdit = (id) => {
+            const s = studentsList.find(x => x.id === id);
+            document.getElementById('editId').value = id;
+            document.getElementById('fName').value = s.fullName || "";
+            document.getElementById('fRank').value = s.currentRank || "";
+            document.getElementById('fStatus').value = s.status || "Current";
+            document.getElementById('fComments').value = s.comments || "";
+            window.switchAdmin('studentForm');
         };
+
+        window.switchAdmin = (v) => {
+            document.getElementById('listView').style.display = (v === 'listView' ? 'block' : 'none');
+            document.getElementById('studentForm').style.display = (v === 'studentForm' ? 'block' : 'none');
+            document.getElementById('rosterControls').style.display = (v === 'listView' ? 'flex' : 'none');
+        };
+
+        window.handleSave = async () => {
+            const id = document.getElementById('editId').value;
+            const data = { fullName: document.getElementById('fName').value, currentRank: document.getElementById('fRank').value, status: document.getElementById('fStatus').value, comments: document.getElementById('fComments').value };
+            if(id) await updateDoc(doc(db, "students", id), data); else await addDoc(collection(db, "students"), data);
+            window.switchAdmin('listView');
+        };
+
+        window.handleDelete = async (id) => { if(confirm("Delete?")) { await deleteDoc(doc(db, "students", id)); } };
 
         window.prepareAdd = () => {
             document.getElementById('editId').value = "";
