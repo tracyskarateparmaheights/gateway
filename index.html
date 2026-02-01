@@ -20,30 +20,23 @@
         .video-wrapper { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 8px; overflow: hidden; margin-bottom: 20px; border: 1px solid #444; }
         #ytPlayer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
         
-        .guide-box { background: #111; padding: 15px; border-radius: 8px; border: 1px solid #444; text-align: left; margin-bottom: 20px; font-size: 12px; line-height: 1.4; }
         .control-btn { background: var(--gold); color: #000; border: none; padding: 10px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; }
-        .admin-tab { display: none; text-align: left; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        td { padding: 12px 5px; border-bottom: 1px solid #333; font-size: 14px; vertical-align: middle; }
-        
         .belt-header { background: #3d3d3d; padding: 15px; margin-top: 10px; border-radius: 8px; color: var(--gold); cursor: pointer; display: flex; justify-content: space-between; font-weight: bold; }
         .tech-list { max-height: 450px; overflow-y: auto; }
         .tech-btn { background: #222; color: #eee; padding: 14px; margin: 5px 0; border-radius: 6px; border-left: 4px solid var(--gold); width: 100%; cursor: pointer; display: block; text-align: left; font-size: 13px; border:none; }
 
         input, textarea, select { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #444; background: var(--input-bg); color: white; box-sizing: border-box; font-size: 14px; }
         
-        .detail-view { background:#222; padding:15px; font-size:13px; text-align:left; line-height:1.6; border-radius: 8px; margin: 5px 0; border: 1px solid #444; }
-        .detail-label { color: var(--gold); font-weight: bold; display: inline-block; width: 110px; }
-        .lvl-input { width: 60px; padding: 8px; background: #111; color: var(--gold); border: 1px solid #555; text-align: center; font-weight: bold; border-radius: 4px; }
-        
-        /* Filter Styles */
         .filter-bar { display: flex; gap: 5px; margin-bottom: 10px; }
         .filter-btn { flex: 1; padding: 8px; background: #333; border: 1px solid #444; color: #888; border-radius: 6px; font-size: 12px; cursor: pointer; }
         .filter-btn.active { background: var(--gold); color: black; border-color: var(--gold); }
+        
+        /* Prevent selection of text/images */
+        * { -webkit-user-select: none; -ms-user-select: none; user-select: none; }
+        input, textarea { -webkit-user-select: text; -ms-user-select: text; user-select: text; }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 </head>
-<body>
+<body oncontextmenu="return false">
 
     <div class="container" id="loginBox">
         <img src="https://raw.githubusercontent.com/tracyskarateparmaheights/gateway/main/BLACK-TK.png" class="logo-img">
@@ -60,12 +53,6 @@
     <div class="nav-header" id="portalNav" style="display:none;">
         <div style="display:flex; gap:8px;">
             <button class="control-btn" onclick="stopAndHome()">🏠 Menu</button>
-            <div id="adminQuickActions" style="display:none; gap:8px;">
-                <button class="control-btn" id="addNewBtn" onclick="window.prepareAdd()">+ New</button>
-                <button class="control-btn" id="importBtn" onclick="document.getElementById('csvFileInput').click()">📥 Import</button>
-                <button class="control-btn" id="exportBtn" onclick="window.exportStudents()">💾 Export</button>
-                <input type="file" id="csvFileInput" accept=".csv" style="display:none;" onchange="window.handleBulkImport(event)">
-            </div>
         </div>
         <button class="control-btn" onclick="location.reload()" style="background:var(--red); color:white;">Log Out</button>
     </div>
@@ -74,190 +61,19 @@
         <div id="mainMenu">
             <button class="tech-btn" style="padding:25px; text-align:center; font-size:18px;" onclick="openSection('curriculumSection')">🥋 Video Library</button>
             <button class="tech-btn" style="padding:25px; text-align:center; font-size:18px; display:none;" id="rosterBtn" onclick="openSection('adminDashboard')">👥 Student Roster</button>
-            <button class="tech-btn" style="padding:25px; text-align:center; font-size:18px; display:none;" id="staffBtn" onclick="openSection('staffDashboard')">🛡️ Staff Access</button>
         </div>
 
         <div id="curriculumSection" style="display:none;">
             <div class="video-wrapper"><div id="ytPlayer"></div></div>
             <input type="text" id="videoSearch" placeholder="🔍 Search techniques..." onkeyup="searchVideos()" style="margin-bottom:15px;">
-            
-            <div id="belt-0" class="belt-group">
-                <div class="belt-header" style="border-left: 5px solid var(--white);" onclick="toggleGate('white-techs')">⚪ White Belt <span>▼</span></div>
-                <div id="white-techs" class="tech-list" style="display:none;">
-                    <button class="tech-btn" onclick="loadVideo('S3A9t0_6fvU')">Introduction</button>
-                    <button class="tech-btn" onclick="loadVideo('0yUHi0aHSEo')">Sword Hand Blocks</button>
-                    <button class="tech-btn" onclick="loadVideo('5IY9ofnZgV4')">Parry Trap</button>
-                    <button class="tech-btn" onclick="loadVideo('5auZfbZmbU0')">Parries</button>
-                    <button class="tech-btn" onclick="loadVideo('Fxclk_6XSkE')">Phoenixs Eye</button>
-                    <button class="tech-btn" onclick="loadVideo('K3v6i9Haz7I')">Sweeping Arm Hook Blocks</button>
-                    <button class="tech-btn" onclick="loadVideo('Kp-IqFPg2Uk')">Parry</button>
-                    <button class="tech-btn" onclick="loadVideo('QB2jifL1398')">Ox Jaw</button>
-                    <button class="tech-btn" onclick="loadVideo('QbNRWV6kcGg')">Major Hand Weapons</button>
-                    <button class="tech-btn" onclick="loadVideo('QhFPs2NpiAg')">Reverse Windmill Block</button>
-                    <button class="tech-btn" onclick="loadVideo('SrpSmo7ZIrQ')">Pivot Hip and Body Power</button>
-                    <button class="tech-btn" onclick="loadVideo('TgrWX_22p1k')">Tigers Jaw</button>
-                    <button class="tech-btn" onclick="loadVideo('WI3lIP9HZb0')">Kenpo Stances</button>
-                    <button class="tech-btn" onclick="loadVideo('XCpezMOxHGw')">Leg Checks</button>
-                    <button class="tech-btn" onclick="loadVideo('XcEvUaqV-fo')">Heel Palm</button>
-                    <button class="tech-btn" onclick="loadVideo('Z_vP1pe4nWU')">Universal Block</button>
-                    <button class="tech-btn" onclick="loadVideo('Zpchlfn0lTI')">Windmill Block</button>
-                    <button class="tech-btn" onclick="loadVideo('cw-NvFx4zeY')">Smother Blocks</button>
-                    <button class="tech-btn" onclick="loadVideo('fk4fS6qVNhY')">Tigers Claw</button>
-                    <button class="tech-btn" onclick="loadVideo('i8-LY4VQ61U')">Power and Focus</button>
-                    <button class="tech-btn" onclick="loadVideo('m-ViQFGhwW4')">Simitar Block</button>
-                    <button class="tech-btn" onclick="loadVideo('mdlM7Z0WQN8')">Sword Hand</button>
-                    <button class="tech-btn" onclick="loadVideo('nkbJhz6uirM')">Ridge Hand</button>
-                    <button class="tech-btn" onclick="loadVideo('pSmwAolcArk')">Hooking and Trapping</button>
-                    <button class="tech-btn" onclick="loadVideo('sY7CL2ZW8Ks')">Wedge Blocks</button>
-                    <button class="tech-btn" onclick="loadVideo('uGMXGSMiSok')">Wrist Blocks</button>
-                    <button class="tech-btn" onclick="loadVideo('uuDJd8TkbNA')">Roundhouse Wheel Kick</button>
-                    <button class="tech-btn" onclick="loadVideo('y9LcUMbW8yo')">Spear Hand</button>
-                    <button class="tech-btn" onclick="loadVideo('ydZpRPuvB58')">Heel Claw</button>
-                    <button class="tech-btn" onclick="loadVideo('088_qPMH_RQ')">Deflecting Block</button>
-                    <button class="tech-btn" onclick="loadVideo('10UA-JB3eYg')">Circular Blocks</button>
-                    <button class="tech-btn" onclick="loadVideo('1DkPBO72FUM')">Eye Strikes</button>
-                    <button class="tech-btn" onclick="loadVideo('1ooTAeVNy7Q')">Cross Hand Strike</button>
-                    <button class="tech-btn" onclick="loadVideo('2pV9xOvKpqk')">Defense Against Weapons</button>
-                    <button class="tech-btn" onclick="loadVideo('3GWN9OSfsTM')">Fish Hook Block</button>
-                    <button class="tech-btn" onclick="loadVideo('8KZHvDzGSFE')">Half Fist</button>
-                    <button class="tech-btn" onclick="loadVideo('DQV27CBScas')">Five Basic Blocks</button>
-                    <button class="tech-btn" onclick="loadVideo('Ep409bWV6F0')">Fan Block</button>
-                    <button class="tech-btn" onclick="loadVideo('Evtmn0aGFuo')">Foot Patterns</button>
-                    <button class="tech-btn" onclick="loadVideo('FuYOyl49hO0')">Breathing and KI</button>
-                    <button class="tech-btn" onclick="loadVideo('IaAMaXl__mY')">Cross Hand Block</button>
-                    <button class="tech-btn" onclick="loadVideo('Ie1CykbIFTk')">Chamber Hand Cover Hand Cover Kick Cover</button>
-                    <button class="tech-btn" onclick="loadVideo('JKSnNuiNhR8')">Circular Trap</button>
-                    <button class="tech-btn" onclick="loadVideo('JQMozX9DKiQ')">Defense Boxers Hook</button>
-                    <button class="tech-btn" onclick="loadVideo('PMpWWpccvuE')">Corkscrew Punch</button>
-                    <button class="tech-btn" onclick="loadVideo('PZ_VPmgLvdE')">Double Heel Palm</button>
-                    <button class="tech-btn" onclick="loadVideo('PxGv4QF1McE')">Chinese Swings</button>
-                    <button class="tech-btn" onclick="loadVideo('ZaRbjdDBxZw')">Eagles Beak</button>
-                    <button class="tech-btn" onclick="loadVideo('aPO59kTcvKs')">Double Parries</button>
-                    <button class="tech-btn" onclick="loadVideo('aZ3j8qQRs2g')">Figure 8 Block</button>
-                    <button class="tech-btn" onclick="loadVideo('h6AimvKf3Ss')">Crescent Kick Blocks</button>
-                    <button class="tech-btn" onclick="loadVideo('jtY3OR3SAYY')">Double Sword Hand Blocks</button>
-                    <button class="tech-btn" onclick="loadVideo('l5DdtGz9oyc')">Combination Weapons Kick Punch</button>
-                    <button class="tech-btn" onclick="loadVideo('pz2IHyWJsb4')">Forearm Elbows</button>
-                    <button class="tech-btn" onclick="loadVideo('tEZ2g7PfLtY')">Chamber Hand Cover Hand</button>
-                    <button class="tech-btn" onclick="loadVideo('vM1yw6Jj01w')">Eagles Claw</button>
-                    <button class="tech-btn" onclick="loadVideo('yfYJ0LJl7Qs')">Butterfly Hand</button>
-                    <button class="tech-btn" onclick="loadVideo('zGk3WewqI9k')">Double Punches</button>
-                </div>
+            <div id="dynamicCurriculum">
+                <p style="text-align:center; color:gray; font-size:12px;">Loading curriculum...</p>
             </div>
-
-            <div id="belt-1" class="belt-group" style="display:none;">
-                <div class="belt-header" style="border-left: 5px solid var(--yellow);" onclick="toggleGate('yellow-techs')">🟡 Yellow Belt <span>▼</span></div>
-                <div id="yellow-techs" class="tech-list" style="display:none;">
-                    <button class="tech-btn" onclick="loadVideo('19Ktd4FfDGg')">Yellow Belt History</button>
-                    <button class="tech-btn" onclick="loadVideo('JIFwfcykAY8')">Japanese Sword (A/B)</button>
-                    <button class="tech-btn" onclick="loadVideo('RoSuLCLOKuU')">Chinese Sword (A/B)</button>
-                    <button class="tech-btn" onclick="loadVideo('NjXYf4QOZnU')">Delayed Sword</button>
-                    <button class="tech-btn" onclick="loadVideo('SaCwJIsQWE8')">Knee of Vengeance</button>
-                    <button class="tech-btn" onclick="loadVideo('xNzobYNSQ4Y')">Fang of the Cobra (A/B)</button>
-                    <button class="tech-btn" onclick="loadVideo('ZJNmDVtXnBY')">Twisting Talon (A/B)</button>
-                    <button class="tech-btn" onclick="loadVideo('u0ceVbYXUXQ')">Returning Dragon</button>
-                    <button class="tech-btn" onclick="loadVideo('E44w7Eh73xs')">Breaking the Sword</button>
-                    <button class="tech-btn" onclick="loadVideo('yvrhFEiuHKc')">Kenpo Shield (A/B)</button>
-                    <button class="tech-btn" onclick="loadVideo('i-vyUr_6xZU')">Evasion</button>
-                </div>
-            </div>
-
-            <div id="belt-2" class="belt-group" style="display:none;">
-                <div class="belt-header" style="border-left: 5px solid var(--orange);" onclick="toggleGate('orange-techs')">🟠 Orange Belt <span>▼</span></div>
-                <div id="orange-techs" class="tech-list" style="display:none;">
-                    <button class="tech-btn" onclick="loadVideo('BXFDPT-vcwM')">Sumo</button>
-                    <button class="tech-btn" onclick="loadVideo('gFcHl0al_KE')">Japanese Strangle Hold</button>
-                    <button class="tech-btn" onclick="loadVideo('CPh9xshjPr4')">Blocking the Kick</button>
-                    <button class="tech-btn" onclick="loadVideo('Y2PvWFdZlOs')">Headlock</button>
-                    <button class="tech-btn" onclick="loadVideo('6sIKT5BI-Ik')">Short Form 1</button>
-                </div>
-            </div>
-
-            <div id="belt-3" class="belt-group" style="display:none;">
-                <div class="belt-header" style="border-left: 5px solid var(--purple);" onclick="toggleGate('purple-techs')">🟣 Purple Belt <span>▼</span></div>
-                <div id="purple-techs" class="tech-list" style="display:none;">
-                    <button class="tech-btn" onclick="loadVideo('k3m1tjunH00')">Short Form 2</button>
-                    <button class="tech-btn" onclick="loadVideo('FfZaYCiTbRc')">Long Form 1</button>
-                </div>
-            </div>
-
-            <div id="belt-4" class="belt-group" style="display:none;">
-                <div class="belt-header" style="border-left: 5px solid var(--blue);" onclick="toggleGate('blue-techs')">🔵 Blue Belt <span>▼</span></div>
-                <div id="blue-techs" class="tech-list" style="display:none;">
-                    <button class="tech-btn" onclick="loadVideo('oBLlZge46Mw')">Short Form 3</button>
-                    <button class="tech-btn" onclick="loadVideo('iD147twBQQs')">Long Form 2</button>
-                </div>
-            </div>
-
-            <div id="belt-5" class="belt-group" style="display:none;">
-                <div class="belt-header" style="border-left: 5px solid var(--green);" onclick="toggleGate('green-techs')">🟢 Green Belt <span>▼</span></div>
-                <div id="green-techs" class="tech-list" style="display:none;">
-                    <button class="tech-btn" onclick="loadVideo('5JSGpLU3vEY')">Long Form 3 - Al Tracy</button>
-                    <button class="tech-btn" onclick="loadVideo('mefG0vhuHlU')">Long 3 Breakdown (No Opponent)</button>
-                    <button class="tech-btn" onclick="loadVideo('SaProTWEraE')">Long 3 Breakdown (With Opponent)</button>
-                    <button class="tech-btn" onclick="loadVideo('dTusg37I17I')">Changes Made on Long 3</button>
-                </div>
-            </div>
-
-            <div id="belt-6" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('brown3-techs')">🟤 Brown Belt (3rd Degree) <span>▼</span></div><div id="brown3-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
-            <div id="belt-7" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('brown2-techs')">🟤 Brown Belt (2nd Degree) <span>▼</span></div><div id="brown2-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
-            <div id="belt-8" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('brown1-techs')">🟤 Brown Belt (1st Degree) <span>▼</span></div><div id="brown1-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
-            <div id="belt-9" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('black1-techs')">⚫ Black Belt (1st Degree) <span>▼</span></div><div id="black1-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
-            <div id="belt-10" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('black2-techs')">⚫ Black Belt (2nd Degree) <span>▼</span></div><div id="black2-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
-            <div id="belt-11" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('black3-techs')">⚫ Black Belt (3rd Degree) <span>▼</span></div><div id="black3-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
-            <div id="belt-12" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('black4-techs')">⚫ Black Belt (4th Degree) <span>▼</span></div><div id="black4-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
-            <div id="belt-13" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('black5-techs')">⚫ Black Belt (5th Degree) <span>▼</span></div><div id="black5-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
-            <div id="belt-14" class="belt-group" style="display:none;"><div class="belt-header" onclick="toggleGate('black6-techs')">⚫ Black Belt (6th Degree) <span>▼</span></div><div id="black6-techs" class="tech-list" style="display:none;"><button class="tech-btn">Technique Name</button></div></div>
         </div>
-
+        
         <div id="adminDashboard" style="display:none;">
-            <div id="studentForm" class="admin-tab">
-                <h3>Student Profile</h3>
-                <input type="hidden" id="editId">
-                <select id="fStatus">
-                    <option value="Current">Status: Current</option>
-                    <option value="Inactive">Status: Inactive</option>
-                </select>
-                <input type="text" id="fName" placeholder="Student Name">
-                <input type="text" id="fParent" placeholder="Parent/Guardian (if minor)">
-                <input type="text" id="fPhone" placeholder="Phone Number" oninput="window.formatPhone(this)">
-                <input type="email" id="fEmail" placeholder="Email Address">
-                <input type="text" id="fAddress" placeholder="Mailing Address">
-                <input type="text" id="fCityZip" placeholder="City/Zip">
-                <div style="display: flex; gap: 10px;">
-                    <input type="text" id="fTuition" placeholder="Tuition Amount ($)" onblur="window.formatCurrency(this)">
-                    <select id="fFrequency">
-                        <option value="Weekly">Weekly</option>
-                        <option value="Monthly">Monthly</option>
-                        <option value="Bi-Weekly">Bi-Weekly</option>
-                        <option value="None">None</option>
-                    </select>
-                </div>
-                <textarea id="fSource" placeholder="How did you hear about us?" style="height:60px;"></textarea>
-                <textarea id="fComments" placeholder="General Notes/Comments" style="height:80px;"></textarea>
-                <input type="text" id="fCurrentRank" placeholder="Current Rank">
-                <input type="date" id="fLastTestDate" placeholder="Last Test Date">
-                <button class="control-btn" style="width:100%;" onclick="handleSave()">Save Record</button>
-                <button class="control-btn" style="width:100%; background:none; color:#888;" onclick="switchAdmin('listView')">Cancel</button>
-            </div>
-            <div id="listView" class="admin-tab" style="display:block;">
-                <input type="text" id="rosterSearch" placeholder="🔍 Search records..." onkeyup="searchRoster()">
-                <div class="filter-bar">
-                    <button id="filterActive" class="filter-btn active" onclick="window.setFilter('Current')">Active</button>
-                    <button id="filterInactive" class="filter-btn" onclick="window.setFilter('Inactive')">Inactive</button>
-                </div>
-                <div id="rosterTableArea"></div>
-            </div>
-        </div>
-
-        <div id="staffDashboard" style="display:none;">
-            <h3>Staff Access</h3>
-            <div class="guide-box">
-                <p><b>Content Access:</b><br>LVL 0-5: White-Green | LVL 6-8: Brown 3-1 | LVL 9-13: Black 1-Black 6</p>
-                <hr style="border: 0; border-top: 1px solid #444; margin: 10px 0;">
-                <p><b>Permission Levels:</b><br><b>LVL 14:</b> View Student Roster<br><b>LVL 15:</b> Full Admin</p>
-            </div>
-            <div id="staffTableArea"></div>
+            <h3>Student Roster</h3>
+            <div id="rosterTableArea"></div>
         </div>
     </div>
 
@@ -266,208 +82,105 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, collection, onSnapshot, updateDoc, addDoc, query, orderBy, serverTimestamp, deleteDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, collection, query, where, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        const firebaseConfig = { apiKey: "AIzaSyC35Ubf6GxyDi3JEiKWaYgVFkYGknMZrcw", authDomain: "tracy-s-karate-portal.firebaseapp.com", projectId: "tracy-s-karate-portal", storageBucket: "tracy-s-karate-portal.appspot.com", messagingSenderId: "338865615783", appId: "1:338865615783:web:75865261864177d46536da" };
+        const firebaseConfig = { 
+            apiKey: "AIzaSyC35Ubf6GxyDi3JEiKWaYgVFkYGknMZrcw", 
+            authDomain: "tracy-s-karate-portal.firebaseapp.com", 
+            projectId: "tracy-s-karate-portal", 
+            storageBucket: "tracy-s-karate-portal.appspot.com", 
+            messagingSenderId: "338865615783", 
+            appId: "1:338865615783:web:75865261864177d46536da" 
+        };
+
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        window.dbInstance = db;
-        
-        let ytPlayer, currentUserRank = 0, studentsList = [], playerIsReady = false, currentRosterFilter = 'Current';
 
-        window.formatPhone = (input) => {
-            let num = input.value.replace(/\D/g,'');
-            if (num.length > 10) num = num.substring(0,10);
-            if (num.length === 10) { input.value = `(${num.slice(0,3)}) ${num.slice(3,6)}-${num.slice(6,10)}`; } else { input.value = num; }
+        // Expose for migration scripts
+        window.dbInstance = db;
+
+        let ytPlayer, currentUserRank = 0, playerIsReady = false;
+
+        // --- PREVENT INSPECT TOOLS ---
+        document.addEventListener('keydown', (e) => {
+            if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) || (e.ctrlKey && e.keyCode === 85)) {
+                e.preventDefault();
+            }
+        });
+
+        // --- YOUTUBE FUNCTIONS ---
+        window.onYouTubeIframeAPIReady = () => {
+            ytPlayer = new YT.Player('ytPlayer', {
+                height: '100%', width: '100%',
+                videoId: '19Ktd4FfDGg',
+                playerVars: { 'controls': 1, 'rel': 0, 'modestbranding': 1, 'playsinline': 1 },
+                events: { 'onReady': () => { playerIsReady = true; } }
+            });
         };
 
-        window.formatCurrency = (input) => {
-            let val = input.value.replace(/[^\d.]/g, '');
-            if (val) {
-                let formatted = parseFloat(val).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
-                input.value = formatted;
+        window.loadVideo = (id) => { if (playerIsReady) { ytPlayer.loadVideoById(id); ytPlayer.playVideo(); } };
+        window.stopAndHome = () => { if(playerIsReady) ytPlayer.stopVideo(); window.showMainMenu(); };
+        window.toggleGate = (id) => { const el = document.getElementById(id); el.style.display = (el.style.display === "none") ? "block" : "none"; };
+
+        window.showMainMenu = () => {
+            document.getElementById('curriculumSection').style.display = 'none';
+            document.getElementById('adminDashboard').style.display = 'none';
+            document.getElementById('mainMenu').style.display = 'block';
+        };
+
+        window.openSection = (id) => {
+            document.getElementById('mainMenu').style.display = 'none';
+            document.getElementById(id).style.display = 'block';
+        };
+
+        // --- DATABASE LOADER ---
+        const loadCurriculum = async (rank) => {
+            const container = document.getElementById('dynamicCurriculum');
+            const q = query(collection(db, "curriculum"), where("rankRequired", "<=", rank), orderBy("rankRequired", "asc"));
+            
+            try {
+                const snap = await getDocs(q);
+                container.innerHTML = "";
+                if(snap.empty) container.innerHTML = "No videos found for your rank.";
+                
+                snap.forEach(beltDoc => {
+                    const data = beltDoc.data();
+                    const html = `
+                        <div class="belt-group">
+                            <div class="belt-header" onclick="window.toggleGate('gate-${beltDoc.id}')">
+                                ${data.beltName} <span>▼</span>
+                            </div>
+                            <div id="gate-${beltDoc.id}" class="tech-list" style="display:none;">
+                                ${data.videos.map(v => `<button class="tech-btn" onclick="loadVideo('${v.ytId}')">${v.title}</button>`).join('')}
+                            </div>
+                        </div>`;
+                    container.insertAdjacentHTML('beforeend', html);
+                });
+            } catch (e) {
+                container.innerHTML = "Error loading curriculum.";
             }
         };
 
-        window.initPlayer = (id = '19Ktd4FfDGg') => { ytPlayer = new YT.Player('ytPlayer', { height: '100%', width: '100%', videoId: id, playerVars: { 'controls': 1, 'rel': 0, 'modestbranding': 1, 'playsinline': 1, 'autoplay': 0 }, events: { 'onReady': () => { playerIsReady = true; } } }); };
-        window.onYouTubeIframeAPIReady = () => window.initPlayer();
-        window.stopAndHome = () => { if(playerIsReady && ytPlayer && ytPlayer.stopVideo) ytPlayer.stopVideo(); window.showMainMenu(); };
-        window.loadVideo = (id) => { if (playerIsReady && ytPlayer && ytPlayer.loadVideoById) { ytPlayer.loadVideoById(id); ytPlayer.playVideo(); } else { document.getElementById('ytPlayer').innerHTML = ""; window.initPlayer(id); } };
-        window.searchVideos = () => { const q = document.getElementById('videoSearch').value.toLowerCase(); document.querySelectorAll('#curriculumSection .tech-btn').forEach(btn => { btn.style.display = btn.innerText.toLowerCase().includes(q) ? "block" : "none"; }); };
-        window.toggleGate = (id) => { const el = document.getElementById(id); el.style.display = (el.style.display === "none") ? "block" : "none"; };
-        
-        window.showMainMenu = () => { 
-            ['mainMenu', 'curriculumSection', 'adminDashboard', 'staffDashboard'].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
-            document.getElementById('adminQuickActions').style.display = 'none';
-            document.getElementById('mainMenu').style.display='block'; 
-        };
-        
-        window.openSection = (id) => { 
-            ['mainMenu', 'curriculumSection', 'adminDashboard', 'staffDashboard'].forEach(s => { const el = document.getElementById(s); if (el) el.style.display = 'none'; });
-            if (id !== 'curriculumSection' && playerIsReady && ytPlayer && ytPlayer.pauseVideo) ytPlayer.pauseVideo();
-            const target = document.getElementById(id); if (target) target.style.display='block';
-            document.getElementById('adminQuickActions').style.display = (id === 'adminDashboard' && currentUserRank >= 15) ? 'flex' : 'none';
-            if(id === 'adminDashboard') syncRoster();
-            if(id === 'staffDashboard') syncStaff();
-        };
-
-        window.prepareAdd = () => {
-            ['editId', 'fName', 'fParent', 'fPhone', 'fEmail', 'fAddress', 'fCityZip', 'fSource', 'fComments', 'fCurrentRank', 'fLastTestDate', 'fTuition'].forEach(id => document.getElementById(id).value = "");
-            document.getElementById('fStatus').value = "Current";
-            document.getElementById('fFrequency').value = "Weekly";
-            window.switchAdmin('studentForm');
-        };
-
-        window.editStudent = (id) => {
-            const s = studentsList.find(x => x.id === id); if(!s) return;
-            document.getElementById('editId').value = id;
-            document.getElementById('fStatus').value = s.status || "Current";
-            document.getElementById('fName').value = s.fullName || "";
-            document.getElementById('fParent').value = s.parentName || "";
-            document.getElementById('fPhone').value = s.phone || "";
-            document.getElementById('fEmail').value = s.email || "";
-            document.getElementById('fAddress').value = s.address || "";
-            document.getElementById('fCityZip').value = s.cityZip || "";
-            document.getElementById('fTuition').value = s.tuition || "";
-            document.getElementById('fFrequency').value = s.paymentFrequency || "Weekly";
-            document.getElementById('fSource').value = s.source || "";
-            document.getElementById('fComments').value = s.comments || "";
-            document.getElementById('fCurrentRank').value = s.currentRank || "";
-            document.getElementById('fLastTestDate').value = s.lastTestDate || "";
-            window.switchAdmin('studentForm');
-        };
-
-        window.handleSave = async () => {
-            const id = document.getElementById('editId').value;
-            const data = { 
-                status: document.getElementById('fStatus').value,
-                fullName: document.getElementById('fName').value, parentName: document.getElementById('fParent').value,
-                email: document.getElementById('fEmail').value, phone: document.getElementById('fPhone').value,
-                address: document.getElementById('fAddress').value, cityZip: document.getElementById('fCityZip').value,
-                tuition: document.getElementById('fTuition').value, paymentFrequency: document.getElementById('fFrequency').value,
-                source: document.getElementById('fSource').value, currentRank: document.getElementById('fCurrentRank').value,
-                lastTestDate: document.getElementById('fLastTestDate').value, comments: document.getElementById('fComments').value,
-                updatedAt: serverTimestamp() 
-            };
-            if(id) await updateDoc(doc(db, "students", id), data); else await addDoc(collection(db, "students"), data);
-            window.switchAdmin('listView');
-        };
-
-        window.deleteStudent = async (id, name) => { if(confirm(`Delete ${name}?`)) await deleteDoc(doc(db, "students", id)); };
-
-        // Filter Functionality
-        window.setFilter = (status) => {
-            currentRosterFilter = status;
-            document.getElementById('filterActive').classList.toggle('active', status === 'Current');
-            document.getElementById('filterInactive').classList.toggle('active', status === 'Inactive');
-            syncRoster();
-        };
-
-        const syncRoster = () => {
-            onSnapshot(query(collection(db, "students"), orderBy("fullName")), (snap) => {
-                let html = `<table>`; studentsList = [];
-                snap.forEach(docSnap => {
-                    const s = docSnap.data(); const id = docSnap.id; studentsList.push({id, ...s});
-                    
-                    // Apply UI filtering based on selection
-                    const displayStyle = (s.status || "Current") === currentRosterFilter ? "" : "none";
-                    const statusColor = s.status === "Inactive" ? "#e74c3c" : "#2ecc71";
-                    
-                    html += `<tr class="sr-row" style="display:${displayStyle}" onclick="window.toggleDetail('${id}')">
-                        <td><b style="color:${statusColor}">●</b> <b>${s.fullName}</b><br><small>${s.phone || 'No Phone'}</small></td>
-                        <td style="text-align:right;">${currentUserRank >= 15 ? `<button class="control-btn" onclick="event.stopPropagation(); window.editStudent('${id}')">EDIT</button>` : ''}</td>
-                    </tr>
-                    <tr id="det-${id}" style="display:none;"><td colspan="2"><div class="detail-view">
-                        <div><span class="detail-label">Status:</span> ${s.status || 'Current'}</div>
-                        <div><span class="detail-label">Parent:</span> ${s.parentName || '---'}</div>
-                        <div><span class="detail-label">Email:</span> ${s.email || '---'}</div>
-                        <div><span class="detail-label">Address:</span> ${s.address || '---'}</div>
-                        <div><span class="detail-label">City/Zip:</span> ${s.cityZip || '---'}</div>
-                        <div><span class="detail-label">Tuition:</span> ${s.tuition || '---'} (${s.paymentFrequency || 'Weekly'})</div>
-                        <div><span class="detail-label">Current Rank:</span> ${s.currentRank || '---'}</div>
-                        <div><span class="detail-label">Last Test:</span> ${s.lastTestDate || '---'}</div>
-                        <div><span class="detail-label">Source:</span> ${s.source || '---'}</div>
-                        <div><span class="detail-label">Notes:</span> ${s.comments || '---'}</div>
-                        ${currentUserRank >= 15 ? `<button class="control-btn" style="background:var(--red); color:white; width:100%; margin-top:10px;" onclick="window.deleteStudent('${id}', '${s.fullName.replace(/'/g, "\\'")}')">DELETE RECORD</button>` : ''}
-                    </div></td></tr>`;
-                });
-                document.getElementById('rosterTableArea').innerHTML = html + "</table>";
-            });
-        };
-
-        const syncStaff = () => {
-            onSnapshot(collection(db, "users"), (snap) => {
-                let html = `<table><tr><th>NAME</th><th>LVL</th><th></th></tr>`;
-                snap.forEach(docSnap => {
-                    const u = docSnap.data();
-                    html += `<tr><td>${u.name || 'User'}</td><td><input type="number" class="lvl-input" id="lvl-${docSnap.id}" value="${u.rankLevel || 0}"></td>
-                    <td style="text-align:right;"><button class="control-btn" onclick="window.updateRank('${docSnap.id}')">✔</button></td></tr>`;
-                });
-                document.getElementById('staffTableArea').innerHTML = html + "</table>";
-            });
-        };
-
-        window.updateRank = async (id) => { await updateDoc(doc(db, "users", id), { rankLevel: parseInt(document.getElementById(`lvl-${id}`).value) }); alert("Updated"); };
-        window.switchAdmin = (id) => { document.querySelectorAll('.admin-tab').forEach(t => t.style.display='none'); document.getElementById(id).style.display='block'; };
-        window.toggleDetail = (id) => { const el = document.getElementById(`det-${id}`); el.style.display = el.style.display === "none" ? "table-row" : "none"; };
-        
-        window.searchRoster = () => { 
-            const q = document.getElementById('rosterSearch').value.toLowerCase(); 
-            document.querySelectorAll('.sr-row').forEach(r => {
-                const nameMatch = r.innerText.toLowerCase().includes(q);
-                // Search must respect BOTH query and current status filter
-                const s = studentsList.find(x => x.id === r.getAttribute('onclick').match(/'([^']+)'/)[1]);
-                const statusMatch = (s.status || "Current") === currentRosterFilter;
-                r.style.display = (nameMatch && statusMatch) ? "" : "none";
-            }); 
-        };
-        
+        // --- LOGIN ---
         const handleAuth = async () => {
             try {
                 const cred = await signInWithEmailAndPassword(auth, document.getElementById('emailInput').value, document.getElementById('passInput').value);
                 const snap = await getDoc(doc(db, "users", cred.user.uid));
                 if(snap.exists()) {
-                    currentUserRank = snap.data().rankLevel;
+                    currentUserRank = snap.data().rankLevel || 0;
                     document.getElementById('loginBox').style.display = 'none';
                     document.getElementById('portalNav').style.display = 'flex';
                     document.getElementById('portalView').style.display = 'block';
+                    
                     if(currentUserRank >= 14) document.getElementById('rosterBtn').style.display = 'block';
-                    if(currentUserRank >= 15) document.getElementById('staffBtn').style.display = 'block'; 
-                    for(let i=0; i<=currentUserRank && i<=14; i++) { const b = document.getElementById(`belt-${i}`); if(b) b.style.display = 'block'; }
+                    
+                    await loadCurriculum(currentUserRank);
                 }
-            } catch(e) { alert("Login failed"); }
+            } catch(e) { alert("Invalid login credentials."); }
         };
+
         document.getElementById('loginBtn').onclick = handleAuth;
-        document.addEventListener('keypress', (e) => { if (e.key === 'Enter' && document.getElementById('loginBox').style.display !== 'none') handleAuth(); });
-
-        window.exportStudents = () => {
-            const csv = Papa.unparse(studentsList.map(({updatedAt, ...rest}) => rest));
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a'); a.href = url; a.download = `Roster_${new Date().toLocaleDateString()}.csv`; a.click();
-        };
-
-        window.handleBulkImport = (event) => {
-            const file = event.target.files[0]; if(!file) return;
-            Papa.parse(file, { header: true, skipEmptyLines: true, complete: async (r) => {
-                const batch = writeBatch(db);
-                r.data.forEach(row => {
-                    let ref;
-                    if (row.id && row.id.trim() !== "") {
-                        ref = doc(db, "students", row.id.trim());
-                    } else {
-                        ref = doc(collection(db, "students"));
-                    }
-                    batch.set(ref, { 
-                        status: (row.status && row.status.trim()) ? row.status.trim() : "Inactive", 
-                        fullName: row.fullName||"", parentName: row.parentName||"", email: row.email||"", phone: row.phone||"", address: row.address||"", cityZip: row.cityZip||"", tuition: row.tuition||"", paymentFrequency: row.paymentFrequency||"Weekly", source: row.source||"", currentRank: row.currentRank||"", lastTestDate: row.lastTestDate||"", comments: row.comments||"", updatedAt: serverTimestamp() 
-                    }, { merge: true });
-                });
-                await batch.commit(); alert("Import/Update Complete!");
-            }});
-        };
     </script>
 </body>
 </html>
-
