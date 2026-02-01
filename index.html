@@ -12,10 +12,10 @@
         :root { --gold: #ffcc00; --bg: #1a1a1a; --card: #2b2b2b; --input-bg: #1e1e1e; --green: #2ecc71; --red: #e74c3c; --blue: #3498db; --orange: #ff8800; --yellow: #ffff00; --purple: #9b59b6; --brown: #8b4513; --white: #ffffff; --black: #000000; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg); color: white; margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; box-sizing: border-box; }
         
-        .container { background: var(--card); padding: 30px 20px; border-radius: 12px; border-top: 5px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 100%; max-width: 480px; margin-top: 20px; }
+        .container { background: var(--card); padding: 25px 15px; border-radius: 12px; border-top: 5px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 100%; max-width: 500px; margin-top: 20px; box-sizing: border-box; }
         .logo-img { width: 180px; height: auto; margin-bottom: 10px; }
         
-        .nav-header { width: 100%; max-width: 480px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px; }
+        .nav-header { width: 100%; max-width: 500px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 10px; }
         
         .video-wrapper { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 8px; overflow: hidden; margin-bottom: 20px; border: 1px solid #444; }
         #ytPlayer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
@@ -27,18 +27,18 @@
         td { padding: 12px 5px; border-bottom: 1px solid #333; font-size: 14px; vertical-align: middle; }
         
         .filter-bar { display: flex; gap: 5px; margin-bottom: 10px; }
-        .filter-btn { flex: 1; padding: 10px; background: #333; border: 1px solid #444; color: #888; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: bold; }
+        .filter-btn { flex: 1; padding: 10px; background: #333; border: 1px solid #444; color: #888; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; }
         .filter-btn.active { background: var(--gold); color: black; border-color: var(--gold); }
 
         .belt-icon { font-size: 18px; margin-right: 8px; filter: drop-shadow(0 0 2px rgba(0,0,0,0.5)); }
-
-        .belt-header { background: #3d3d3d; padding: 15px; margin-top: 10px; border-radius: 8px; color: var(--gold); cursor: pointer; display: flex; justify-content: space-between; font-weight: bold; }
         .tech-btn { background: #222; color: #eee; padding: 14px; margin: 5px 0; border-radius: 6px; border-left: 4px solid var(--gold); width: 100%; cursor: pointer; display: block; text-align: left; font-size: 13px; border:none; }
         
-        input, textarea, select { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #444; background: var(--input-bg); color: white; box-sizing: border-box; font-size: 14px; }
+        input, textarea, select { width: 100%; padding: 12px; margin-bottom: 8px; border-radius: 6px; border: 1px solid #444; background: var(--input-bg); color: white; box-sizing: border-box; font-size: 13px; }
+        .detail-view { background:#1a1a1a; padding:15px; font-size:12px; text-align:left; line-height:1.6; border-radius: 8px; margin: 5px 0; border: 1px solid #444; color: #ccc; }
         
-        .detail-view { background:#222; padding:15px; font-size:13px; text-align:left; line-height:1.6; border-radius: 8px; margin: 5px 0; border: 1px solid #444; }
-        
+        .permission-info { background: #111; padding: 15px; border-radius: 8px; border-left: 4px solid var(--blue); margin-bottom: 20px; font-size: 12px; text-align: left; line-height: 1.4; }
+        .footer-text { margin-top: 25px; font-size: 10px; color: #888; opacity: 0.7; line-height: 1.5; text-align: center; }
+
         * { -webkit-user-select: none; user-select: none; }
         input, textarea { -webkit-user-select: text; user-select: text; }
     </style>
@@ -52,18 +52,17 @@
         <input type="email" id="emailInput" placeholder="Email">
         <input type="password" id="passInput" placeholder="Password">
         <button id="loginBtn" class="control-btn" style="width:100%; padding:18px;">Sign In</button>
+        <div class="footer-text">
+            Copyright 2026 by M.D.M. Studios Inc. All Rights Reserved.<br>
+            Developed by Directed Route LLC
+        </div>
     </div>
 
     <div class="nav-header" id="portalNav" style="display:none;">
         <div style="display:flex; gap:8px;">
             <button class="control-btn" onclick="window.stopAndHome()">🏠 Menu</button>
             <div id="adminQuickActions" style="display:none; gap:8px;">
-                <button class="control-btn" onclick="window.prepareAdd()">+ New</button>
-                <div id="bulkControls" style="display:none; gap:8px;">
-                    <button class="control-btn" onclick="window.exportToCSV()">📤 Export</button>
-                    <button class="control-btn" onclick="document.getElementById('csvImport').click()">📥 Import</button>
-                    <input type="file" id="csvImport" style="display:none;" accept=".csv" onchange="window.handleImport(event)">
-                </div>
+                <button class="control-btn" onclick="window.prepareAdd()">+ New Student</button>
             </div>
         </div>
         <button class="control-btn" onclick="location.reload()" style="background:var(--red); color:white;">Log Out</button>
@@ -78,6 +77,7 @@
 
         <div id="curriculumSection" style="display:none;">
             <div class="video-wrapper"><div id="ytPlayer"></div></div>
+            <input type="text" id="videoSearch" placeholder="🔍 Search techniques..." onkeyup="window.searchVideos()" style="margin-bottom:15px;">
             <div id="dynamicCurriculum"></div>
         </div>
 
@@ -86,13 +86,28 @@
                 <h3>Student Profile</h3>
                 <input type="hidden" id="editId">
                 <input type="text" id="fName" placeholder="Full Name">
+                <input type="text" id="fEmail" placeholder="Email Address">
                 <input type="text" id="fPhone" placeholder="Phone Number">
-                <input type="text" id="fRank" placeholder="Current Belt Rank (Yellow, Green, etc)">
+                <input type="text" id="fAddress" placeholder="Home Address">
+                <input type="text" id="fCityZip" placeholder="City, State, Zip">
+                <hr style="border:0; border-top:1px solid #444; margin:10px 0;">
+                <input type="text" id="fRank" placeholder="Current Belt Rank">
+                <input type="text" id="fLastTest" placeholder="Last Test Date">
+                <input type="text" id="fParent" placeholder="Parent Name (if applicable)">
                 <select id="fStatus">
                     <option value="Active">Active</option>
                     <option value="Inactive">Inactive</option>
                 </select>
-                <textarea id="fComments" placeholder="Notes/History" style="height:120px;"></textarea>
+                <hr style="border:0; border-top:1px solid #444; margin:10px 0;">
+                <input type="text" id="fTuition" placeholder="Tuition Amount">
+                <select id="fFreq">
+                    <option value="Weekly">Weekly</option>
+                    <option value="Bi-Weekly">Bi-Weekly</option>
+                    <option value="Monthly">Monthly</option>
+                </select>
+                <input type="text" id="fSource" placeholder="Marketing Source">
+                <textarea id="fComments" placeholder="General Comments / History" style="height:100px;"></textarea>
+                
                 <button id="saveBtn" class="control-btn" style="width:100%; margin-top:10px;" onclick="window.handleSave()">Save Record</button>
                 <button class="control-btn" style="width:100%; background:none; color:#888;" onclick="window.switchAdmin('listView')">Cancel</button>
             </div>
@@ -109,7 +124,12 @@
         </div>
 
         <div id="staffDashboard" style="display:none;">
-            <h3>Staff Permissions</h3>
+            <h3>System Permissions</h3>
+            <div class="permission-info">
+                <strong>Rank 15 (Master Admin):</strong> Full system access. Can create/edit students, view financial data, and manage staff permissions.<br><br>
+                <strong>Rank 14 (Staff/View-Only):</strong> Can view the student roster and records, but cannot edit fields or save changes.<br><br>
+                <strong>Rank 0-13 (Students):</strong> Access to Video Library only (based on rank level).
+            </div>
             <div id="staffTableArea"></div>
         </div>
     </div>
@@ -119,7 +139,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, collection, query, where, orderBy, getDocs, updateDoc, setDoc, onSnapshot, addDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, collection, query, where, orderBy, getDocs, updateDoc, setDoc, onSnapshot, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = { apiKey: "AIzaSyC35Ubf6GxyDi3JEiKWaYgVFkYGknMZrcw", authDomain: "tracy-s-karate-portal.firebaseapp.com", projectId: "tracy-s-karate-portal", storageBucket: "tracy-s-karate-portal.appspot.com", messagingSenderId: "338865615783", appId: "1:338865615783:web:75865261864177d46536da" };
         const app = initializeApp(firebaseConfig);
@@ -128,18 +148,16 @@
 
         let ytPlayer, currentUserRank = 0, studentsList = [], currentFilter = 'All';
 
-        // Map belt colors to CSS/Emoji
         function getBeltEmoji(rankText) {
-            const rank = (rankText || "").toLowerCase();
-            let color = "#ffffff"; // Default white
-            if(rank.includes("yellow")) color = "var(--yellow)";
-            if(rank.includes("orange")) color = "var(--orange)";
-            if(rank.includes("purple")) color = "var(--purple)";
-            if(rank.includes("blue")) color = "var(--blue)";
-            if(rank.includes("green")) color = "var(--green)";
-            if(rank.includes("brown")) color = "var(--brown)";
-            if(rank.includes("black")) color = "var(--black)";
-            
+            const r = (rankText || "").toLowerCase();
+            let color = "white";
+            if(r.includes("yellow")) color = "var(--yellow)";
+            else if(r.includes("orange")) color = "var(--orange)";
+            else if(r.includes("purple")) color = "var(--purple)";
+            else if(r.includes("blue")) color = "var(--blue)";
+            else if(r.includes("green")) color = "var(--green)";
+            else if(r.includes("brown")) color = "var(--brown)";
+            else if(r.includes("black")) color = "var(--black)";
             return `<span class="belt-icon" style="color:${color}">🥋</span>`;
         }
 
@@ -158,9 +176,7 @@
             document.getElementById(id).style.display = 'block';
             if(id === 'adminDashboard') {
                 window.syncRoster();
-                document.getElementById('adminQuickActions').style.display = (currentUserRank >= 14) ? 'flex' : 'none';
-                document.getElementById('bulkControls').style.display = (currentUserRank >= 15) ? 'flex' : 'none';
-                if(currentUserRank == 14) document.querySelector('[onclick="window.prepareAdd()"]').style.display = 'none';
+                document.getElementById('adminQuickActions').style.display = (currentUserRank >= 15) ? 'flex' : 'none';
             }
             if(id === 'staffDashboard') window.syncStaff();
         };
@@ -176,7 +192,7 @@
             const term = document.getElementById('rosterSearch').value.toLowerCase();
             const filtered = studentsList.filter(s => {
                 const matchStatus = (currentFilter === 'All' || s.status === currentFilter);
-                const matchTerm = s.fullName.toLowerCase().includes(term) || (s.rank && s.rank.toLowerCase().includes(term));
+                const matchTerm = (s.fullName || "").toLowerCase().includes(term) || (s.currentRank || "").toLowerCase().includes(term);
                 return matchStatus && matchTerm;
             });
             renderTable(filtered);
@@ -193,13 +209,13 @@
         function renderTable(data) {
             let html = `<table>`;
             data.forEach(s => {
-                const statusColor = s.status === 'Inactive' ? '#888' : 'white';
+                const statusColor = s.status === 'Inactive' ? '#666' : 'white';
                 html += `
                     <tr onclick="window.toggleDetail('${s.id}')">
                         <td style="color:${statusColor}; display: flex; align-items: center;">
-                            ${getBeltEmoji(s.rank)}
+                            ${getBeltEmoji(s.currentRank)}
                             <div>
-                                <b>${s.fullName}</b><br><small>${s.rank || 'No Rank'}</small>
+                                <b>${s.fullName || 'Unnamed'}</b><br><small>${s.currentRank || 'No Rank'}</small>
                             </div>
                         </td>
                         <td style="text-align:right;">
@@ -207,9 +223,11 @@
                         </td>
                     </tr>
                     <tr id="det-${s.id}" style="display:none;"><td colspan="2"><div class="detail-view">
-                        <b>Phone:</b> ${s.phone || 'N/A'}<br>
-                        <b>Status:</b> ${s.status || 'Active'}<br>
-                        <b>Notes:</b> ${s.comments || ''}
+                        <b>Phone:</b> ${s.phone || '—'}<br>
+                        <b>Address:</b> ${s.address || '—'}, ${s.cityZip || ''}<br>
+                        <b>Tuition:</b> ${s.tuition || '—'} (${s.paymentFrequency || '—'})<br>
+                        <b>Last Test:</b> ${s.lastTestDate || '—'}<br>
+                        <b>Comments:</b> ${s.comments || 'No notes available.'}
                     </div></td></tr>`;
             });
             document.getElementById('rosterTableArea').innerHTML = html + "</table>";
@@ -219,13 +237,22 @@
             const s = studentsList.find(x => x.id === id);
             document.getElementById('editId').value = id;
             document.getElementById('fName').value = s.fullName || "";
+            document.getElementById('fEmail').value = s.email || "";
             document.getElementById('fPhone').value = s.phone || "";
-            document.getElementById('fRank').value = s.rank || "";
+            document.getElementById('fAddress').value = s.address || "";
+            document.getElementById('fCityZip').value = s.cityZip || "";
+            document.getElementById('fRank').value = s.currentRank || "";
+            document.getElementById('fLastTest').value = s.lastTestDate || "";
+            document.getElementById('fParent').value = s.parentName || "";
             document.getElementById('fStatus').value = s.status || "Active";
+            document.getElementById('fTuition').value = s.tuition || "";
+            document.getElementById('fFreq').value = s.paymentFrequency || "Weekly";
+            document.getElementById('fSource').value = s.source || "";
             document.getElementById('fComments').value = s.comments || "";
             
             const isReadOnly = currentUserRank < 15;
-            ['fName', 'fPhone', 'fRank', 'fStatus', 'fComments'].forEach(fid => document.getElementById(fid).disabled = isReadOnly);
+            const fields = ['fName', 'fEmail', 'fPhone', 'fAddress', 'fCityZip', 'fRank', 'fLastTest', 'fParent', 'fStatus', 'fTuition', 'fFreq', 'fSource', 'fComments'];
+            fields.forEach(fid => document.getElementById(fid).disabled = isReadOnly);
             document.getElementById('saveBtn').style.display = isReadOnly ? 'none' : 'block';
             window.switchAdmin('studentForm');
         };
@@ -233,9 +260,24 @@
         window.handleSave = async () => {
             if (currentUserRank < 15) return;
             const id = document.getElementById('editId').value;
-            const data = { fullName: document.getElementById('fName').value, phone: document.getElementById('fPhone').value, rank: document.getElementById('fRank').value, status: document.getElementById('fStatus').value, comments: document.getElementById('fComments').value };
+            const data = { 
+                fullName: document.getElementById('fName').value, 
+                email: document.getElementById('fEmail').value,
+                phone: document.getElementById('fPhone').value, 
+                address: document.getElementById('fAddress').value,
+                cityZip: document.getElementById('fCityZip').value,
+                currentRank: document.getElementById('fRank').value, 
+                lastTestDate: document.getElementById('fLastTest').value,
+                parentName: document.getElementById('fParent').value,
+                status: document.getElementById('fStatus').value, 
+                tuition: document.getElementById('fTuition').value,
+                paymentFrequency: document.getElementById('fFreq').value,
+                source: document.getElementById('fSource').value,
+                comments: document.getElementById('fComments').value,
+                updatedAt: new Date().toLocaleString()
+            };
             if(id) await updateDoc(doc(db, "students", id), data); else await addDoc(collection(db, "students"), data);
-            alert("Saved"); window.switchAdmin('listView');
+            alert("Record Saved"); window.switchAdmin('listView');
         };
 
         window.syncStaff = () => {
@@ -245,7 +287,7 @@
                     const u = uDoc.data();
                     html += `<tr>
                         <td>${u.name || u.email}</td>
-                        <td><input type="number" style="width:50px; padding:5px;" value="${u.rankLevel || 0}" id="rank-${uDoc.id}"></td>
+                        <td><input type="number" style="width:60px; padding:8px;" value="${u.rankLevel || 0}" id="rank-${uDoc.id}"></td>
                         <td><button class="control-btn" onclick="window.updateRank('${uDoc.id}')">SAVE</button></td>
                     </tr>`;
                 });
@@ -272,7 +314,7 @@
                     if(currentUserRank >= 15) document.getElementById('staffBtn').style.display = 'block';
                     loadCurriculum(currentUserRank);
                 }
-            } catch(e) { alert("Login Failed"); }
+            } catch(e) { alert("Login Failed: Unauthorized or Wrong Password"); }
         };
 
         window.switchAdmin = (id) => { document.querySelectorAll('.admin-tab').forEach(t => t.style.display='none'); document.getElementById(id).style.display='block'; };
