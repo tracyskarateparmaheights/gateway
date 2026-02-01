@@ -9,47 +9,49 @@
     <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/tracyskarateparmaheights/gateway/main/BLACK-TK.png">
 
     <style>
-        :root { --gold: #ffcc00; --bg: #1a1a1a; --card: #242424; --input-bg: #1e1e1e; --green: #2ecc71; --red: #e74c3c; --blue: #3498db; --orange: #ff8800; --yellow: #ffff00; --purple: #9b59b6; --brown: #8b4513; --white: #ffffff; --black: #000000; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg); color: white; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; box-sizing: border-box; }
+        :root { --gold: #ffcc00; --bg: #1a1a1a; --card: #2b2b2b; --input-bg: #1e1e1e; --green: #2ecc71; --red: #e74c3c; --purple: #9b59b6; --blue: #3498db; --orange: #ff8800; --yellow: #ffff00; --white: #ffffff; --brown: #8b4513; --black: #000000; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg); color: white; margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; box-sizing: border-box; }
         
-        .container { background: var(--card); padding: 20px; border-radius: 12px; border-top: 4px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 100%; max-width: 500px; margin-top: 10px; box-sizing: border-box; }
+        .container { background: var(--card); padding: 30px 20px; border-radius: 12px; border-top: 5px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 100%; max-width: 480px; margin-top: 20px; }
+        .logo-img { width: 180px; height: auto; margin-bottom: 10px; }
         
-        /* Navigation */
-        .nav-header { width: 100%; max-width: 500px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 8px; }
-        .control-btn { background: var(--gold); color: #000; border: none; padding: 10px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 5px; }
-
-        /* Video Library Style */
-        .video-wrapper { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 8px; overflow: hidden; margin-bottom: 15px; border: 1px solid #333; }
+        .nav-header { width: 100%; max-width: 480px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px; }
+        
+        .video-wrapper { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 8px; overflow: hidden; margin-bottom: 20px; border: 1px solid #444; }
         #ytPlayer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
         
-        .belt-header { background: #333; padding: 15px; border-radius: 8px; color: var(--gold); cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: bold; margin-bottom: 5px; border-left: 5px solid transparent; }
-        .status-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 10px; }
-        .tech-btn { background: #1a1a1a; color: #eee; padding: 14px; margin: 2px 0; border-radius: 4px; width: 100%; cursor: pointer; text-align: left; font-size: 13px; border: 1px solid #333; }
-
-        /* Roster Elements */
-        .student-row { padding: 15px; border-bottom: 1px solid #333; cursor: pointer; }
-        .detail-view { background:#1a1a1a; padding:15px; font-size:13px; border-radius: 8px; margin: 10px 0; border: 1px solid #444; }
-        .detail-grid { display: grid; grid-template-columns: 100px 1fr; gap: 5px; }
-        .detail-label { color: var(--gold); font-weight: bold; font-size: 12px; }
+        .guide-box { background: #111; padding: 15px; border-radius: 8px; border: 1px solid #444; text-align: left; margin-bottom: 20px; font-size: 12px; line-height: 1.4; }
+        .control-btn { background: var(--gold); color: #000; border: none; padding: 10px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 5px; }
         
-        .filter-bar { display: flex; gap: 5px; margin: 15px 0; background: #333; padding: 4px; border-radius: 8px; }
-        .filter-btn { flex: 1; padding: 10px; background: transparent; border: none; color: #888; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: bold; }
-        .filter-btn.active { background: var(--gold); color: black; }
+        .admin-tab { display: none; text-align: left; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        td, th { padding: 12px 5px; border-bottom: 1px solid #333; font-size: 14px; text-align: left; }
+        
+        .belt-header { background: #3d3d3d; padding: 15px; margin-top: 10px; border-radius: 8px; color: var(--gold); cursor: pointer; display: flex; justify-content: space-between; font-weight: bold; border-left: 5px solid transparent; }
+        .tech-btn { background: #222; color: #eee; padding: 14px; margin: 5px 0; border-radius: 6px; width: 100%; cursor: pointer; display: block; text-align: left; font-size: 13px; border: 1px solid #444; }
 
-        input, textarea, select { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 6px; border: 1px solid #444; background: var(--input-bg); color: white; box-sizing: border-box; }
-        .footer-text { margin-top: 25px; font-size: 10px; color: #888; opacity: 0.7; text-align: center; }
+        input, textarea, select { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #444; background: var(--input-bg); color: white; box-sizing: border-box; font-size: 14px; }
+        
+        .detail-view { background:#222; padding:15px; font-size:13px; text-align:left; line-height:1.6; border-radius: 8px; margin: 5px 0; border: 1px solid #444; }
+        .detail-label { color: var(--gold); font-weight: bold; display: inline-block; width: 110px; }
+        .lvl-input { width: 60px; padding: 8px; background: #111; color: var(--gold); border: 1px solid #555; text-align: center; font-weight: bold; border-radius: 4px; }
+        
+        .filter-bar { display: flex; gap: 5px; margin-bottom: 15px; }
+        .filter-btn { flex: 1; padding: 10px; background: #333; border: 1px solid #444; color: #888; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: bold; }
+        .filter-btn.active { background: var(--gold); color: black; border-color: var(--gold); }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 8px; }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 </head>
 <body>
 
     <div class="container" id="loginBox">
-        <img src="https://raw.githubusercontent.com/tracyskarateparmaheights/gateway/main/BLACK-TK.png" style="width:160px; margin-bottom:10px;">
-        <h2 style="color: var(--gold); margin: 0 0 20px 0;">Tracy's Karate Portal</h2>
+        <img src="https://raw.githubusercontent.com/tracyskarateparmaheights/gateway/main/BLACK-TK.png" class="logo-img">
+        <h2 style="color: var(--gold); margin: 10px 0 20px 0;">Tracy's Karate Portal</h2>
         <input type="email" id="emailInput" placeholder="Email">
         <input type="password" id="passInput" placeholder="Password">
         <button id="loginBtn" class="control-btn" style="width:100%; padding:18px; justify-content:center;">SIGN IN</button>
-        <div class="footer-text">
+        <div style="margin-top: 25px; font-size: 10px; color: #888; opacity: 0.7; text-align: center;">
             Copyright 2026 by M.D.M. Studios Inc. All Rights Reserved.<br>
             Developed by Directed Route LLC
         </div>
@@ -74,36 +76,57 @@
         </div>
 
         <div id="adminDashboard" style="display:none;">
-            <div id="rosterControls" style="display:flex; gap:5px; margin-bottom:15px;">
+            <div id="rosterControls" style="display:flex; gap:8px; margin-bottom:15px; justify-content: center;">
                 <button class="control-btn" onclick="window.prepareAdd()">+ New</button>
                 <button class="control-btn" onclick="document.getElementById('csvIn').click()">📥 Import</button>
-                <button class="control-btn" onclick="window.exportToCSV()">📤 Export</button>
-                <input type="file" id="csvIn" style="display:none;" accept=".csv" onchange="window.handleImport(event)">
+                <button class="control-btn" onclick="window.exportStudents()">💾 Export</button>
+                <input type="file" id="csvIn" style="display:none;" accept=".csv" onchange="window.handleBulkImport(event)">
             </div>
 
-            <div id="studentForm" style="display:none;">
+            <div id="studentForm" class="admin-tab">
+                <h3 style="color:var(--gold);">Student Profile</h3>
                 <input type="hidden" id="editId">
-                <input type="text" id="fName" placeholder="Full Name">
-                <input type="text" id="fRank" placeholder="Current Rank">
-                <select id="fStatus"><option value="Current">Current</option><option value="Inactive">Inactive</option></select>
-                <textarea id="fComments" placeholder="Notes..." style="height:80px;"></textarea>
-                <button class="control-btn" style="width:100%; justify-content:center; padding:15px;" onclick="window.handleSave()">SAVE</button>
+                <select id="fStatus"><option value="Current">Status: Current</option><option value="Inactive">Status: Inactive</option></select>
+                <input type="text" id="fName" placeholder="Student Name">
+                <input type="text" id="fParent" placeholder="Parent/Guardian (if minor)">
+                <input type="text" id="fPhone" placeholder="Phone Number" oninput="window.formatPhone(this)">
+                <input type="email" id="fEmail" placeholder="Email Address">
+                <input type="text" id="fAddress" placeholder="Mailing Address">
+                <input type="text" id="fCityZip" placeholder="City/Zip">
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="fTuition" placeholder="Tuition ($)" onblur="window.formatCurrency(this)">
+                    <select id="fFrequency">
+                        <option value="Weekly">Weekly</option>
+                        <option value="Monthly">Monthly</option>
+                        <option value="Bi-Weekly">Bi-Weekly</option>
+                        <option value="None">None</option>
+                    </select>
+                </div>
+                <textarea id="fSource" placeholder="How did you hear about us?" style="height:60px;"></textarea>
+                <textarea id="fComments" placeholder="General Notes" style="height:80px;"></textarea>
+                <input type="text" id="fCurrentRank" placeholder="Current Rank">
+                <input type="date" id="fLastTestDate" placeholder="Last Test Date">
+                <button class="control-btn" style="width:100%; justify-content:center; padding:15px;" onclick="window.handleSave()">SAVE RECORD</button>
                 <button class="control-btn" style="width:100%; background:none; color:#888; justify-content:center;" onclick="window.switchAdmin('listView')">Cancel</button>
             </div>
 
-            <div id="listView">
-                <input type="text" id="rosterSearch" placeholder="🔍 Search records..." onkeyup="window.runSearch()">
+            <div id="listView" class="admin-tab" style="display:block;">
+                <input type="text" id="rosterSearch" placeholder="🔍 Search records..." onkeyup="window.searchRoster()">
                 <div class="filter-bar">
-                    <button class="filter-btn active" id="btnCurrent" onclick="window.setFilter('Current')">Active</button>
-                    <button class="filter-btn" id="btnInactive" onclick="window.setFilter('Inactive')">Inactive</button>
+                    <button id="filterActive" class="filter-btn active" onclick="window.setFilter('Current')">Active</button>
+                    <button id="filterInactive" class="filter-btn" onclick="window.setFilter('Inactive')">Inactive</button>
                 </div>
-                <div id="rosterArea"></div>
+                <div id="rosterTableArea"></div>
             </div>
         </div>
 
         <div id="staffDashboard" style="display:none;">
-            <h3 style="color:var(--gold);">Staff Permissions</h3>
-            <div id="staffArea"></div>
+            <h3 style="color:var(--gold);">Staff Access</h3>
+            <div class="guide-box">
+                <p><b>Content Access:</b> LVL 0-5: White-Green | LVL 6-8: Brown | LVL 9-13: Black</p>
+                <p><b>Permissions:</b> LVL 14: View Roster | LVL 15: Full Admin</p>
+            </div>
+            <div id="staffTableArea"></div>
         </div>
     </div>
 
@@ -112,29 +135,48 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, collection, query, where, orderBy, getDocs, updateDoc, onSnapshot, addDoc, deleteDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, collection, query, where, orderBy, getDocs, updateDoc, onSnapshot, addDoc, deleteDoc, writeBatch, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = { apiKey: "AIzaSyC35Ubf6GxyDi3JEiKWaYgVFkYGknMZrcw", authDomain: "tracy-s-karate-portal.firebaseapp.com", projectId: "tracy-s-karate-portal", storageBucket: "tracy-s-karate-portal.appspot.com", messagingSenderId: "338865615783", appId: "1:338865615783:web:75865261864177d46536da" };
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        let ytPlayer, currentUserRank = 0, studentsList = [], currentFilter = 'Current';
+        let ytPlayer, currentUserRank = 0, studentsList = [], currentRosterFilter = 'Current', playerIsReady = false;
 
+        // Visual Mappings
+        const beltColors = { "white": "#ffffff", "yellow": "#ffff00", "orange": "#ff8800", "purple": "#9b59b6", "blue": "#3498db", "green": "#2ecc71", "brown": "#8b4513", "black": "#000000" };
+        function getHex(name) { 
+            const n = (name || "").toLowerCase();
+            for (const [key, hex] of Object.entries(beltColors)) { if(n.includes(key)) return hex; }
+            return "#444";
+        }
+
+        // Global Fixes for "Not a Function" errors
         window.toggleDetail = (id) => {
             const el = document.getElementById(`det-${id}`);
+            if (el) el.style.display = (el.style.display === "none") ? "table-row" : "none";
+        };
+
+        window.toggleGate = (id) => {
+            const el = document.getElementById(id);
             if (el) el.style.display = (el.style.display === "none") ? "block" : "none";
         };
 
-        window.onYouTubeIframeAPIReady = () => { 
-            ytPlayer = new YT.Player('ytPlayer', { height: '100%', width: '100%', videoId: '', playerVars: { 'controls': 1, 'rel': 0, 'modestbranding': 1, 'playsinline': 1 } }); 
+        // Video Player Fix: Ensures player is ready for Firebase-loaded content
+        window.onYouTubeIframeAPIReady = () => {
+            ytPlayer = new YT.Player('ytPlayer', { height: '100%', width: '100%', videoId: 'S3A9t0_6fvU', 
+                playerVars: { 'controls': 1, 'rel': 0, 'modestbranding': 1, 'playsinline': 1 },
+                events: { 'onReady': () => { playerIsReady = true; } }
+            });
         };
 
-        window.loadVideo = (id) => { 
-            if (ytPlayer && ytPlayer.loadVideoById) { 
-                ytPlayer.loadVideoById(id); 
+        window.loadVideo = (id) => {
+            if (playerIsReady && ytPlayer && ytPlayer.loadVideoById) {
+                ytPlayer.loadVideoById(id);
+                ytPlayer.playVideo();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
-            } 
+            }
         };
 
         window.stopAndHome = () => {
@@ -150,70 +192,92 @@
             if (id === 'staffDashboard') window.syncStaff();
         };
 
-        window.setFilter = (f) => {
-            currentFilter = f;
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('btn' + f).classList.add('active');
-            window.runSearch();
-        };
-
-        window.runSearch = () => {
-            const term = document.getElementById('rosterSearch').value.toLowerCase();
-            const filtered = studentsList.filter(s => (s.status === currentFilter) && (s.fullName || "").toLowerCase().includes(term));
-            renderRoster(filtered);
-        };
-
+        // STUDENT ROSTER LOGIC
         window.syncRoster = () => {
             onSnapshot(query(collection(db, "students"), orderBy("fullName")), (snap) => {
                 studentsList = [];
-                snap.forEach(docSnap => studentsList.push({id: docSnap.id, ...docSnap.data()}));
-                window.runSearch();
+                let html = `<table>`;
+                snap.forEach(docSnap => {
+                    const s = docSnap.data(); const id = docSnap.id; studentsList.push({id, ...s});
+                    const displayStyle = (s.status || "Current") === currentRosterFilter ? "" : "none";
+                    const dotColor = (s.status === "Inactive") ? "var(--red)" : "var(--green)";
+                    
+                    html += `
+                    <tr class="sr-row" style="display:${displayStyle}" onclick="window.toggleDetail('${id}')">
+                        <td><span class="status-dot" style="background:${dotColor}"></span><b>${s.fullName}</b><br><small>${s.phone || 'No Phone'}</small></td>
+                        <td style="text-align:right;"><button class="control-btn" onclick="event.stopPropagation(); window.editStudent('${id}')">EDIT</button></td>
+                    </tr>
+                    <tr id="det-${id}" style="display:none;"><td colspan="2"><div class="detail-view">
+                        <div><span class="detail-label">Status:</span> ${s.status || 'Current'}</div>
+                        <div><span class="detail-label">Parent:</span> ${s.parentName || '---'}</div>
+                        <div><span class="detail-label">Email:</span> ${s.email || '---'}</div>
+                        <div><span class="detail-label">Address:</span> ${s.address || '---'}</div>
+                        <div><span class="detail-label">Tuition:</span> ${s.tuition || '---'} (${s.paymentFrequency || 'Weekly'})</div>
+                        <div><span class="detail-label">Rank:</span> ${s.currentRank || '---'}</div>
+                        <div><span class="detail-label">Notes:</span> ${s.comments || '---'}</div>
+                        <button class="control-btn" style="background:var(--red); color:white; width:100%; margin-top:10px; justify-content:center;" onclick="window.deleteStudent('${id}', '${s.fullName}')">DELETE RECORD</button>
+                    </div></td></tr>`;
+                });
+                document.getElementById('rosterTableArea').innerHTML = html + "</table>";
             });
         };
 
-        function renderRoster(data) {
-            let html = "";
-            data.forEach(s => {
-                html += `
-                <div class="student-row" onclick="window.toggleDetail('${s.id}')">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <div><b>${s.fullName}</b><br><small style="color:#aaa;">${s.phone || ''}</small></div>
-                        <button class="control-btn" style="padding:6px;" onclick="event.stopPropagation(); window.viewEdit('${s.id}')">EDIT</button>
-                    </div>
-                    <div id="det-${s.id}" class="detail-view" style="display:none;">
-                        <div class="detail-grid">
-                            <div class="detail-label">Rank:</div><div>${s.currentRank || '---'}</div>
-                            <div class="detail-label">Tuition:</div><div>${s.tuition || '---'}</div>
-                            <div class="detail-label">Notes:</div><div>${s.comments || '---'}</div>
-                        </div>
-                        <button class="control-btn" style="background:var(--red); color:white; width:100%; margin-top:10px; justify-content:center;" onclick="window.handleDelete('${s.id}')">DELETE</button>
-                    </div>
-                </div>`;
-            });
-            document.getElementById('rosterArea').innerHTML = html;
-        }
+        window.editStudent = (id) => {
+            const s = studentsList.find(x => x.id === id);
+            document.getElementById('editId').value = id;
+            document.getElementById('fName').value = s.fullName || "";
+            document.getElementById('fParent').value = s.parentName || "";
+            document.getElementById('fPhone').value = s.phone || "";
+            document.getElementById('fEmail').value = s.email || "";
+            document.getElementById('fAddress').value = s.address || "";
+            document.getElementById('fCityZip').value = s.cityZip || "";
+            document.getElementById('fTuition').value = s.tuition || "";
+            document.getElementById('fFrequency').value = s.paymentFrequency || "Weekly";
+            document.getElementById('fSource').value = s.source || "";
+            document.getElementById('fComments').value = s.comments || "";
+            document.getElementById('fCurrentRank').value = s.currentRank || "";
+            document.getElementById('fLastTestDate').value = s.lastTestDate || "";
+            window.switchAdmin('studentForm');
+        };
 
+        window.handleSave = async () => {
+            const id = document.getElementById('editId').value;
+            const data = { 
+                fullName: document.getElementById('fName').value, status: document.getElementById('fStatus').value,
+                parentName: document.getElementById('fParent').value, phone: document.getElementById('fPhone').value,
+                email: document.getElementById('fEmail').value, address: document.getElementById('fAddress').value,
+                cityZip: document.getElementById('fCityZip').value, tuition: document.getElementById('fTuition').value,
+                paymentFrequency: document.getElementById('fFrequency').value, source: document.getElementById('fSource').value,
+                comments: document.getElementById('fComments').value, currentRank: document.getElementById('fCurrentRank').value,
+                lastTestDate: document.getElementById('fLastTestDate').value, updatedAt: serverTimestamp() 
+            };
+            if(id) await updateDoc(doc(db, "students", id), data); else await addDoc(collection(db, "students"), data);
+            window.switchAdmin('listView');
+        };
+
+        // STAFF ACCESS LOGIC
         window.syncStaff = () => {
             onSnapshot(collection(db, "users"), (snap) => {
-                let html = `<table style="width:100%; border-collapse:collapse;">`;
+                let html = `<table><tr><th>NAME</th><th>LVL</th><th></th></tr>`;
                 snap.forEach(uDoc => {
                     const u = uDoc.data();
-                    html += `<tr style="border-bottom:1px solid #333;">
-                        <td style="padding:10px;">${u.name || u.email}</td>
-                        <td><input type="number" style="width:50px; margin:0;" value="${u.rankLevel || 0}" id="staff-${uDoc.id}"></td>
-                        <td><button class="control-btn" onclick="window.updateStaff('${uDoc.id}')">SAVE</button></td>
+                    html += `<tr>
+                        <td>${u.name || u.email}</td>
+                        <td><input type="number" class="lvl-input" id="lvl-${uDoc.id}" value="${u.rankLevel || 0}"></td>
+                        <td style="text-align:right;"><button class="control-btn" onclick="window.updateRank('${uDoc.id}')">✔</button></td>
                     </tr>`;
                 });
-                document.getElementById('staffArea').innerHTML = html + "</table>";
+                document.getElementById('staffTableArea').innerHTML = html + "</table>";
             });
         };
 
-        window.updateStaff = async (id) => {
-            const val = parseInt(document.getElementById(`staff-${id}`).value);
+        window.updateRank = async (id) => {
+            const val = parseInt(document.getElementById(`lvl-${id}`).value);
             await updateDoc(doc(db, "users", id), { rankLevel: val });
             alert("Updated");
         };
 
+        // CURRICULUM LOADER (Firebase Connection Fix)
         const loadCurriculum = async (rank) => {
             const q = query(collection(db, "curriculum"), where("rankRequired", "<=", rank), orderBy("rankRequired", "asc"));
             const snap = await getDocs(q);
@@ -221,19 +285,28 @@
             container.innerHTML = "";
             snap.forEach(bDoc => {
                 const d = bDoc.data();
+                const bColor = getHex(d.beltName);
                 container.insertAdjacentHTML('beforeend', `
                     <div class="belt-group">
-                        <div class="belt-header" onclick="window.toggleDetail('belt-${bDoc.id}')">
-                            <span>🥋 ${d.beltName}</span><span>▼</span>
+                        <div class="belt-header" style="border-left-color:${bColor}" onclick="window.toggleGate('belt-${bDoc.id}')">
+                            <span>${d.beltName}</span><span>▼</span>
                         </div>
-                        <div id="det-belt-${bDoc.id}" style="display:none;">
+                        <div id="belt-${bDoc.id}" style="display:none; padding-top:5px;">
                             ${d.videos.map(v => `<button class="tech-btn" onclick="window.loadVideo('${v.ytId}')">${v.title}</button>`).join('')}
                         </div>
                     </div>`);
             });
         };
 
-        // Standard logic for login, save, delete, etc.
+        // Helper Tools
+        window.setFilter = (s) => { currentRosterFilter = s; document.getElementById('filterActive').classList.toggle('active', s === 'Current'); document.getElementById('filterInactive').classList.toggle('active', s === 'Inactive'); window.syncRoster(); };
+        window.switchAdmin = (id) => { document.querySelectorAll('.admin-tab').forEach(t => t.style.display='none'); document.getElementById(id).style.display='block'; };
+        window.prepareAdd = () => { document.getElementById('editId').value = ""; document.querySelectorAll('#studentForm input, #studentForm textarea').forEach(i => i.value = ""); window.switchAdmin('studentForm'); };
+        window.deleteStudent = async (id, name) => { if(confirm(`Delete ${name}?`)) await deleteDoc(doc(db, "students", id)); };
+        window.exportStudents = () => { const csv = Papa.unparse(studentsList); const blob = new Blob([csv], { type: 'text/csv' }); const url = window.URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `Roster_${new Date().toLocaleDateString()}.csv`; a.click(); };
+        window.handleBulkImport = (e) => { const file = e.target.files[0]; Papa.parse(file, { header: true, complete: async (r) => { const batch = writeBatch(db); r.data.forEach(row => { if(row.fullName) batch.set(doc(collection(db, "students")), {...row, updatedAt: serverTimestamp()}); }); await batch.commit(); alert("Done!"); }}); };
+
+        // AUTH & INITIALIZATION
         document.getElementById('loginBtn').onclick = async () => {
             try {
                 const cred = await signInWithEmailAndPassword(auth, document.getElementById('emailInput').value, document.getElementById('passInput').value);
@@ -248,37 +321,6 @@
                     loadCurriculum(currentUserRank);
                 }
             } catch(e) { alert("Login Failed"); }
-        };
-
-        window.viewEdit = (id) => {
-            const s = studentsList.find(x => x.id === id);
-            document.getElementById('editId').value = id;
-            document.getElementById('fName').value = s.fullName || "";
-            document.getElementById('fRank').value = s.currentRank || "";
-            document.getElementById('fStatus').value = s.status || "Current";
-            document.getElementById('fComments').value = s.comments || "";
-            window.switchAdmin('studentForm');
-        };
-
-        window.switchAdmin = (v) => {
-            document.getElementById('listView').style.display = (v === 'listView' ? 'block' : 'none');
-            document.getElementById('studentForm').style.display = (v === 'studentForm' ? 'block' : 'none');
-            document.getElementById('rosterControls').style.display = (v === 'listView' ? 'flex' : 'none');
-        };
-
-        window.handleSave = async () => {
-            const id = document.getElementById('editId').value;
-            const data = { fullName: document.getElementById('fName').value, currentRank: document.getElementById('fRank').value, status: document.getElementById('fStatus').value, comments: document.getElementById('fComments').value };
-            if(id) await updateDoc(doc(db, "students", id), data); else await addDoc(collection(db, "students"), data);
-            window.switchAdmin('listView');
-        };
-
-        window.handleDelete = async (id) => { if(confirm("Delete?")) { await deleteDoc(doc(db, "students", id)); } };
-
-        window.prepareAdd = () => {
-            document.getElementById('editId').value = "";
-            document.getElementById('studentForm').querySelectorAll('input, textarea').forEach(i => i.value = "");
-            window.switchAdmin('studentForm');
         };
     </script>
 </body>
