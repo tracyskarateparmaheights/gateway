@@ -25,6 +25,7 @@
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         td { padding: 12px 5px; border-bottom: 1px solid #333; font-size: 14px; vertical-align: middle; }
         
+        /* THE COLOR TABS */
         .belt-header { background: #3d3d3d; padding: 15px; margin-top: 10px; border-radius: 8px; color: var(--gold); cursor: pointer; display: flex; justify-content: space-between; font-weight: bold; }
         .tech-list { max-height: 450px; overflow-y: auto; }
         .tech-btn { background: #222; color: #eee; padding: 14px; margin: 5px 0; border-radius: 6px; border-left: 4px solid var(--gold); width: 100%; cursor: pointer; display: block; text-align: left; font-size: 13px; border:none; }
@@ -33,6 +34,7 @@
         
         .detail-view { background:#222; padding:15px; font-size:13px; text-align:left; line-height:1.6; border-radius: 8px; margin: 5px 0; border: 1px solid #444; }
         .detail-label { color: var(--gold); font-weight: bold; display: inline-block; width: 110px; }
+        .lvl-input { width: 60px; padding: 8px; background: #111; color: var(--gold); border: 1px solid #555; text-align: center; font-weight: bold; border-radius: 4px; }
         
         .filter-bar { display: flex; gap: 5px; margin-bottom: 10px; }
         .filter-btn { flex: 1; padding: 8px; background: #333; border: 1px solid #444; color: #888; border-radius: 6px; font-size: 12px; cursor: pointer; }
@@ -47,10 +49,14 @@
 
     <div class="container" id="loginBox">
         <img src="https://raw.githubusercontent.com/tracyskarateparmaheights/gateway/main/BLACK-TK.png" class="logo-img">
-        <h2 style="color: var(--gold); margin: 10px 0 20px 0; font-size: 22px;">Master Portal</h2>
+        <h2 style="color: var(--gold); margin: 10px 0 20px 0; font-size: 22px; line-height: 1.2;">Tracy's Karate<br>Master Portal</h2>
         <input type="email" id="emailInput" placeholder="Email">
         <input type="password" id="passInput" placeholder="Password">
         <button id="loginBtn" class="control-btn" style="width:100%; padding:18px;">Sign In</button>
+        <div style="margin-top: 25px; font-size: 10px; color: #888; opacity: 0.7; line-height: 1.5;">
+            Copyright 2026 by M.D.M. Studios Inc. All Rights Reserved.<br>
+            Developed by Directed Route LLC
+        </div>
     </div>
 
     <div class="nav-header" id="portalNav" style="display:none;">
@@ -69,6 +75,7 @@
         <div id="mainMenu">
             <button class="tech-btn" style="padding:25px; text-align:center; font-size:18px;" onclick="window.openSection('curriculumSection')">🥋 Video Library</button>
             <button class="tech-btn" style="padding:25px; text-align:center; font-size:18px; display:none;" id="rosterBtn" onclick="window.openSection('adminDashboard')">👥 Student Roster</button>
+            <button class="tech-btn" style="padding:25px; text-align:center; font-size:18px; display:none;" id="staffBtn" onclick="window.openSection('staffDashboard')">🛡️ Admin Access</button>
         </div>
 
         <div id="curriculumSection" style="display:none;">
@@ -89,7 +96,7 @@
                 <input type="text" id="fAddress" placeholder="Mailing Address">
                 <input type="text" id="fCityZip" placeholder="City/Zip">
                 <div style="display: flex; gap: 10px;">
-                    <input type="text" id="fTuition" placeholder="Tuition ($)">
+                    <input type="text" id="fTuition" placeholder="Tuition Amount ($)">
                     <select id="fFrequency"><option value="Weekly">Weekly</option><option value="Monthly">Monthly</option><option value="None">None</option></select>
                 </div>
                 <textarea id="fComments" placeholder="General Notes/Comments" style="height:80px;"></textarea>
@@ -106,16 +113,21 @@
                 </div>
                 <div id="rosterTableArea"></div>
             </div>
+        </div>
 
-            <div id="videoManager" style="display:none; margin-top:20px; border-top:1px solid #444; padding-top:20px;">
-                <h4 style="color:var(--gold);">Add New Video</h4>
+        <div id="staffDashboard" style="display:none;">
+            <h3>Admin Access Rights</h3>
+            <div id="staffTableArea"></div>
+            <hr style="border:0; border-top:1px solid #444; margin: 20px 0;">
+            <div id="videoManager">
+                <h4 style="color:var(--gold);">Curriculum Management</h4>
                 <select id="mBeltSelect">
                     <option value="belt_0">White Belt</option><option value="belt_1">Yellow Belt</option><option value="belt_2">Orange Belt</option>
                     <option value="belt_3">Purple Belt</option><option value="belt_4">Blue Belt</option><option value="belt_5">Green Belt</option>
                 </select>
                 <input type="text" id="mVideoTitle" placeholder="Technique Name">
                 <input type="text" id="mVideoId" placeholder="YouTube Video ID">
-                <button class="control-btn" style="width:100%;" onclick="window.saveNewVideo()">Upload to Curriculum</button>
+                <button class="control-btn" style="width:100%;" onclick="window.saveNewVideo()">Add to Curriculum</button>
             </div>
         </div>
     </div>
@@ -135,16 +147,19 @@
 
         let ytPlayer, currentUserRank = 0, currentRosterFilter = 'Current', studentsList = [];
 
-        // --- YOUTUBE LOGIC ---
+        // --- YOUTUBE LOGIC FIXED ---
         window.onYouTubeIframeAPIReady = () => {
-            ytPlayer = new YT.Player('ytPlayer', { height: '100%', width: '100%', videoId: '', playerVars: { 'controls': 1, 'rel': 0, 'modestbranding': 1, 'playsinline': 1 } });
+            ytPlayer = new YT.Player('ytPlayer', { 
+                height: '100%', width: '100%', videoId: '19Ktd4FfDGg', 
+                playerVars: { 'controls': 1, 'rel': 0, 'modestbranding': 1, 'playsinline': 1 } 
+            });
         };
-        window.loadVideo = (id) => { if (ytPlayer && ytPlayer.loadVideoById) ytPlayer.loadVideoById(id); };
+        window.loadVideo = (id) => { if (ytPlayer && ytPlayer.loadVideoById) { ytPlayer.loadVideoById(id); ytPlayer.playVideo(); } };
 
         // --- NAVIGATION ---
         window.stopAndHome = () => { 
             if(ytPlayer && ytPlayer.stopVideo) ytPlayer.stopVideo(); 
-            ['curriculumSection', 'adminDashboard', 'mainMenu'].forEach(s => document.getElementById(s).style.display = 'none');
+            ['curriculumSection', 'adminDashboard', 'staffDashboard', 'mainMenu'].forEach(s => document.getElementById(s).style.display = 'none');
             document.getElementById('mainMenu').style.display = 'block';
             document.getElementById('adminQuickActions').style.display = 'none';
         };
@@ -152,17 +167,14 @@
         window.openSection = (id) => {
             document.getElementById('mainMenu').style.display = 'none';
             document.getElementById(id).style.display = 'block';
-            if(id === 'adminDashboard') {
-                window.syncRoster();
-                document.getElementById('adminQuickActions').style.display = (currentUserRank >= 15) ? 'flex' : 'none';
-                document.getElementById('videoManager').style.display = (currentUserRank >= 15) ? 'block' : 'none';
-            }
+            if(id === 'adminDashboard') { window.syncRoster(); document.getElementById('adminQuickActions').style.display = (currentUserRank >= 14) ? 'flex' : 'none'; }
+            if(id === 'staffDashboard') window.syncStaff();
         };
 
         window.switchAdmin = (id) => { document.querySelectorAll('.admin-tab').forEach(t => t.style.display='none'); document.getElementById(id).style.display='block'; };
         window.toggleGate = (id) => { const el = document.getElementById(id); el.style.display = (el.style.display === "none") ? "block" : "none"; };
 
-        // --- DATA LOADERS ---
+        // --- CURRICULUM ---
         const loadCurriculum = async (rank) => {
             const container = document.getElementById('dynamicCurriculum');
             const q = query(collection(db, "curriculum"), where("rankRequired", "<=", rank), orderBy("rankRequired", "asc"));
@@ -180,19 +192,31 @@
             });
         };
 
-        // --- ROSTER ACTIONS ---
+        // --- STAFF & PERMISSIONS ---
+        window.syncStaff = () => {
+            onSnapshot(collection(db, "users"), (snap) => {
+                let html = `<table><tr><th>User</th><th>Rank</th><th></th></tr>`;
+                snap.forEach(uDoc => {
+                    const u = uDoc.data();
+                    html += `<tr><td>${u.name || 'User'}</td><td><input type="number" class="lvl-input" id="lvl-${uDoc.id}" value="${u.rankLevel || 0}"></td>
+                    <td><button class="control-btn" onclick="window.updateRank('${uDoc.id}')">Update</button></td></tr>`;
+                });
+                document.getElementById('staffTableArea').innerHTML = html + "</table>";
+            });
+        };
+        window.updateRank = async (id) => { await updateDoc(doc(db, "users", id), { rankLevel: parseInt(document.getElementById(`lvl-${id}`).value) }); alert("Permission Updated"); };
+
+        // --- STUDENT ROSTER (WITH PHONE UNDER NAME) ---
         window.syncRoster = () => {
             onSnapshot(query(collection(db, "students"), orderBy("fullName")), (snap) => {
                 let html = `<table>`; studentsList = [];
                 snap.forEach(docSnap => {
                     const s = docSnap.data(); const id = docSnap.id; studentsList.push({id, ...s});
                     if((s.status || "Current") === currentRosterFilter) {
-                        html += `<tr onclick="window.toggleDetail('${id}')"><td><b>${s.fullName}</b></td><td style="text-align:right;">
-                            <button class="control-btn" onclick="event.stopPropagation(); window.editStudent('${id}')">EDIT</button></td></tr>
+                        html += `<tr onclick="window.toggleDetail('${id}')"><td><b>${s.fullName}</b><br><small style="color:var(--gold);">${s.phone || ''}</small></td>
+                            <td style="text-align:right;"><button class="control-btn" onclick="event.stopPropagation(); window.editStudent('${id}')">EDIT</button></td></tr>
                             <tr id="det-${id}" style="display:none;"><td colspan="2"><div class="detail-view">
-                                <span class="detail-label">Phone:</span> ${s.phone || 'N/A'}<br>
-                                <span class="detail-label">Rank:</span> ${s.currentRank || 'N/A'}<br>
-                                <span class="detail-label">Notes:</span> ${s.comments || ''}
+                                Rank: ${s.currentRank || 'N/A'}<br>Email: ${s.email || ''}<br>Notes: ${s.comments || ''}
                             </div></td></tr>`;
                     }
                 });
@@ -215,37 +239,12 @@
 
         window.handleSave = async () => {
             const id = document.getElementById('editId').value;
-            const data = { 
-                fullName: document.getElementById('fName').value, 
-                phone: document.getElementById('fPhone').value, 
-                email: document.getElementById('fEmail').value,
-                address: document.getElementById('fAddress').value,
-                tuition: document.getElementById('fTuition').value,
-                comments: document.getElementById('fComments').value,
-                currentRank: document.getElementById('fCurrentRank').value,
-                status: document.getElementById('fStatus').value,
-                updatedAt: serverTimestamp() 
-            };
+            const data = { fullName: document.getElementById('fName').value, phone: document.getElementById('fPhone').value, email: document.getElementById('fEmail').value, address: document.getElementById('fAddress').value, tuition: document.getElementById('fTuition').value, comments: document.getElementById('fComments').value, currentRank: document.getElementById('fCurrentRank').value, status: document.getElementById('fStatus').value };
             if(id) await updateDoc(doc(db, "students", id), data); else await addDoc(collection(db, "students"), data);
-            alert("Saved Successfully"); window.switchAdmin('listView');
+            alert("Record Saved"); window.switchAdmin('listView');
         };
 
-        window.prepareAdd = () => {
-            document.getElementById('editId').value = "";
-            document.getElementById('studentForm').querySelectorAll('input,textarea').forEach(i => i.value="");
-            window.switchAdmin('studentForm');
-        };
-
-        window.setFilter = (f) => { 
-            currentRosterFilter = f; 
-            document.getElementById('filterActive').className = f==='Current' ? 'filter-btn active' : 'filter-btn';
-            document.getElementById('filterInactive').className = f==='Inactive' ? 'filter-btn active' : 'filter-btn';
-            window.syncRoster(); 
-        };
-
-        window.toggleDetail = (id) => { const el = document.getElementById(`det-${id}`); el.style.display = el.style.display === "none" ? "table-row" : "none"; };
-
-        // --- AUTH & INITIAL LOAD ---
+        // --- AUTH & BOOT ---
         document.getElementById('loginBtn').onclick = async () => {
             try {
                 const cred = await signInWithEmailAndPassword(auth, document.getElementById('emailInput').value, document.getElementById('passInput').value);
@@ -256,21 +255,10 @@
                     document.getElementById('portalNav').style.display = 'flex';
                     document.getElementById('portalView').style.display = 'block';
                     if(currentUserRank >= 14) document.getElementById('rosterBtn').style.display = 'block';
+                    if(currentUserRank >= 15) document.getElementById('staffBtn').style.display = 'block';
                     await loadCurriculum(currentUserRank);
                 }
             } catch(e) { alert("Invalid Credentials"); }
-        };
-
-        window.saveNewVideo = async () => {
-            const beltId = document.getElementById('mBeltSelect').value;
-            const title = document.getElementById('mVideoTitle').value;
-            const ytId = document.getElementById('mVideoId').value;
-            if(!title || !ytId) return alert("Fill all fields");
-            try {
-                await updateDoc(doc(db, "curriculum", beltId), { videos: arrayUnion({ title, ytId }) });
-                alert("Video Added!");
-                loadCurriculum(currentUserRank);
-            } catch (e) { alert("Error saving video."); }
         };
     </script>
 </body>
