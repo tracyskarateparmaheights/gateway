@@ -55,9 +55,9 @@
 
     <div class="nav-header" id="portalNav" style="display:none;">
         <div style="display:flex; gap:8px;">
-            <button class="control-btn" onclick="stopAndHome()">🏠 Menu</button>
+            <button class="control-btn" onclick="window.stopAndHome()">🏠 Menu</button>
             <div id="adminQuickActions" style="display:none; gap:8px;">
-                <button class="control-btn" onclick="window.prepareAdd()">+ New</button>
+                <button class="control-btn" onclick="window.prepareAdd()">+ New Student</button>
                 <button class="control-btn" onclick="document.getElementById('csvFileInput').click()">📥 Import</button>
                 <input type="file" id="csvFileInput" accept=".csv" style="display:none;" onchange="window.handleBulkImport(event)">
             </div>
@@ -67,34 +67,39 @@
 
     <div class="container" id="portalView" style="display:none; margin-top:0;">
         <div id="mainMenu">
-            <button class="tech-btn" style="padding:25px; text-align:center; font-size:18px;" onclick="openSection('curriculumSection')">🥋 Video Library</button>
-            <button class="tech-btn" style="padding:25px; text-align:center; font-size:18px; display:none;" id="rosterBtn" onclick="openSection('adminDashboard')">👥 Student Roster</button>
+            <button class="tech-btn" style="padding:25px; text-align:center; font-size:18px;" onclick="window.openSection('curriculumSection')">🥋 Video Library</button>
+            <button class="tech-btn" style="padding:25px; text-align:center; font-size:18px; display:none;" id="rosterBtn" onclick="window.openSection('adminDashboard')">👥 Student Roster</button>
         </div>
 
         <div id="curriculumSection" style="display:none;">
             <div class="video-wrapper"><div id="ytPlayer"></div></div>
-            <div id="dynamicCurriculum">
-                <p style="text-align:center; color:gray; font-size:12px;">Loading curriculum...</p>
-            </div>
+            <input type="text" id="videoSearch" placeholder="🔍 Search techniques..." onkeyup="window.searchVideos()" style="margin-bottom:15px;">
+            <div id="dynamicCurriculum"></div>
         </div>
 
         <div id="adminDashboard" style="display:none;">
             <div id="studentForm" class="admin-tab">
                 <h3>Student Profile</h3>
                 <input type="hidden" id="editId">
-                <select id="fStatus"><option value="Current">Active</option><option value="Inactive">Inactive</option></select>
+                <select id="fStatus"><option value="Current">Status: Current</option><option value="Inactive">Status: Inactive</option></select>
                 <input type="text" id="fName" placeholder="Student Name">
-                <input type="text" id="fPhone" placeholder="Phone" oninput="window.formatPhone(this)">
-                <input type="email" id="fEmail" placeholder="Email">
-                <input type="text" id="fTuition" placeholder="Tuition ($)" onblur="window.formatCurrency(this)">
-                <textarea id="fComments" placeholder="Notes" style="height:80px;"></textarea>
-                <input type="text" id="fCurrentRank" placeholder="Rank">
+                <input type="text" id="fParent" placeholder="Parent/Guardian (if minor)">
+                <input type="text" id="fPhone" placeholder="Phone Number">
+                <input type="email" id="fEmail" placeholder="Email Address">
+                <input type="text" id="fAddress" placeholder="Mailing Address">
+                <input type="text" id="fCityZip" placeholder="City/Zip">
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="fTuition" placeholder="Tuition ($)">
+                    <select id="fFrequency"><option value="Weekly">Weekly</option><option value="Monthly">Monthly</option><option value="None">None</option></select>
+                </div>
+                <textarea id="fComments" placeholder="General Notes/Comments" style="height:80px;"></textarea>
+                <input type="text" id="fCurrentRank" placeholder="Current Rank">
                 <button class="control-btn" style="width:100%;" onclick="window.handleSave()">Save Record</button>
                 <button class="control-btn" style="width:100%; background:none; color:#888;" onclick="window.switchAdmin('listView')">Cancel</button>
             </div>
 
             <div id="listView" class="admin-tab" style="display:block;">
-                <input type="text" id="rosterSearch" placeholder="🔍 Search..." onkeyup="window.searchRoster()">
+                <input type="text" id="rosterSearch" placeholder="🔍 Search records..." onkeyup="window.searchRoster()">
                 <div class="filter-bar">
                     <button id="filterActive" class="filter-btn active" onclick="window.setFilter('Current')">Active</button>
                     <button id="filterInactive" class="filter-btn" onclick="window.setFilter('Inactive')">Inactive</button>
@@ -103,13 +108,14 @@
             </div>
 
             <div id="videoManager" style="display:none; margin-top:20px; border-top:1px solid #444; padding-top:20px;">
-                <h4 style="color:var(--gold);">Quick Add Video</h4>
+                <h4 style="color:var(--gold);">Add New Video</h4>
                 <select id="mBeltSelect">
-                    <option value="belt_0">White</option><option value="belt_1">Yellow</option><option value="belt_2">Orange</option>
+                    <option value="belt_0">White Belt</option><option value="belt_1">Yellow Belt</option><option value="belt_2">Orange Belt</option>
+                    <option value="belt_3">Purple Belt</option><option value="belt_4">Blue Belt</option><option value="belt_5">Green Belt</option>
                 </select>
                 <input type="text" id="mVideoTitle" placeholder="Technique Name">
-                <input type="text" id="mVideoId" placeholder="YouTube ID">
-                <button class="control-btn" style="width:100%;" onclick="window.saveNewVideo()">Add Video</button>
+                <input type="text" id="mVideoId" placeholder="YouTube Video ID">
+                <button class="control-btn" style="width:100%;" onclick="window.saveNewVideo()">Upload to Curriculum</button>
             </div>
         </div>
     </div>
@@ -119,7 +125,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, collection, query, where, orderBy, getDocs, updateDoc, arrayUnion, onSnapshot, addDoc, serverTimestamp, writeBatch } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, collection, query, where, orderBy, getDocs, updateDoc, arrayUnion, onSnapshot, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = { apiKey: "AIzaSyC35Ubf6GxyDi3JEiKWaYgVFkYGknMZrcw", authDomain: "tracy-s-karate-portal.firebaseapp.com", projectId: "tracy-s-karate-portal", storageBucket: "tracy-s-karate-portal.appspot.com", messagingSenderId: "338865615783", appId: "1:338865615783:web:75865261864177d46536da" };
         const app = initializeApp(firebaseConfig);
@@ -129,12 +135,7 @@
 
         let ytPlayer, currentUserRank = 0, currentRosterFilter = 'Current', studentsList = [];
 
-        // --- SECURITY ---
-        document.addEventListener('keydown', (e) => {
-            if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) || (e.ctrlKey && e.keyCode === 85)) e.preventDefault();
-        });
-
-        // --- YOUTUBE ---
+        // --- YOUTUBE LOGIC ---
         window.onYouTubeIframeAPIReady = () => {
             ytPlayer = new YT.Player('ytPlayer', { height: '100%', width: '100%', videoId: '', playerVars: { 'controls': 1, 'rel': 0, 'modestbranding': 1, 'playsinline': 1 } });
         };
@@ -158,10 +159,10 @@
             }
         };
 
-        window.toggleGate = (id) => { const el = document.getElementById(id); el.style.display = (el.style.display === "none") ? "block" : "none"; };
         window.switchAdmin = (id) => { document.querySelectorAll('.admin-tab').forEach(t => t.style.display='none'); document.getElementById(id).style.display='block'; };
+        window.toggleGate = (id) => { const el = document.getElementById(id); el.style.display = (el.style.display === "none") ? "block" : "none"; };
 
-        // --- CURRICULUM ---
+        // --- DATA LOADERS ---
         const loadCurriculum = async (rank) => {
             const container = document.getElementById('dynamicCurriculum');
             const q = query(collection(db, "curriculum"), where("rankRequired", "<=", rank), orderBy("rankRequired", "asc"));
@@ -179,14 +180,7 @@
             });
         };
 
-        // --- ROSTER LOGIC ---
-        window.setFilter = (f) => { 
-            currentRosterFilter = f; 
-            document.getElementById('filterActive').className = f==='Current' ? 'filter-btn active' : 'filter-btn';
-            document.getElementById('filterInactive').className = f==='Inactive' ? 'filter-btn active' : 'filter-btn';
-            window.syncRoster(); 
-        };
-
+        // --- ROSTER ACTIONS ---
         window.syncRoster = () => {
             onSnapshot(query(collection(db, "students"), orderBy("fullName")), (snap) => {
                 let html = `<table>`; studentsList = [];
@@ -195,7 +189,11 @@
                     if((s.status || "Current") === currentRosterFilter) {
                         html += `<tr onclick="window.toggleDetail('${id}')"><td><b>${s.fullName}</b></td><td style="text-align:right;">
                             <button class="control-btn" onclick="event.stopPropagation(); window.editStudent('${id}')">EDIT</button></td></tr>
-                            <tr id="det-${id}" style="display:none;"><td colspan="2"><div class="detail-view">Rank: ${s.currentRank || 'N/A'}<br>Notes: ${s.comments || ''}</div></td></tr>`;
+                            <tr id="det-${id}" style="display:none;"><td colspan="2"><div class="detail-view">
+                                <span class="detail-label">Phone:</span> ${s.phone || 'N/A'}<br>
+                                <span class="detail-label">Rank:</span> ${s.currentRank || 'N/A'}<br>
+                                <span class="detail-label">Notes:</span> ${s.comments || ''}
+                            </div></td></tr>`;
                     }
                 });
                 document.getElementById('rosterTableArea').innerHTML = html + "</table>";
@@ -205,28 +203,49 @@
         window.editStudent = (id) => {
             const s = studentsList.find(x => x.id === id);
             document.getElementById('editId').value = id;
-            document.getElementById('fName').value = s.fullName;
+            document.getElementById('fName').value = s.fullName || '';
             document.getElementById('fPhone').value = s.phone || '';
             document.getElementById('fEmail').value = s.email || '';
+            document.getElementById('fAddress').value = s.address || '';
             document.getElementById('fTuition').value = s.tuition || '';
             document.getElementById('fComments').value = s.comments || '';
             document.getElementById('fCurrentRank').value = s.currentRank || '';
-            document.getElementById('fStatus').value = s.status || 'Current';
             window.switchAdmin('studentForm');
         };
 
-        window.prepareAdd = () => { document.getElementById('editId').value = ""; document.getElementById('studentForm').querySelectorAll('input,textarea').forEach(i => i.value=""); window.switchAdmin('studentForm'); };
-
         window.handleSave = async () => {
             const id = document.getElementById('editId').value;
-            const data = { fullName: document.getElementById('fName').value, phone: document.getElementById('fPhone').value, email: document.getElementById('fEmail').value, tuition: document.getElementById('fTuition').value, comments: document.getElementById('fComments').value, currentRank: document.getElementById('fCurrentRank').value, status: document.getElementById('fStatus').value, updatedAt: serverTimestamp() };
+            const data = { 
+                fullName: document.getElementById('fName').value, 
+                phone: document.getElementById('fPhone').value, 
+                email: document.getElementById('fEmail').value,
+                address: document.getElementById('fAddress').value,
+                tuition: document.getElementById('fTuition').value,
+                comments: document.getElementById('fComments').value,
+                currentRank: document.getElementById('fCurrentRank').value,
+                status: document.getElementById('fStatus').value,
+                updatedAt: serverTimestamp() 
+            };
             if(id) await updateDoc(doc(db, "students", id), data); else await addDoc(collection(db, "students"), data);
-            alert("Saved"); window.switchAdmin('listView');
+            alert("Saved Successfully"); window.switchAdmin('listView');
+        };
+
+        window.prepareAdd = () => {
+            document.getElementById('editId').value = "";
+            document.getElementById('studentForm').querySelectorAll('input,textarea').forEach(i => i.value="");
+            window.switchAdmin('studentForm');
+        };
+
+        window.setFilter = (f) => { 
+            currentRosterFilter = f; 
+            document.getElementById('filterActive').className = f==='Current' ? 'filter-btn active' : 'filter-btn';
+            document.getElementById('filterInactive').className = f==='Inactive' ? 'filter-btn active' : 'filter-btn';
+            window.syncRoster(); 
         };
 
         window.toggleDetail = (id) => { const el = document.getElementById(`det-${id}`); el.style.display = el.style.display === "none" ? "table-row" : "none"; };
 
-        // --- AUTH ---
+        // --- AUTH & INITIAL LOAD ---
         document.getElementById('loginBtn').onclick = async () => {
             try {
                 const cred = await signInWithEmailAndPassword(auth, document.getElementById('emailInput').value, document.getElementById('passInput').value);
@@ -239,7 +258,19 @@
                     if(currentUserRank >= 14) document.getElementById('rosterBtn').style.display = 'block';
                     await loadCurriculum(currentUserRank);
                 }
-            } catch(e) { alert("Login Error"); }
+            } catch(e) { alert("Invalid Credentials"); }
+        };
+
+        window.saveNewVideo = async () => {
+            const beltId = document.getElementById('mBeltSelect').value;
+            const title = document.getElementById('mVideoTitle').value;
+            const ytId = document.getElementById('mVideoId').value;
+            if(!title || !ytId) return alert("Fill all fields");
+            try {
+                await updateDoc(doc(db, "curriculum", beltId), { videos: arrayUnion({ title, ytId }) });
+                alert("Video Added!");
+                loadCurriculum(currentUserRank);
+            } catch (e) { alert("Error saving video."); }
         };
     </script>
 </body>
