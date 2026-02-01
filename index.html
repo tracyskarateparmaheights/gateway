@@ -152,7 +152,7 @@
             return "#444";
         }
 
-        // Global Fixes for "Not a Function" errors
+        // Global functions
         window.toggleDetail = (id) => {
             const el = document.getElementById(`det-${id}`);
             if (el) el.style.display = (el.style.display === "none") ? "table-row" : "none";
@@ -163,9 +163,12 @@
             if (el) el.style.display = (el.style.display === "none") ? "block" : "none";
         };
 
-        // Video Player Fix: Ensures player is ready for Firebase-loaded content
+        // YOUTUBE PLAYER LOGIC
         window.onYouTubeIframeAPIReady = () => {
-            ytPlayer = new YT.Player('ytPlayer', { height: '100%', width: '100%', videoId: 'S3A9t0_6fvU', 
+            ytPlayer = new YT.Player('ytPlayer', { 
+                height: '100%', 
+                width: '100%', 
+                videoId: 'S3A9t0_6fvU', 
                 playerVars: { 'controls': 1, 'rel': 0, 'modestbranding': 1, 'playsinline': 1 },
                 events: { 'onReady': () => { playerIsReady = true; } }
             });
@@ -192,7 +195,7 @@
             if (id === 'staffDashboard') window.syncStaff();
         };
 
-        // STUDENT ROSTER LOGIC
+        // ROSTER LOGIC
         window.syncRoster = () => {
             onSnapshot(query(collection(db, "students"), orderBy("fullName")), (snap) => {
                 studentsList = [];
@@ -202,8 +205,7 @@
                     const displayStyle = (s.status || "Current") === currentRosterFilter ? "" : "none";
                     const dotColor = (s.status === "Inactive") ? "var(--red)" : "var(--green)";
                     
-                    html += `
-                    <tr class="sr-row" style="display:${displayStyle}" onclick="window.toggleDetail('${id}')">
+                    html += `<tr class="sr-row" style="display:${displayStyle}" onclick="window.toggleDetail('${id}')">
                         <td><span class="status-dot" style="background:${dotColor}"></span><b>${s.fullName}</b><br><small>${s.phone || 'No Phone'}</small></td>
                         <td style="text-align:right;"><button class="control-btn" onclick="event.stopPropagation(); window.editStudent('${id}')">EDIT</button></td>
                     </tr>
@@ -215,7 +217,7 @@
                         <div><span class="detail-label">Tuition:</span> ${s.tuition || '---'} (${s.paymentFrequency || 'Weekly'})</div>
                         <div><span class="detail-label">Rank:</span> ${s.currentRank || '---'}</div>
                         <div><span class="detail-label">Notes:</span> ${s.comments || '---'}</div>
-                        <button class="control-btn" style="background:var(--red); color:white; width:100%; margin-top:10px; justify-content:center;" onclick="window.deleteStudent('${id}', '${s.fullName}')">DELETE RECORD</button>
+                        <button class="control-btn" style="background:var(--red); color:white; width:100%; margin-top:10px; justify-content:center;" onclick="window.deleteStudent('${id}', '${s.fullName.replace(/'/g, "\\'")}')">DELETE RECORD</button>
                     </div></td></tr>`;
                 });
                 document.getElementById('rosterTableArea').innerHTML = html + "</table>";
@@ -255,7 +257,7 @@
             window.switchAdmin('listView');
         };
 
-        // STAFF ACCESS LOGIC
+        // STAFF LOGIC
         window.syncStaff = () => {
             onSnapshot(collection(db, "users"), (snap) => {
                 let html = `<table><tr><th>NAME</th><th>LVL</th><th></th></tr>`;
@@ -277,7 +279,7 @@
             alert("Updated");
         };
 
-        // CURRICULUM LOADER (Firebase Connection Fix)
+        // CURRICULUM LOADER
         const loadCurriculum = async (rank) => {
             const q = query(collection(db, "curriculum"), where("rankRequired", "<=", rank), orderBy("rankRequired", "asc"));
             const snap = await getDocs(q);
@@ -298,7 +300,7 @@
             });
         };
 
-        // Helper Tools
+        // Helpers
         window.setFilter = (s) => { currentRosterFilter = s; document.getElementById('filterActive').classList.toggle('active', s === 'Current'); document.getElementById('filterInactive').classList.toggle('active', s === 'Inactive'); window.syncRoster(); };
         window.switchAdmin = (id) => { document.querySelectorAll('.admin-tab').forEach(t => t.style.display='none'); document.getElementById(id).style.display='block'; };
         window.prepareAdd = () => { document.getElementById('editId').value = ""; document.querySelectorAll('#studentForm input, #studentForm textarea').forEach(i => i.value = ""); window.switchAdmin('studentForm'); };
@@ -306,7 +308,7 @@
         window.exportStudents = () => { const csv = Papa.unparse(studentsList); const blob = new Blob([csv], { type: 'text/csv' }); const url = window.URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `Roster_${new Date().toLocaleDateString()}.csv`; a.click(); };
         window.handleBulkImport = (e) => { const file = e.target.files[0]; Papa.parse(file, { header: true, complete: async (r) => { const batch = writeBatch(db); r.data.forEach(row => { if(row.fullName) batch.set(doc(collection(db, "students")), {...row, updatedAt: serverTimestamp()}); }); await batch.commit(); alert("Done!"); }}); };
 
-        // AUTH & INITIALIZATION
+        // AUTH
         document.getElementById('loginBtn').onclick = async () => {
             try {
                 const cred = await signInWithEmailAndPassword(auth, document.getElementById('emailInput').value, document.getElementById('passInput').value);
